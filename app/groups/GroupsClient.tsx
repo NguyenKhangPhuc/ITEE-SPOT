@@ -45,7 +45,7 @@ const GroupsClient = ({ groupsWithEvents }: { groupsWithEvents: GroupEvents }) =
                         </div>
 
                         <div className="mt-1">
-                            <p className="text-sm font-bold">Short Description</p>
+                            <p className="text-sm font-bold">Event Short Description</p>
                             <p className="text-sm text-gray-800 line-clamp-2 leading-tight">
                                 {item.groups?.events?.short_description || "Lorem ipsum dolor sit amet, consectetur adipiscing elit, esse cillum..."}
                             </p>

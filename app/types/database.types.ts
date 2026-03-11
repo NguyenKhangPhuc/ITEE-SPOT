@@ -210,18 +210,21 @@ export type Database = {
           event_id: string | null
           group_name: string | null
           id: string
+          short_description: string | null
         }
         Insert: {
           created_at?: string
           event_id?: string | null
           group_name?: string | null
           id?: string
+          short_description?: string | null
         }
         Update: {
           created_at?: string
           event_id?: string | null
           group_name?: string | null
           id?: string
+          short_description?: string | null
         }
         Relationships: [
           {

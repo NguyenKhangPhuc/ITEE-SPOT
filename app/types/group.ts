@@ -10,6 +10,7 @@ export type GroupInfo = {
     event_id: string | null;
     group_name: string | null;
     id: string;
+    short_description: string | null;
     group_members: {
         id: string;
         profiles: {
@@ -22,3 +23,26 @@ export type GroupInfo = {
         max_group_members: number | null;
     } | null;
 } | null
+
+export type EventGroups = {
+    created_at: string;
+    event_id: string | null;
+    group_name: string | null;
+    id: string;
+    short_description: string | null;
+    group_members: {
+        member_id: string | null;
+        profiles: {
+            email: string | null;
+            full_name: string | null;
+            id: string;
+        } | null;
+    }[];
+    group_challenge: {
+        challenge_id: string | null;
+        event_challenges: {
+            company_name: string | null;
+            title: string | null;
+        } | null;
+    }[];
+}[] | null

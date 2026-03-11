@@ -136,7 +136,7 @@ const SingleGroupClient = ({ groupInfo, currentUser }: { groupInfo: GroupInfo, c
                 </div>
             </form>
 
-            <Link href={`/submission/${groupInfo?.event_id}/${groupInfo?.id}`}
+            <Link href={`/submission/${groupInfo?.id}`}
                 className={`flex gap-5 justify-center items-center bg-black max-w-[350px] px-10 py-2 text-center rounded-lg cursor-pointer h-full text-white hover:bg-black/80 duration-300 mt-5`}
                 type="submit"
             >

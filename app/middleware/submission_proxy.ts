@@ -29,10 +29,9 @@ export async function submissionRoute(request: NextRequest) {
     )
     const pathname = request.nextUrl.pathname;
     if (
-        pathname.startsWith('/submission/') && pathname.split('/').length === 4
+        pathname.startsWith('/submission/') && pathname.split('/').length === 3
     ) {
-        const eventId = pathname.split('/')[2]
-        const groupId = pathname.split('/')[3]
+        const groupId = pathname.split('/')[2]
         console.log('this is data -- ' + pathname.split('/'))
         const { data: user, error: userError } = await supabase.auth.getUser()
         if (userError || user == null) {
