@@ -284,18 +284,21 @@ export type Database = {
           email: string | null
           full_name: string | null
           id: string
+          role: Database["public"]["Enums"]["PROFILE_ROLE"] | null
         }
         Insert: {
           avatar_url?: string | null
           email?: string | null
           full_name?: string | null
           id: string
+          role?: Database["public"]["Enums"]["PROFILE_ROLE"] | null
         }
         Update: {
           avatar_url?: string | null
           email?: string | null
           full_name?: string | null
           id?: string
+          role?: Database["public"]["Enums"]["PROFILE_ROLE"] | null
         }
         Relationships: []
       }
@@ -405,6 +408,7 @@ export type Database = {
     Enums: {
       EVENT_STATUS: "ongoing" | "finished"
       INVITATION_STATUS: "pending" | "rejected" | "accepted"
+      PROFILE_ROLE: "admin" | "student" | "judge"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -537,6 +541,7 @@ export const Constants = {
     Enums: {
       EVENT_STATUS: ["ongoing", "finished"],
       INVITATION_STATUS: ["pending", "rejected", "accepted"],
+      PROFILE_ROLE: ["admin", "student", "judge"],
     },
   },
 } as const

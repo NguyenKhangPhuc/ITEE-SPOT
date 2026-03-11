@@ -8,3 +8,9 @@ export enum INVITATION_STATUS {
     ACCEPTED = 'accepted',
     REJECTED = 'rejected'
 }
+
+export enum PROFILE_ROLE {
+    ADMIN = 'admin',
+    STUDENT = 'student',
+    JUDGES = 'judge'
+}
