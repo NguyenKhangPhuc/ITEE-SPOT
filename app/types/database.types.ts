@@ -299,6 +299,54 @@ export type Database = {
         }
         Relationships: []
       }
+      submission_files: {
+        Row: {
+          created_at: string
+          group_id: string | null
+          id: string
+          mime_type: string | null
+          original_file_name: string | null
+          size: number | null
+          storage_path: string | null
+          submission_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          group_id?: string | null
+          id?: string
+          mime_type?: string | null
+          original_file_name?: string | null
+          size?: number | null
+          storage_path?: string | null
+          submission_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          group_id?: string | null
+          id?: string
+          mime_type?: string | null
+          original_file_name?: string | null
+          size?: number | null
+          storage_path?: string | null
+          submission_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "submission_files_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "submission_files_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       submissions: {
         Row: {
           created_at: string

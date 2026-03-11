@@ -37,7 +37,7 @@ const RegisterClient = ({ event, user, challenges }: { event: Event, user: User,
         try {
             const { createdGroup } = await insertGroupMembers(data)
             showNotification('Create group successfully')
-            router.push(`/groups/${createdGroup}`)
+            router.push(`/groups/${createdGroup.id}`)
         } catch (error) {
             if (error instanceof Error) {
                 showNotification(error.message)

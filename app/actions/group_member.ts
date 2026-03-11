@@ -17,7 +17,8 @@ export async function insertGroupMembers(registerGroupMemberData: RegisterGroupM
     console.log(filteredOutEmails, registerGroupMemberData.member_emails)
     const { data, error } = await supabase.from('profiles').select('email').in('email', filteredOutEmails);
     console.log(data)
-    if (data?.length == 0) {
+    if (data?.length == 0 && filteredOutEmails.length != 0) {
+        console.log(error)
         throw new Error(`Incorrect member email`)
     }
 
