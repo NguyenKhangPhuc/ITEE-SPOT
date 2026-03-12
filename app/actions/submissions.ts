@@ -8,7 +8,7 @@ export async function getGoupChallengeSubmission({ groupId, groupChallengeId }: 
 
     const { data, error } = await supabase
         .from('submissions')
-        .select('*, submission_files (*)')
+        .select('*, submission_files (*), submission_reactions (*)')
         .eq('group_id', groupId)
         .eq('group_challenge_id', groupChallengeId)
         .maybeSingle()

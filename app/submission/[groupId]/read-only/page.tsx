@@ -3,8 +3,6 @@ import { getEventChallenges } from "@/app/actions/event_challenges";
 import { getSingleEvent } from "@/app/actions/events";
 import { getGroupChallenges } from "@/app/actions/group_challenge";
 
-import { Group } from "@/app/types/group";
-import { EventChallenge } from "@/app/types/event_challenges";
 import ReadOnlySubmission from "./ReadOnlySubmission";
 
 
@@ -18,14 +16,15 @@ export default async function Home({ params }: PageProps) {
     if (error) {
         return <div className="w-full flex items-center justify-center text-red-500">Đã có lỗi xảy ra: {error?.message}</div>;
     }
-    const eventChallenges: Array<EventChallenge> = data!.map((e) => {
-        return e.event_challenges!
-    })
+    const { data: userInfo, error: userError } = await getUser()
+    if (userError) {
+        return <div className="w-full flex items-center justify-center text-red-500">Đã có lỗi xảy ra: {userError?.message}</div>;
+    }
     return (
         <div className="w-full min-h-screen screen-bg font-roboto-mono">
             <div className="max-w-4xl mx-auto px-6 flex flex-col p-5 ">
                 <div className="text-2xl font-bold">Read Only Submission</div>
-                <ReadOnlySubmission groupChallenges={data} />
+                <ReadOnlySubmission groupChallenges={data} user={userInfo.user!} />
             </div>
         </div>
     );
