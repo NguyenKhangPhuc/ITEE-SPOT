@@ -51,4 +51,4 @@ class SubmissionReactionChannel {
     }
 }
 
-export default SubmissionReaction;
+export default SubmissionReactionChannel;
