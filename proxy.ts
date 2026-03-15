@@ -3,6 +3,7 @@ import { updateSession } from "./app/utils/supabase/proxy"
 import { registerRoute } from "./app/middleware/register_proxy"
 import { submissionRoute } from "./app/middleware/submission_proxy"
 import { createEventRoute } from "./app/middleware/create_event_proxy"
+import { viewAllGroups } from "./app/middleware/view_all_groups"
 
 
 export async function proxy(request: NextRequest) {
@@ -14,6 +15,8 @@ export async function proxy(request: NextRequest) {
     if (submissionRouteCheck.status !== 200) return submissionRouteCheck
     const createEventRouteCheck = await createEventRoute(request)
     if (createEventRouteCheck.status !== 200) return createEventRouteCheck
+    const viewAllGroupsEventCheck = await viewAllGroups(request)
+    if (viewAllGroupsEventCheck.status !== 200) return viewAllGroupsEventCheck
 }
 
 export const config = {

@@ -44,8 +44,9 @@ const RegisterClient = ({ event, user, challenges }: { event: Event, user: User,
             }
         }
     }
+
     return (
-        <form className="w-full h-auto flex flex-col gap-5 p-5 shadow-xl/30 mt-5" onSubmit={handleSubmit(handleCreateGroup)} >
+        <form className="w-full h-auto flex flex-col gap-5 p-5 shadow-xl/30 mt-5 content-main-color" onSubmit={handleSubmit(handleCreateGroup)} >
             <div className="input-group w-full ">
                 <label className="event_input_label ">Group name</label>
                 <input autoComplete="off" placeholder="Group name" id="Title" className="event_input outline-none w-full  h-[40px] placeholder:font-bold " type="text"

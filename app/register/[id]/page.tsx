@@ -24,7 +24,7 @@ export default async function Home({ params }: PageProps) {
     return (
         <div className="w-full min-h-screen screen-bg font-roboto-mono">
             <div className="max-w-4xl mx-auto px-6 flex flex-col p-5 ">
-                <div className="text-2xl font-bold">Register for {event?.title}</div>
+                <div className="text-2xl font-bold text-color">Register for {event?.title}</div>
                 <RegisterClient event={event!} user={user.user!} challenges={challenges!} />
             </div>
         </div>

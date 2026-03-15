@@ -1,11 +1,12 @@
 'use client'
-import { EVENT_STATUS } from "@/app/types/enum";
+import { EVENT_STATUS, PROFILE_ROLE } from "@/app/types/enum";
 import { Event } from "@/app/types/event";
+import { Profile } from "@/app/types/profile";
 import { createClient } from "@/app/utils/supabase/client";
 import ReadOnlyEditor from "@/components/tiptap-templates/simple/ReadOnlyEditor";
 import Image from "next/image";
 import Link from "next/link";
-const SingleEventClient = ({ event }: { event: Event }) => {
+const SingleEventClient = ({ event, user }: { event: Event, user: Profile }) => {
     const supabase = createClient()
     // const { showNotification } = useNotification()
     const handleGetUrl = (imagePath: string) => {
@@ -73,9 +74,17 @@ const SingleEventClient = ({ event }: { event: Event }) => {
                 <ReadOnlyEditor content={event.content!} />
             </div>
             <hr className="border-black/30" />
-            <Link href={`/register/${event.id}`} className="transition duration-300 ease-in-out cursor-pointer w-40 h-13 bg-black hover:bg-black/80 hover:scale-105 border rounded-[10px] flex items-center justify-center text-white">
-                Register
-            </Link>
+            <div className="flex gap-5">
+                <Link href={`/register/${event.id}`} className="transition duration-300 ease-in-out cursor-pointer w-40 h-13 bg-black hover:bg-black/80 hover:scale-105 border rounded-[10px] flex items-center justify-center text-white">
+                    Register
+                </Link>
+                {user?.role == PROFILE_ROLE.JUDGES || user?.role == PROFILE_ROLE.ADMIN &&
+
+                    <Link href={`/events/${event.id}/groups`} className="transition duration-300 ease-in-out cursor-pointer
+                     p-5 text-center w-60 h-13 bg-black hover:bg-black/80 hover:scale-105 border rounded-[10px] flex items-center justify-center text-white">
+                        View all groups
+                    </Link>}
+            </div>
         </div>
     )
 }
