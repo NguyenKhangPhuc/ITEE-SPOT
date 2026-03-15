@@ -42,8 +42,8 @@ const Home = () => {
 
     return (
         <div className="w-full min-h-screen screen-bg font-roboto-mono">
-            <div className="max-w-4xl mx-auto px-6">
-                <form className="flex flex-col pt-5 pb-10 gap-5 items-start" onSubmit={handleSubmit(handleCreateNewEvent)}>
+            <div className="max-w-4xl mx-auto px-6 pt-5 pb-5">
+                <form className="flex flex-col content-main-color mt-5 p-5 rounded-xl gap-5 items-start" onSubmit={handleSubmit(handleCreateNewEvent)}>
                     <div className="w-full flex gap-5">
                         <div className="input-group w-full">
                             <label className="event_input_label">Title</label>

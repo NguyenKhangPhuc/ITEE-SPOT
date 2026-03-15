@@ -1,6 +1,5 @@
 'use client'
 
-import { updateGroupName } from "@/app/actions/groups"
 import { sendInvitations } from "@/app/actions/invitations"
 import { useNotification } from "@/app/context/NotificationContext"
 import { INVITATION_STATUS } from "@/app/types/enum"
@@ -11,18 +10,20 @@ import Link from "next/link"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { updateGroupNameAndDescription } from "@/app/actions/groups"
 const SingleGroupClient = ({ groupInfo, currentUser }: { groupInfo: GroupInfo, currentUser: User }) => {
 
     const [disableGroupName, setDisableGroupName] = useState(true);
     const { showNotification } = useNotification()
     const {
-        register: registerGroupName,
+        register: registerGroup,
         handleSubmit: handleSubmitGroupName,
-        formState: { errors: groupNameErros },
+        formState: { errors: groupErrors },
         reset: resetGroupName,
     } = useForm({
         defaultValues: {
-            groupName: groupInfo?.group_name ?? ""
+            groupName: groupInfo?.group_name ?? "",
+            short_description: groupInfo?.short_description ?? "",
         }
     })
 
@@ -43,7 +44,7 @@ const SingleGroupClient = ({ groupInfo, currentUser }: { groupInfo: GroupInfo, c
             setDisableGroupName(false)
         } else {
             try {
-                const updatedGroupInfo = await updateGroupName({ groupId: groupInfo!.id, groupName: data.groupName })
+                const updatedGroupInfo = await updateGroupNameAndDescription({ groupId: groupInfo!.id, groupName: data.groupName, description: data.short_description })
                 showNotification("Update group name successfully")
                 resetGroupName({ groupName: updatedGroupInfo?.group_name ?? "" })
                 setDisableGroupName(true)
@@ -71,29 +72,48 @@ const SingleGroupClient = ({ groupInfo, currentUser }: { groupInfo: GroupInfo, c
     }
 
     return (
-        <div className="w-full flex flex-col mt-5 gap-5 shadow-xl/30 p-5 rounded-xl">
-            <form className="w-full flex gap-3 " onSubmit={handleSubmitGroupName(handleSaveGroupName)}>
-                <div className="input-group w-full">
-                    <label className="event_input_label">Your group name</label>
-                    <div className="w-full flex items-center gap-5">
-                        <input placeholder="Project title" className={`event_input outline-none w-full h-[40px] font-bold ${disableGroupName ? 'cursor-not-allowed opacity-70' : ''}`} type="text"
-                            disabled={disableGroupName}
-                            {...registerGroupName('groupName', {
-                                required: "Group name is required",
-                            })} />
-                        <button className={`bg-black px-10 py-1 rounded-lg cursor-pointer h-full text-white hover:bg-black/80 duration-300`}
-                            type="submit"
-                        >
-                            {disableGroupName ? 'Edit' : 'Save'}
-                        </button>
+        <div className="w-full flex flex-col mt-5 gap-5 content-main-color shadow-xl/30 p-5 rounded-xl">
+            <form className="w-full flex-col gap-3 " onSubmit={handleSubmitGroupName(handleSaveGroupName)}>
+                <div className="w-full flex gap-3 ">
+                    <div className="input-group w-full">
+                        <label className="event_input_label">Your group name</label>
+                        <div className="w-full flex items-center gap-5">
+                            <input placeholder="Project title" className={`event_input outline-none w-full h-[40px] font-bold ${disableGroupName ? 'cursor-not-allowed opacity-70' : ''}`} type="text"
+                                disabled={disableGroupName}
+                                {...registerGroup('groupName', {
+                                    required: "Group name is required",
+                                })} />
+                        </div>
+                        {groupErrors.groupName && (
+                            <p className="text-red-500 text-sm mt-1">
+                                {groupErrors.groupName.message}
+                            </p>
+                        )}
                     </div>
-                    {groupNameErros.groupName && (
+                </div>
+
+                <div className="input-group w-full ">
+                    <label className="event_input_label">Short Description</label>
+                    <textarea
+                        disabled={disableGroupName}
+                        autoComplete="off"
+                        placeholder="Short Description"
+                        className={`event_input outline-none w-full placeholder:font-bold h-[80px] ${disableGroupName ? 'cursor-not-allowed opacity-70' : ''}`}
+                        {...registerGroup('short_description', {
+                            required: "Short description members is required",
+                        })}
+                    />
+                    {groupErrors.short_description && (
                         <p className="text-red-500 text-sm mt-1">
-                            {groupNameErros.groupName.message}
+                            {groupErrors.short_description.message}
                         </p>
                     )}
                 </div>
-
+                <button className={`bg-black px-10 py-1 rounded-lg cursor-pointer h-full text-white hover:bg-black/80 duration-300`}
+                    type="submit"
+                >
+                    {disableGroupName ? 'Edit' : 'Save'}
+                </button>
             </form>
 
             <form className="w-full flex flex-col gap-5" onSubmit={handleSubmitUserEmail(handleSendInvitation)}>

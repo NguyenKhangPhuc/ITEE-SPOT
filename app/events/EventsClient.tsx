@@ -6,10 +6,10 @@ import Image from "next/image";
 const EventsClient = ({ events }: { events: Array<Event> }) => {
 
     return (
-        <div className="w-full flex flex-col gap-10 pt-10 pb-10 ">
+        <div className="w-full flex flex-col gap-10 mt-10 pb-10">
             {events.map((event) => (
                 <Link href={`/events/${event.id}`} key={event.id}
-                    className="cursor-pointer relative flex items-center h-40 rounded-[40px] shadow-xl/30 hover:shadow-xl duration-300 hover:translate-y-1">
+                    className="cursor-pointer relative flex items-center h-40 rounded-[40px] shadow-xl/30 hover:shadow-[0px_0px_20px_#bebebe,-0px_-0px_20px_#ffffff] duration-300 hover:translate-y-1">
                     <div className="-translate-x-20 absolute left-0 z-10 w-40 h-40 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-200">
                         {event.poster_path ? (
                             <Image
@@ -25,7 +25,7 @@ const EventsClient = ({ events }: { events: Array<Event> }) => {
                         )}
                     </div>
 
-                    <div className="w-full h-full border border-black rounded-[40px]  flex flex-col justify-center pl-24 pr-10 py-4">
+                    <div className="w-full h-full border border-black rounded-[40px]  flex flex-col justify-center pl-24 pr-10 py-4 content-main-color">
                         <div className="flex justify-between items-start mb-1 ">
                             <h2 className="text-xl font-black uppercase tracking-tight leading-none">
                                 {event.title}

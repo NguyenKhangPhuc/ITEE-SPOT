@@ -25,9 +25,9 @@ export async function getSingleGroup({ groupId }: { groupId: string }) {
     return { data, error }
 }
 
-export async function updateGroupName({ groupId, groupName }: { groupId: string, groupName: string }) {
+export async function updateGroupNameAndDescription({ groupId, groupName, description }: { groupId: string, groupName: string, description: string }) {
     const supabase = await createClient()
-    const { data, error } = await supabase.from('groups').update({ group_name: groupName }).eq('id', groupId).select().maybeSingle();
+    const { data, error } = await supabase.from('groups').update({ group_name: groupName, short_description: description }).eq('id', groupId).select().maybeSingle();
     if (error) {
         throw new Error(error.message)
     }

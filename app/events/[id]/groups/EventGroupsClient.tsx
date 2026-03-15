@@ -13,8 +13,8 @@ const EventGroupsClient = ({ event, eventGroups }: { event: Event, eventGroups: 
                     href={`/submission/${item.id}/read-only`}
                     key={`groups_event ${index}`}
                     className="cursor-pointer w-full p-8 rounded-[50px] bg-white 
-                               shadow-[20px_20px_60px_#bebebe,-20px_-20px_60px_#ffffff]
-                               flex flex-col hover:shadow-xl/10 duration-300 "
+                               hover:shadow-[0px_0px_20px_#bebebe,-0px_-0px_20px_#ffffff]
+                               flex flex-col shadow-xl/10 duration-300 "
                 >
                     <div className="flex-1">
                         <div className="flex justify-between items-center mb-1 ">

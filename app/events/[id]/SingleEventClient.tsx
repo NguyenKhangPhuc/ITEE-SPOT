@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 const SingleEventClient = ({ event }: { event: Event }) => {
     return (
-        <div className="w-full flex flex-col gap-10 ">
+        <div className="w-full flex flex-col gap-10 content-main-color rounded-xl p-5">
             <div key={event.id} className="relative flex items-center h-40">
                 <div className="-translate-x-20 absolute left-0 z-10 w-40 h-40 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-200">
                     {event.poster_path ? (

@@ -197,7 +197,7 @@ const ReadOnlySubmission = ({ groupChallenges, user }: { groupChallenges: GroupC
         }
     }
     return (
-        <div className="flex flex-col pt-5 pb-10 gap-5 items-start" >
+        <div className="flex flex-col mt-5 content-main-color p-5 rounded-xl gap-5 items-start" >
             <div className="flex flex-col gap-4 w-full mt-4">
                 <div className="text-lg font-bold uppercase tracking-tight">Select Challenges</div>
                 <div className="grid grid-cols-2 gap-4">

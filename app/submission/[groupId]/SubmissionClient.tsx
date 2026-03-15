@@ -138,7 +138,7 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
         }
     }
     return (
-        <form className="flex flex-col pt-5 pb-10 gap-5 items-start" onSubmit={handleSubmit(handleSaveSubmission)}>
+        <form className="flex flex-col mt-5 p-5 gap-5 items-start content-main-color rounded-xl" onSubmit={handleSubmit(handleSaveSubmission)}>
             <div className="flex flex-col gap-4 w-full mt-4">
                 <div className="text-lg font-bold uppercase tracking-tight">Select Challenges</div>
                 <div className="grid grid-cols-2 gap-4">
