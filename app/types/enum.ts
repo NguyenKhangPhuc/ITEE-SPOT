@@ -14,3 +14,17 @@ export enum PROFILE_ROLE {
     STUDENT = 'student',
     JUDGES = 'judge'
 }
+
+
+export enum UNIVERSITY {
+    OULU_UNI = 'University of Oulu',
+    OAMK = 'Oulu University of Applied Science'
+}
+
+export enum PROGRAMME {
+    CSE = 'Computer Science and Engineering',
+    ECE = 'Electronics and Communications Engineering',
+    IPS = 'Information Processing Science',
+    BE = 'Biomedical Engineering'
+}
+

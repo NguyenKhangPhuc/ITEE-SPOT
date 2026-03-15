@@ -4,31 +4,34 @@ import { useNotification } from "@/app/context/NotificationContext"
 import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor"
 import { Editor } from "@tiptap/core"
 import { useRouter } from "next/navigation"
-import { SetStateAction, useState } from "react"
+import { ChangeEvent, SetStateAction, useState } from "react"
 import { useForm } from "react-hook-form"
 import ClearIcon from '@mui/icons-material/Clear';
 import { Event, EventInsert } from "@/app/types/event"
 import { EventChallengeInsert } from "@/app/types/event_challenges"
+import Image from "next/image"
+import { SubmissionFileExtended } from "@/app/types/submission_files"
 
 
 const Home = () => {
     const {
         register,
         handleSubmit,
-        formState: { errors }
+        formState: { errors },
+
     } = useForm<EventInsert>()
 
     const router = useRouter()
     const { showNotification } = useNotification()
 
     const [editorValue, setEditorValue] = useState<Editor | null>(null)
-    const [posterPath, setPosterPath] = useState<string | undefined>(undefined);
     const [challenges, setChallenges] = useState<Array<EventChallengeInsert>>([])
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+    const [avatarFile, setAvatarFile] = useState<File | null>(null)
     const handleCreateNewEvent = async (event: EventInsert) => {
         event.content = editorValue?.getHTML()
-        event.poster_path = posterPath
         try {
-            const data = await createEvent(event, challenges)
+            const data = await createEvent({ event, challenges, avatarFile })
             showNotification("Create event successfully")
             router.push(`/events/${data!.id}`)
         } catch (error) {
@@ -39,11 +42,71 @@ const Home = () => {
             }
         }
     }
+    const handleFileChange = (file: File) => {
+        if (file) {
+            // Tạo Blob URL cho file vừa chọn
+            const url = URL.createObjectURL(file);
+            setPreviewUrl(url);
+            setAvatarFile(file)
+        }
+    };
 
+    const handleRemoveAvatarFile = () => {
+        setPreviewUrl(null)
+        setAvatarFile(null)
+    }
     return (
         <div className="w-full min-h-screen screen-bg font-roboto-mono">
             <div className="max-w-4xl mx-auto px-6 pt-5 pb-5">
                 <form className="flex flex-col content-main-color mt-5 p-5 rounded-xl gap-5 items-start" onSubmit={handleSubmit(handleCreateNewEvent)}>
+                    <div className="w-full flex flex-col items-center">
+                        <div className="relative w-32 h-32 group">
+
+                            {/* Thẻ chứa Ảnh: Đưa overflow-hidden vào đây để bo tròn ảnh */}
+                            <div className="relative w-full h-full rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer overflow-hidden hover:border-black transition-all duration-300 bg-gray-50">
+                                {previewUrl ? (
+                                    <Image
+                                        src={previewUrl}
+                                        alt="Avatar"
+                                        fill
+                                        sizes="200px"
+                                        className="object-cover"
+                                    />
+                                ) : (
+                                    <div className="text-center p-2 text-xs text-gray-500 font-medium">
+                                        Pick an image to show
+                                    </div>
+                                )}
+
+                                {/* Input file phủ lên trên để click chọn ảnh */}
+                                <input
+                                    type="file"
+                                    className="absolute inset-0 opacity-0 cursor-pointer"
+                                    accept="image/*"
+                                    onChange={(e) => {
+                                        const files = e.target.files;
+                                        if (files && files.length > 0) {
+                                            handleFileChange(files[0]);
+                                        }
+                                    }}
+                                />
+                            </div>
+
+                            {/* Nút Clear: Bây giờ nó có thể hiển thị thoải mái bên ngoài vì cha nó không còn chặn overflow */}
+                            {previewUrl && (
+                                <button
+                                    onClick={() => handleRemoveAvatarFile()}
+                                    className="w-5 h-5 flex items-center justify-center absolute top-3 right-3 bg-black text-white rounded-full shadow-lg 
+                                 transition-colors z-20 cursor-pointer hover:bg-black/70 duration-300"
+                                    type="button"
+                                >
+                                    <ClearIcon sx={{ fontSize: 16, color: 'white' }} />
+                                </button>
+                            )}
+                        </div>
+                    </div>
+
+
                     <div className="w-full flex gap-5">
                         <div className="input-group w-full">
                             <label className="event_input_label">Title</label>

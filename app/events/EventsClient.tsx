@@ -1,19 +1,28 @@
+'use client'
 import Link from "next/link";
 import { EVENT_STATUS } from "../types/enum";
 import { Event } from "../types/event";
 import Image from "next/image";
+import { useNotification } from "../context/NotificationContext";
+import { createClient } from "../utils/supabase/client";
 
 const EventsClient = ({ events }: { events: Array<Event> }) => {
-
+    const supabase = createClient()
+    // const { showNotification } = useNotification()
+    const handleGetUrl = (imagePath: string) => {
+        const { data } = supabase.storage.from('attachments').getPublicUrl(imagePath);
+        console.log(data)
+        return data.publicUrl;
+    }
     return (
         <div className="w-full flex flex-col gap-10 mt-10 pb-10">
-            {events.map((event) => (
+            {events.map(async (event) => (
                 <Link href={`/events/${event.id}`} key={event.id}
                     className="cursor-pointer relative flex items-center h-40 rounded-[40px] shadow-xl/30 hover:shadow-[0px_0px_20px_#bebebe,-0px_-0px_20px_#ffffff] duration-300 hover:translate-y-1">
                     <div className="-translate-x-20 absolute left-0 z-10 w-40 h-40 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-200">
                         {event.poster_path ? (
                             <Image
-                                src={event.poster_path}
+                                src={handleGetUrl(event.poster_path)}
                                 alt={`poster_${event.id}`}
                                 fill
                                 className="object-cover"

@@ -1,17 +1,25 @@
-
+'use client'
 import { EVENT_STATUS } from "@/app/types/enum";
 import { Event } from "@/app/types/event";
+import { createClient } from "@/app/utils/supabase/client";
 import ReadOnlyEditor from "@/components/tiptap-templates/simple/ReadOnlyEditor";
 import Image from "next/image";
 import Link from "next/link";
 const SingleEventClient = ({ event }: { event: Event }) => {
+    const supabase = createClient()
+    // const { showNotification } = useNotification()
+    const handleGetUrl = (imagePath: string) => {
+        const { data } = supabase.storage.from('attachments').getPublicUrl(imagePath);
+        console.log(data)
+        return data.publicUrl;
+    }
     return (
         <div className="w-full flex flex-col gap-10 content-main-color rounded-xl p-5">
             <div key={event.id} className="relative flex items-center h-40">
                 <div className="-translate-x-20 absolute left-0 z-10 w-40 h-40 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-200">
                     {event.poster_path ? (
                         <Image
-                            src={event.poster_path}
+                            src={handleGetUrl(event.poster_path)}
                             alt={`poster_${event.id}`}
                             fill
                             className="object-cover"

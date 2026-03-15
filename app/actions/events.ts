@@ -7,18 +7,28 @@ import { Event, EventInsert } from '../types/event'
 import { title } from 'process'
 import { EVENT_STATUS } from '../types/enum'
 import { PostgrestError } from '@supabase/supabase-js'
+import { v4 as uuidv4 } from 'uuid';
 
-
-
-export async function createEvent(event: EventInsert, challenges: Array<EventInsert>) {
+export async function createEvent({ event, challenges, avatarFile }: { event: EventInsert, challenges: Array<EventInsert>, avatarFile: File | null }) {
     const supabase = await createClient();
 
     const { data: user } = await supabase.auth.getUser()
-
-    const { data, error }: { data: Event | null, error: PostgrestError | null } = await supabase.from("events").insert([
+    const eventId: string = uuidv4()
+    let avatarUrlPath = null
+    if (avatarFile != null) {
+        avatarUrlPath = `${eventId}/${Date.now()}-${avatarFile.name}`;
+        if (avatarUrlPath) {
+            const { error: storageError } = await supabase.storage.from('attachments').upload(avatarUrlPath, avatarFile);
+            if (storageError) {
+                throw new Error(storageError.message)
+            }
+        }
+    }
+    const { data, error }: { data: Event | null, error: PostgrestError | null } = await supabase.from("events").insert(
         {
+            id: eventId,
             title: event.title,
-            poster_path: event.poster_path,
+            poster_path: avatarUrlPath,
             short_description: event.short_description,
             content: event.content,
             location: event.location,
@@ -29,11 +39,12 @@ export async function createEvent(event: EventInsert, challenges: Array<EventIns
             status: EVENT_STATUS.ONGOING,
             owner_id: user.user?.id
         },
-    ]).select().single()
+    ).select().single()
 
     if (error) {
         throw new Error(error.message)
     }
+
 
     const updatedChallenges = challenges.map(challenge => ({
         ...challenge,
@@ -65,3 +76,4 @@ export async function getSingleEvent(id: string) {
 
     return { data, error }
 }
+
