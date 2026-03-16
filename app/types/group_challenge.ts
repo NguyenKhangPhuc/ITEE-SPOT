@@ -10,13 +10,6 @@ export type GroupChallengeWithGroupAndChallenge = {
     event_id: string | null;
     group_id: string | null;
     id: string;
-    groups: {
-        created_at: string;
-        event_id: string | null;
-        group_name: string | null;
-        id: string;
-        short_description: string | null;
-    } | null;
     event_challenges: {
         company_name: string | null;
         created_at: string;

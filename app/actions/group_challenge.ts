@@ -6,7 +6,7 @@ export async function getGroupChallenges({ groupId }: { groupId: string }) {
 
     const { data, error } = await supabase
         .from('group_challenge')
-        .select('*, groups (*), event_challenges (*)')
+        .select('*, event_challenges (*)')
         .eq('group_id', groupId)
 
     return { data, error }

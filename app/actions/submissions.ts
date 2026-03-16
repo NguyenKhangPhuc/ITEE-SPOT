@@ -8,7 +8,7 @@ export async function getGoupChallengeSubmission({ groupId, groupChallengeId }: 
 
     const { data, error } = await supabase
         .from('submissions')
-        .select('*, submission_files (*), submission_reactions (*)')
+        .select('*, submission_files (*), submission_reactions (*), submission_ratings (*)')
         .eq('group_id', groupId)
         .eq('group_challenge_id', groupChallengeId)
         .maybeSingle()
@@ -20,14 +20,31 @@ export async function getGoupChallengeSubmission({ groupId, groupChallengeId }: 
 }
 
 
+export async function getSubmissionByGroupId({ groupId }: { groupId: string }) {
+    const supabase = await createClient();
+
+    const { data, error } = await supabase
+        .from('submissions')
+        .select('*, group_challenge (id, event_challenges (company_name, title)), submission_files (*), submission_reactions (*), submission_ratings (*)')
+        .eq('group_id', groupId)
+
+    return { data, error }
+}
+
+
 export async function saveGroupChallengeSubmission({ submission, submittedFiles }: { submission: SubmissionInsert, submittedFiles: Array<SubmissionFileExtended> }) {
     const supabase = await createClient()
 
     const { data: subData, error: subError } = await supabase
         .from('submissions')
-        .update({ github_link: submission.github_link, youtube_link: submission.youtube_link, short_description: submission.short_description, description: submission.description })
-        .eq('group_id', submission.group_id!)
-        .eq('group_challenge_id', submission.group_challenge_id!)
+        .upsert({
+            github_link: submission.github_link,
+            youtube_link: submission.youtube_link,
+            short_description: submission.short_description,
+            description: submission.description,
+            group_id: submission.group_id,
+            group_challenge_id: submission.group_challenge_id,
+        }, { onConflict: 'group_id,group_challenge_id' })
         .select()
         .maybeSingle()
 

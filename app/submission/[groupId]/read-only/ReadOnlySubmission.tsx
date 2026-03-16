@@ -2,12 +2,10 @@
 import { getGoupChallengeSubmission, saveGroupChallengeSubmission } from "@/app/actions/submissions"
 import YoutubeVideo from "@/app/components/YoutubeVideo"
 import { useNotification } from "@/app/context/NotificationContext"
-import { EventChallenge } from "@/app/types/event_challenges"
-import { GroupChallengeRelation, GroupChallengeWithGroupAndChallenge } from "@/app/types/group_challenge"
-import { SubmissionInsert } from "@/app/types/submission"
-import { useState } from "react"
+import { GroupChallengeWithGroupAndChallenge } from "@/app/types/group_challenge"
+import { GroupSubmissions, SubmissionInsert } from "@/app/types/submission"
+import React, { useState } from "react"
 import { useForm } from "react-hook-form"
-import ClearIcon from '@mui/icons-material/Clear';
 import DownloadIcon from '@mui/icons-material/Download';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import { SubmissionFileExtended } from "@/app/types/submission_files"
@@ -20,10 +18,11 @@ import { User } from "@supabase/supabase-js"
 import { createReaction, deleteReaction } from "@/app/actions/submission_reaction"
 import SendIcon from '@mui/icons-material/Send';
 import PersonIcon from '@mui/icons-material/Person';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { SubmissionComment, SubmissionCommentInsert, SubmissionCommentPagination } from "@/app/types/submission_comments"
+import { SubmissionCommentInsert, SubmissionCommentPagination } from "@/app/types/submission_comments"
 import { createSubmissionComment, getSubmissionComments } from "@/app/actions/submission_comment"
-const ReadOnlySubmission = ({ groupChallenges, user }: { groupChallenges: GroupChallengeWithGroupAndChallenge, user: User }) => {
+import { createSubmissionRating, getSubmissionRatingById } from "@/app/actions/submission_ratings"
+import { SubmissionRatingInsert } from "@/app/types/submission_rating"
+const ReadOnlySubmission = ({ groupSubmissions, user }: { groupSubmissions: GroupSubmissions, user: User }) => {
     const {
         register,
         handleSubmit,
@@ -44,6 +43,7 @@ const ReadOnlySubmission = ({ groupChallenges, user }: { groupChallenges: GroupC
     const [submissionReaction, setSubmissionReaction] = useState<Array<SubmissionReaction>>([])
     const [submissionComments, setSubmissionComments] = useState<SubmissionCommentPagination | null>()
     const [showComment, setShowComment] = useState(false)
+    const [userRating, setUserRating] = useState<SubmissionRatingInsert | null>(null)
     const { showNotification } = useNotification()
 
     const handleDownloadFile = async (file: SubmissionFileExtended) => {
@@ -64,29 +64,16 @@ const ReadOnlySubmission = ({ groupChallenges, user }: { groupChallenges: GroupC
             window.open(localUrl, '_blank');
         }
     }
-
+    console.log(userRating)
     const handleChooseChallengeSubmission = async (index: number) => {
         try {
-            const data = await getGoupChallengeSubmission({ groupChallengeId: groupChallenges![index].id, groupId: groupChallenges![index].group_id! })
-            setChosenGroupChallenges(index)
-            if (data) {
-                reset(data)
-                setInitialEditorContent(data.description)
-                setSubmittedFiles(data.submission_files!)
-                setSubmissionReaction(data?.submission_reactions)
-            } else {
-                reset({
-                    id: undefined,
-                    github_link: "",
-                    youtube_link: "",
-                    short_description: "",
-                    group_challenge_id: undefined,
-                    group_id: undefined,
-                    created_at: undefined
-                })
-                setInitialEditorContent(null)
-                setSubmittedFiles([])
+            const receivedUserRating = await getSubmissionRatingById({ submissionId: groupSubmissions![index].id!, userId: user.id })
+            if (receivedUserRating) {
+                setUserRating(receivedUserRating)
+                console.log(receivedUserRating)
             }
+            setChosenGroupChallenges(index)
+            reset(groupSubmissions![index])
 
         } catch (error) {
             if (error instanceof Error) {
@@ -196,23 +183,46 @@ const ReadOnlySubmission = ({ groupChallenges, user }: { groupChallenges: GroupC
             }
         }
     }
+    const handleRating = async (value: string) => {
+        try {
+            const submissionId = getValues('id')
+            if (!submissionId) {
+                throw new Error('Please choose a challenge before reaction')
+            }
+            const upsertedRating: SubmissionRatingInsert = {
+                submission_id: submissionId,
+                user_id: user.id,
+                rating: parseInt(value),
+            }
+
+            await createSubmissionRating({ submissionRating: upsertedRating })
+            setUserRating(upsertedRating)
+            showNotification('Give a rating successfully')
+        } catch (error) {
+            if (error instanceof Error) {
+                showNotification(error.message)
+            }
+        }
+    }
     return (
         <div className="flex flex-col mt-5 content-main-color p-5 rounded-xl gap-5 items-start" >
             <div className="flex flex-col gap-4 w-full mt-4">
                 <div className="text-lg font-bold uppercase tracking-tight">Select Challenges</div>
-                <div className="grid grid-cols-2 gap-4">
-                    {groupChallenges?.map((challenge, index) => (
-                        <div key={challenge.id} className={`rounded-xl group relative cursor-pointer duration-300 ${chosenGroupChallenges == index ? 'shadow-xl/30 translate-y-2' : ''}`
+                {groupSubmissions == null ? <div>
+                    No submission yet
+                </div> : <div className="grid grid-cols-2 gap-4">
+                    {groupSubmissions?.map((submission, index) => (
+                        <div key={submission.id} className={`rounded-xl group relative cursor-pointer duration-300 ${chosenGroupChallenges == index ? 'shadow-xl/30 translate-y-2' : ''}`
                         } onClick={() => handleChooseChallengeSubmission(index)}>
 
                             <div className="relative w-full p-5 border rounded-xl peer-checked:border-black peer-checked:bg-gray-50 transition-all">
-                                <div className="text-sm w-2/3 font-light">{challenge.event_challenges?.company_name}</div>
-                                <h4 className="font-bold w-2/3">{challenge.event_challenges?.company_name}</h4>
+                                <div className="text-sm w-2/3 font-light">{submission.group_challenge?.event_challenges?.company_name}</div>
+                                <h4 className="font-bold w-2/3">{submission.group_challenge?.event_challenges?.title}</h4>
 
                             </div>
                         </div>
                     ))}
-                </div>
+                </div>}
             </div>
             {chosenGroupChallenges != null &&
                 <>
@@ -267,7 +277,7 @@ const ReadOnlySubmission = ({ groupChallenges, user }: { groupChallenges: GroupC
                     </div>
 
                     <div className="text-lg font-bold uppercase tracking-tight">Submitted File</div>
-                    {submittedFiles?.length > 0 && (
+                    {submittedFiles?.length > 0 ? (
 
                         <div className="grid grid-cols-7 gap-4 w-full">
                             {submittedFiles.map((fileItem, index) => (
@@ -295,7 +305,21 @@ const ReadOnlySubmission = ({ groupChallenges, user }: { groupChallenges: GroupC
                             ))}
                         </div>
 
-                    )}
+                    ) : <div className="text-sm opacity-70">Student did not upload anything</div>}
+
+                    <div className="w-full flex flex-col items-start">
+                        <div className="text-lg font-bold uppercase tracking-tight">Rate the project</div>
+                        <div className="rating">
+                            {[5, 4, 3, 2, 1].map((num) => {
+                                return <React.Fragment key={`star ${num}`}>
+                                    <input value={num} name="rate" id={`start${num}`} type="radio" onChange={(e) => handleRating(e.target.value)}
+                                        checked={userRating?.rating == num}
+                                    />
+                                    <label title="text" htmlFor={`start${num}`} ></label>
+                                </React.Fragment>
+                            })}
+                        </div>
+                    </div>
                     <div className="w-full flex h-10 border border-gray-400 rounded-lg">
                         <div
                             className="w-1/2 flex justify-center h-full items-center cursor-pointer hover:bg-gray-100 border-r border-gray-300 gap-2 transition-colors duration-300"
