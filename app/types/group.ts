@@ -1,5 +1,7 @@
 import { Database } from "./database.types";
+import { UNIVERSITY, YEAR } from "./enum";
 import { Event, EventInsert } from "./event";
+import { Profile } from "./profile";
 
 export type Group = Database["public"]["Tables"]["groups"]["Row"]
 
@@ -33,11 +35,7 @@ export type EventGroups = {
     short_description: string | null;
     group_members: {
         member_id: string | null;
-        profiles: {
-            email: string | null;
-            full_name: string | null;
-            id: string;
-        } | null;
+        profiles: Profile | null;
     }[];
     group_challenge: {
         challenge_id: string | null;

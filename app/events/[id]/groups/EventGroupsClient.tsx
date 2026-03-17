@@ -1,14 +1,175 @@
 'use client'
 
-import { EVENT_STATUS } from "@/app/types/enum"
-import { Event } from "@/app/types/event"
+import { DEGREE, EVENT_STATUS, PROGRAMME } from "@/app/types/enum"
+import { Event, EventWithChallenges } from "@/app/types/event"
 import { Group, GroupInfo, EventGroups } from "@/app/types/group"
 import Link from "next/link"
+import { useState } from "react"
+import { useForm } from "react-hook-form"
+import ClearIcon from '@mui/icons-material/Clear';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
 
-const EventGroupsClient = ({ event, eventGroups }: { event: Event, eventGroups: EventGroups }) => {
+interface Filter {
+    challenges: Array<string>
+    programmes: Array<string>,
+    degrees: Array<string>
+}
+
+const EventGroupsClient = ({ event, eventGroups }: { event: EventWithChallenges, eventGroups: EventGroups }) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const [groups, setGroups] = useState(eventGroups)
+    const { register, handleSubmit, reset } = useForm<Filter>({
+        defaultValues: {
+            challenges: [],
+            programmes: [],
+            degrees: [],
+        }
+    });
+    const onSubmit = (data: Filter) => {
+        console.log(data)
+        if (data.challenges.length == 0 && data.degrees.length == 0 && data.programmes.length == 0) {
+            setGroups(eventGroups)
+        } else {
+            const filteredGroups = eventGroups?.filter((group) => {
+                console.log()
+                const matchChallenge = data.challenges.length === 0 ? true :
+                    group.group_challenge.some((ele) => data.challenges.includes(ele.event_challenges?.title ?? ""));
+
+                // 2. Logic cho Degrees
+                const matchDegree = data.degrees.length === 0 ? true :
+                    group.group_members.some((mem) => data.degrees.includes(mem.profiles?.degree ?? ""));
+
+                // 3. Logic cho Programmes
+                const matchProgramme = data.programmes.length === 0 ? true :
+                    group.group_members.some((mem) => data.programmes.includes(mem.profiles?.programme ?? ""));
+
+                return matchChallenge && matchDegree && matchProgramme;
+            }) ?? []
+
+            setGroups(filteredGroups)
+
+        }
+        setIsOpen(false);
+    };
+
+    const handleResetFilter = () => {
+        reset()
+        setGroups(eventGroups)
+        setIsOpen(false)
+    }
     return (
         <div className="w-full flex flex-col gap-8 mt-5  min-h-screen">
-            {eventGroups?.map((item, index) => (
+            <button
+                onClick={() => setIsOpen(true)}
+                className="w-40 h-10 bg-black text-white border-4 border-white rounded-xl 
+                cursor-pointer hover:bg-white hover:text-black duration-300 flex gap-5 items-center justify-center font-bold"
+            >
+                Filter
+                <FilterAltIcon />
+            </button>
+            {isOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+                    <form
+                        onSubmit={handleSubmit(onSubmit)}
+                        className="bg-white w-[100%] max-w-2xl p-6 rounded-xl shadow-2xl relative animate-in fade-in zoom-in duration-300"
+                    >
+
+                        <button
+                            type="button"
+                            onClick={() => setIsOpen(false)}
+                            className="absolute top-4 right-4 p-1 rounded-full hover:bg-gray-100 transition-colors"
+                        >
+                            <ClearIcon />
+                        </button>
+
+                        <h2 className="text-xl font-bold mb-6">Filter</h2>
+
+
+                        <div className="mb-6">
+                            <label className="block font-semibold mb-3 text-gray-700">Challenges</label>
+                            <div className="flex flex-wrap gap-4">
+                                {event.event_challenges.map((challenge) => (
+                                    <div key={challenge.id} className="flex items-center gap-2">
+                                        <label className="checkbox_container">
+                                            <input
+                                                type="checkbox"
+                                                value={challenge.title ?? ""}
+                                                {...register('challenges')}
+                                            />
+                                            <div className="checkmark"></div>
+                                        </label>
+                                        <span className="text-sm">{challenge.title}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <hr className="my-4 border-gray-100" />
+
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+                            <div>
+                                <label className="block font-semibold mb-3 text-gray-700">Programme</label>
+                                <div className="space-y-2">
+                                    {Object.values(PROGRAMME).map((prog) => (
+                                        <div key={prog} className="flex items-start gap-3 w-full">
+                                            <div className="flex-shrink-0 mt-0.5">
+                                                <label className="checkbox_container">
+                                                    <input
+                                                        type="checkbox"
+                                                        value={prog}
+                                                        {...register('programmes')}
+                                                    />
+                                                    <div className="checkmark"></div>
+                                                </label>
+                                            </div>
+                                            <span className="text-sm break-words">{prog}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Degree Section */}
+                            <div>
+                                <label className="block font-semibold mb-3 text-gray-700">Degree</label>
+                                <div className="space-y-2">
+                                    {Object.values(DEGREE).map((uni) => (
+                                        <div key={uni} className="flex items-center gap-2">
+                                            <label className="checkbox_container">
+                                                <input
+                                                    type="checkbox"
+                                                    value={uni}
+                                                    {...register('degrees')}
+                                                />
+                                                <div className="checkmark"></div>
+                                            </label>
+                                            <span className="text-sm">{uni}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="mt-8 flex justify-end gap-3">
+                            <button
+                                type="button"
+                                onClick={() => handleResetFilter()}
+                                className="px-4 py-2 text-sm font-medium text-black hover:opacity-70 border-4 border-black rounded-xl duration-300 cursor-pointer"
+                            >
+                                Reset
+                            </button>
+                            <button
+                                type="submit"
+                                className="px-6 py-2 bg-black text-color rounded-lg font-medium hover:bg-black/80 duration-300 cursor-pointer"
+                            >
+                                Apply Filter
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            )}
+            {groups?.map((item, index) => (
                 <Link
                     href={`/submission/${item.id}/read-only`}
                     key={`groups_event ${index}`}
@@ -86,7 +247,6 @@ const EventGroupsClient = ({ event, eventGroups }: { event: Event, eventGroups: 
                         See their submission
                     </div>
                 </Link>
-
             ))}
 
         </div>

@@ -37,6 +37,6 @@ export enum YEAR {
 
 export enum DEGREE {
     BACHELOR = 'Bachelor',
-    MASTER = 'MASTER',
+    MASTER = 'Master',
     PHD = 'Ph.D'
 }
