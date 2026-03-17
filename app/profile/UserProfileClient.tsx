@@ -1,7 +1,7 @@
 'use client'
 import { updateProfile } from "../actions/profiles"
 import { useNotification } from "../context/NotificationContext"
-import { PROGRAMME, UNIVERSITY } from "../types/enum"
+import { DEGREE, PROGRAMME, UNIVERSITY, YEAR } from "../types/enum"
 import { Profile, ProfileInsert } from "../types/profile"
 import { useForm } from "react-hook-form"
 
@@ -105,6 +105,44 @@ const UserProfileClient = ({ user }: { user: Profile }) => {
                         >
                             <option value="">Pick an option</option>
                             {Object.values(PROGRAMME).map((prog) => (
+                                <option key={prog} value={prog}>{prog}</option>
+                            ))}
+                        </select>
+                        {errors.programme && (
+                            <p className="text-red-500 text-sm mt-1">
+                                {errors.programme.message}
+                            </p>
+                        )}
+                    </div>
+                </div>
+
+                <div className="flex gap-5 w-full">
+                    <div className="input-group w-1/2">
+                        <label className="event_input_label block mb-1">Your Degree</label>
+                        <select
+                            {...register('degree')}
+                            className="event_input outline-none w-full h-[40px] bg-white border border-gray-300 rounded px-2"
+                        >
+                            <option value="">Pick an option</option>
+                            {Object.values(DEGREE).map((uni) => (
+                                <option key={uni} value={uni}>{uni}</option>
+                            ))}
+                        </select>
+                        {errors.university && (
+                            <p className="text-red-500 text-sm mt-1">
+                                {errors.university.message}
+                            </p>
+                        )}
+                    </div>
+
+                    <div className="input-group w-1/2">
+                        <label className="event_input_label block mb-1">You&apos;re in year</label>
+                        <select
+                            {...register('year')}
+                            className="event_input outline-none w-full h-[40px] bg-white border border-gray-300 rounded px-2"
+                        >
+                            <option value="">Pick an option</option>
+                            {Object.values(YEAR).map((prog) => (
                                 <option key={prog} value={prog}>{prog}</option>
                             ))}
                         </select>

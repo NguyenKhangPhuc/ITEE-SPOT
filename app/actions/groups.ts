@@ -38,7 +38,7 @@ export async function getEventGroups(eventId: string) {
     const supabase = await createClient();
 
     const { data, error } = await supabase.from('groups')
-        .select('*, group_members(member_id, profiles (email,full_name,id)), group_challenge(challenge_id, event_challenges (company_name, title))')
+        .select('*, group_members(member_id, profiles (*)), group_challenge(challenge_id, event_challenges (company_name, title))')
         .eq('event_id', eventId)
 
     return { data, error }

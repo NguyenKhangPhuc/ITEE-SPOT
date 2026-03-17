@@ -288,32 +288,38 @@ export type Database = {
         Row: {
           avatar_url: string | null
           company_name: string | null
+          degree: Database["public"]["Enums"]["DEGREE"] | null
           email: string | null
           full_name: string | null
           id: string
           programme: Database["public"]["Enums"]["PROGRAMME"] | null
           role: Database["public"]["Enums"]["PROFILE_ROLE"] | null
           university: Database["public"]["Enums"]["UNIVERSITY"] | null
+          year: Database["public"]["Enums"]["YEAR"] | null
         }
         Insert: {
           avatar_url?: string | null
           company_name?: string | null
+          degree?: Database["public"]["Enums"]["DEGREE"] | null
           email?: string | null
           full_name?: string | null
           id: string
           programme?: Database["public"]["Enums"]["PROGRAMME"] | null
           role?: Database["public"]["Enums"]["PROFILE_ROLE"] | null
           university?: Database["public"]["Enums"]["UNIVERSITY"] | null
+          year?: Database["public"]["Enums"]["YEAR"] | null
         }
         Update: {
           avatar_url?: string | null
           company_name?: string | null
+          degree?: Database["public"]["Enums"]["DEGREE"] | null
           email?: string | null
           full_name?: string | null
           id?: string
           programme?: Database["public"]["Enums"]["PROGRAMME"] | null
           role?: Database["public"]["Enums"]["PROFILE_ROLE"] | null
           university?: Database["public"]["Enums"]["UNIVERSITY"] | null
+          year?: Database["public"]["Enums"]["YEAR"] | null
         }
         Relationships: []
       }
@@ -538,6 +544,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      DEGREE: "Bachelor" | "Master" | "Ph.D"
       EVENT_STATUS: "ongoing" | "finished"
       INVITATION_STATUS: "pending" | "rejected" | "accepted"
       PROFILE_ROLE: "admin" | "student" | "judge"
@@ -547,6 +554,7 @@ export type Database = {
         | "Computer Science and Engineering"
         | "Biomedical Engineering"
       UNIVERSITY: "University of Oulu" | "Oulu University of Applied Science"
+      YEAR: "First Year" | "Second Year" | "Third Year" | "Fourth Year"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -677,6 +685,7 @@ export const Constants = {
   },
   public: {
     Enums: {
+      DEGREE: ["Bachelor", "Master", "Ph.D"],
       EVENT_STATUS: ["ongoing", "finished"],
       INVITATION_STATUS: ["pending", "rejected", "accepted"],
       PROFILE_ROLE: ["admin", "student", "judge"],
@@ -687,6 +696,7 @@ export const Constants = {
         "Biomedical Engineering",
       ],
       UNIVERSITY: ["University of Oulu", "Oulu University of Applied Science"],
+      YEAR: ["First Year", "Second Year", "Third Year", "Fourth Year"],
     },
   },
 } as const

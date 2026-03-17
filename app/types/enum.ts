@@ -28,3 +28,15 @@ export enum PROGRAMME {
     BE = 'Biomedical Engineering'
 }
 
+export enum YEAR {
+    FIRST = 'First Year',
+    SECOND = 'Second Year',
+    THIRD = 'Third Year',
+    FOURTH = 'Fourth Year'
+}
+
+export enum DEGREE {
+    BACHELOR = 'Bachelor',
+    MASTER = 'MASTER',
+    PHD = 'Ph.D'
+}

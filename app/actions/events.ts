@@ -72,7 +72,7 @@ export async function getAllEvents() {
 export async function getSingleEvent(id: string) {
     const supabase = await createClient();
 
-    const { data, error } = await supabase.from("events").select("*").eq("id", id).single();
+    const { data, error } = await supabase.from("events").select("*, event_challenges (*)").eq("id", id).single();
 
     return { data, error }
 }
