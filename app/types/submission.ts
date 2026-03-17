@@ -20,4 +20,27 @@ export type GroupSubmissions = {
             title: string | null;
         } | null;
     } | null;
+    submission_files: {
+        created_at: string;
+        group_id: string | null;
+        id: string;
+        mime_type: string | null;
+        original_file_name: string | null;
+        size: number | null;
+        storage_path: string | null;
+        submission_id: string | null;
+    }[];
+    submission_reactions: {
+        created_at: string;
+        id: string;
+        submission_id: string | null;
+        user_id: string | null;
+    }[];
+    submission_ratings: {
+        created_at: string;
+        id: string;
+        rating: number | null;
+        submission_id: string | null;
+        user_id: string | null;
+    }[];
 }[] | null

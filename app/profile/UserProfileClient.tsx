@@ -124,7 +124,6 @@ const UserProfileClient = ({ user }: { user: Profile }) => {
                         Save profile
                     </button>
                 </div>
-
             </form>
         </div>
     )

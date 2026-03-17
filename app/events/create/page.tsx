@@ -78,7 +78,6 @@ const Home = () => {
                                     </div>
                                 )}
 
-                                {/* Input file phủ lên trên để click chọn ảnh */}
                                 <input
                                     type="file"
                                     className="absolute inset-0 opacity-0 cursor-pointer"
@@ -92,7 +91,6 @@ const Home = () => {
                                 />
                             </div>
 
-                            {/* Nút Clear: Bây giờ nó có thể hiển thị thoải mái bên ngoài vì cha nó không còn chặn overflow */}
                             {previewUrl && (
                                 <button
                                     onClick={() => handleRemoveAvatarFile()}

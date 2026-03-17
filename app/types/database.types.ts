@@ -210,6 +210,7 @@ export type Database = {
           event_id: string | null
           group_name: string | null
           id: string
+          poster_path: string | null
           short_description: string | null
         }
         Insert: {
@@ -217,6 +218,7 @@ export type Database = {
           event_id?: string | null
           group_name?: string | null
           id?: string
+          poster_path?: string | null
           short_description?: string | null
         }
         Update: {
@@ -224,6 +226,7 @@ export type Database = {
           event_id?: string | null
           group_name?: string | null
           id?: string
+          poster_path?: string | null
           short_description?: string | null
         }
         Relationships: [

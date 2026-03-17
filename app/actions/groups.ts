@@ -43,3 +43,41 @@ export async function getEventGroups(eventId: string) {
 
     return { data, error }
 }
+
+export async function updateGroupPosterPath({ groupId, avatarFile, originalPath }: { groupId: string, avatarFile: File | null, originalPath: string | null }) {
+    const supabase = await createClient();
+    let avatarUrlPath = null
+    if (avatarFile != null) {
+        avatarUrlPath = `${groupId}/${Date.now()}-${avatarFile.name}`;
+
+        const { error: storageError } = await supabase.storage.from('attachments').upload(avatarUrlPath, avatarFile);
+        if (storageError) {
+            throw new Error(storageError.message)
+        }
+
+        if (originalPath != null || originalPath != "") {
+            const { error: storageError } = await supabase.storage.from('attachments').remove([originalPath!]);
+            if (storageError) {
+                throw new Error(storageError.message)
+            }
+        }
+
+        const { data, error } = await supabase.from('groups').update({ poster_path: avatarUrlPath }).eq('id', groupId)
+        if (error) {
+            throw new Error(error.message)
+        }
+        return data
+    }
+
+    if (originalPath != null || originalPath != "") {
+        const { error: storageError } = await supabase.storage.from('attachments').remove([originalPath!]);
+        if (storageError) {
+            throw new Error(storageError.message)
+        }
+    }
+    const { data, error } = await supabase.from('groups').update({ poster_path: null }).eq('id', groupId)
+    if (error) {
+        throw new Error(error.message)
+    }
+    return data
+}
