@@ -40,6 +40,12 @@ const NavBar = ({ initialUser }: { initialUser: User | null }) => {
                             Events
                         </Link>
                         <Link
+                            href="/invitations"
+                            className="px-3 py-1.5 rounded-md hover:bg-white/10 transition-colors duration-200"
+                        >
+                            Invitations
+                        </Link>
+                        <Link
                             href={`/groups`}
                             className="px-3 py-1.5 rounded-md hover:bg-white/10 transition-colors duration-200"
                         >

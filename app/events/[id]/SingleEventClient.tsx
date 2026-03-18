@@ -75,13 +75,15 @@ const SingleEventClient = ({ event, user }: { event: Event, user: Profile }) => 
             </div>
             <hr className="border-black/30" />
             <div className="flex gap-5">
-                <Link href={`/register/${event.id}`} className="transition duration-300 ease-in-out cursor-pointer w-40 h-13 bg-black hover:bg-black/80 hover:scale-105 border rounded-[10px] flex items-center justify-center text-white">
+                <Link href={`/register/${event.id}`} className="transition duration-300 ease-in-out cursor-pointer 
+                w-40 h-13 bg-black hover:bg-black/80 hover:scale-105 border rounded-[10px] flex items-center justify-center text-white">
                     Register
                 </Link>
                 {user?.role == PROFILE_ROLE.JUDGES || user?.role == PROFILE_ROLE.ADMIN &&
 
-                    <Link href={`/events/${event.id}/groups`} className="transition duration-300 ease-in-out cursor-pointer
-                     p-5 text-center w-60 h-13 bg-black hover:bg-black/80 hover:scale-105 border rounded-[10px] flex items-center justify-center text-white">
+                    <Link href={`/events/${event.id}/groups`} className="duration-300 cursor-pointer text-black
+                     p-5 text-center w-60 h-13 border-4 border-black bg-white hover:bg-black
+                     hover:scale-105 rounded-[10px] flex items-center justify-center ">
                         View all groups
                     </Link>}
             </div>
