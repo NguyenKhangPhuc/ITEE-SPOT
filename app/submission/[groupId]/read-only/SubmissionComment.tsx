@@ -31,6 +31,7 @@ const SubmissionComment = ({ getValues, user }: SubmissionCommentProps) => {
     const { showNotification } = useNotification()
     const [submissionComments, setSubmissionComments] = useState<SubmissionCommentPagination | null>()
     const [showComment, setShowComment] = useState(false)
+    const [chosenPage, setChosenPage] = useState(1)
     const handleShowComment = async () => {
         try {
             const submissionId = getValues('id')
@@ -40,6 +41,7 @@ const SubmissionComment = ({ getValues, user }: SubmissionCommentProps) => {
             const { data, totalPages } = await getSubmissionComments({ submissionId, page: 1 })
             setShowComment(true)
             setSubmissionComments({ submissionComments: data, totalPages })
+            console.log(data, totalPages)
         } catch (error) {
             if (error instanceof Error) {
                 showNotification(error.message)
@@ -49,10 +51,10 @@ const SubmissionComment = ({ getValues, user }: SubmissionCommentProps) => {
 
     const handleCreateComment = async (data: SubmissionCommentInsert) => {
         try {
-            const foundComment = submissionComments?.submissionComments.findIndex((ele) => ele.user_id == user.id)
-            if (foundComment != -1) {
-                throw new Error('You have already comment to the post')
-            }
+            // const foundComment = submissionComments?.submissionComments.findIndex((ele) => ele.user_id == user.id)
+            // if (foundComment != -1) {
+            //     throw new Error('You have already comment to the post')
+            // }
             const submissionId = getValues('id')
             if (!submissionId) {
                 throw new Error('Please choose a challenge before reaction')
@@ -63,6 +65,23 @@ const SubmissionComment = ({ getValues, user }: SubmissionCommentProps) => {
             if (newComment) {
                 setSubmissionComments({ submissionComments: [...submissionComments?.submissionComments ?? [], newComment], totalPages: submissionComments?.totalPages ?? 0 });
             }
+        } catch (error) {
+            if (error instanceof Error) {
+                showNotification(error.message)
+            }
+        }
+    }
+
+    const handleChoosePage = async (page: number) => {
+        try {
+            const submissionId = getValues('id')
+            if (!submissionId) {
+                throw new Error('Please choose a challenge before reaction')
+            }
+            const { data, totalPages } = await getSubmissionComments({ submissionId, page })
+            setSubmissionComments({ submissionComments: data, totalPages })
+            setChosenPage(page)
+            console.log(data, totalPages)
         } catch (error) {
             if (error instanceof Error) {
                 showNotification(error.message)
@@ -82,7 +101,7 @@ const SubmissionComment = ({ getValues, user }: SubmissionCommentProps) => {
                 <div className="w-full flex flex-col gap-6 ">
 
                     <form className="flex flex-col gap-2" onSubmit={handleSubmitComment(handleCreateComment)}>
-                        <div className="flex flex-row items-end gap-2 ">
+                        <div className="flex md:flex-row flex-col md:items-end gap-2 ">
 
                             <div className="input-group flex-1 relative">
                                 <label className="event_input_label">Content</label>
@@ -90,14 +109,14 @@ const SubmissionComment = ({ getValues, user }: SubmissionCommentProps) => {
                                     autoComplete="off"
                                     placeholder="Write your comment"
                                     id="comment"
-                                    className="event_input outline-none w-full h-[40px] px-3 border border-gray-300 rounded placeholder:font-bold bg-gray-50 cursor-not-allowed"
+                                    className="event_input outline-none w-full h-[40px] px-3 border border-gray-300 rounded placeholder:font-bold bg-gray-500"
                                     type="text"
                                     {...commentRegister('content', {
                                         required: "Content is required",
                                     })}
                                 />
                                 {commentErrors.content && (
-                                    <p className="text-red-500 text-sm mt-1 absolute top-[100%] left-0">
+                                    <p className="text-red-500 text-sm mt-1 md:absolute top-[100%] left-0">
                                         {commentErrors.content.message}
                                     </p>
                                 )}
@@ -140,9 +159,18 @@ const SubmissionComment = ({ getValues, user }: SubmissionCommentProps) => {
                                 </div>
 
                                 <div className="flex flex-col min-w-0">
-                                    <div className="flex items-center">
+                                    <div className="flex flex-col justify-center">
                                         <span className="font-bold text-sm text-gray-900">
                                             {comment.display_name}
+                                        </span>
+                                        <span className="text-[10px] text-gray-500 opacity-50 leading-none mt-0.5">
+                                            {comment.created_at ? new Date(comment.created_at).toLocaleString('fi-FI', {
+                                                hour: '2-digit',
+                                                minute: '2-digit',
+                                                day: '2-digit',
+                                                month: '2-digit',
+                                                year: 'numeric'
+                                            }) : 'Vừa xong'}
                                         </span>
                                     </div>
                                     <div className="flex flex-wrap text-gray-700 text-sm mt-1 bg-gray-100 p-2 rounded-lg break-all">
@@ -152,6 +180,45 @@ const SubmissionComment = ({ getValues, user }: SubmissionCommentProps) => {
                             </div>
                         ))}
                     </div>
+                    <div className="flex items-center gap-2">
+                        {Array.from({ length: submissionComments?.totalPages ?? 0 }, (_, i) => i + 1).map((page, index) => {
+                            const isFirst = page === 1;
+                            const isLast = page === submissionComments?.totalPages;
+                            const isAdjacent = Math.abs(page - chosenPage) <= 1;
+
+                            if (isFirst || isLast || isAdjacent) {
+                                return (
+                                    <button
+                                        key={page}
+                                        onClick={() => handleChoosePage(page)}
+                                        className={`w-10 h-10 border border-black flex items-center 
+                                            justify-center transition-colors duration-300 font-medium cursor-pointer
+                                                ${page === chosenPage
+                                                ? "bg-black text-white"
+                                                : "bg-white text-black hover:bg-black hover:text-white"}
+                                        `}
+                                    >
+                                        {page}
+                                    </button>
+                                );
+                            }
+
+
+                            if (
+                                (page === chosenPage - 2 && page > 1) ||
+                                (page === chosenPage + 2 && page < (submissionComments?.totalPages ?? 0))
+                            ) {
+                                return (
+                                    <span key={page} className="w-10 h-10 flex items-center justify-center text-black font-bold">
+                                        ...
+                                    </span>
+                                );
+                            }
+
+                            return null;
+                        })}
+                    </div>
+
                 </div>
             }
         </>

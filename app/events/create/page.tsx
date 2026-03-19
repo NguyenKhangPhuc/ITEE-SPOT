@@ -60,17 +60,17 @@ const Home = () => {
             <div className="max-w-4xl mx-auto px-6 pt-5 pb-5">
                 <form className="flex flex-col content-main-color mt-5 p-5 rounded-xl gap-5 items-start" onSubmit={handleSubmit(handleCreateNewEvent)}>
                     <div className="w-full flex flex-col items-center">
-                        <div className="relative w-32 h-32 group">
-
-                            {/* Thẻ chứa Ảnh: Đưa overflow-hidden vào đây để bo tròn ảnh */}
+                        <div className="relative w-40 h-40 group">
                             <div className="relative w-full h-full rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer overflow-hidden hover:border-black transition-all duration-300 bg-gray-50">
                                 {previewUrl ? (
                                     <Image
                                         src={previewUrl}
                                         alt="Avatar"
-                                        fill
+                                        width={200}
+                                        height={200}
                                         sizes="200px"
-                                        className="object-cover"
+
+                                        className="object-cover rounded-full "
                                     />
                                 ) : (
                                     <div className="text-center p-2 text-xs text-gray-500 font-medium">
@@ -120,10 +120,11 @@ const Home = () => {
                             )}
                         </div>
                     </div>
-                    <div className="w-full flex gap-5">
-                        <div className="input-group w-1/2">
+                    <div className="grid grid-cols-2 gap-5 w-full">
+                        <div className="input-group w-full">
                             <label className="event_input_label">Start Date</label>
-                            <input autoComplete="off" placeholder="Start Date" id="StartDate" className="event_input outline-none w-full  h-[40px] placeholder:font-bold " type="date"
+                            <input autoComplete="off" placeholder="Start Date" id="StartDate"
+                                className="event_input outline-none w-full  h-[40px] placeholder:font-bold " type="date"
                                 {...register('start_date', {
                                     required: "Start date is required",
                                 })}
@@ -134,7 +135,7 @@ const Home = () => {
                                 </p>
                             )}
                         </div>
-                        <div className="input-group w-1/2">
+                        <div className="input-group w-full">
                             <label className="event_input_label">End Date</label>
                             <input autoComplete="off" id="EndDate" placeholder="End Date" className="event_input outline-none w-full  h-[40px] placeholder:font-bold" type="date"
                                 {...register('end_date', {
@@ -147,9 +148,8 @@ const Home = () => {
                                 </p>
                             )}
                         </div>
-                    </div>
-                    <div className="w-full flex gap-5">
-                        <div className="input-group w-1/2">
+
+                        <div className="input-group w-full">
                             <label className="event_input_label">Location</label>
                             <input autoComplete="off" placeholder="Location" id="Location" className="event_input outline-none w-full  h-[40px] placeholder:font-bold " type="text"
                                 {...register('location', {
@@ -162,9 +162,10 @@ const Home = () => {
                                 </p>
                             )}
                         </div>
-                        <div className="input-group w-1/2">
+                        <div className="input-group w-full">
                             <label className="event_input_label">Organized Date</label>
-                            <input autoComplete="off" id="OrganizedDate" placeholder="Organized Date" className="event_input outline-none w-full  h-[40px] placeholder:font-bold" type="datetime-local"
+                            <input autoComplete="off" id="OrganizedDate"
+                                placeholder="Organized Date" className="event_input outline-none w-full  h-[40px] placeholder:font-bold" type="datetime-local"
                                 {...register('organized_date', {
                                     required: "Organized Date is required",
                                 })}
@@ -213,7 +214,7 @@ const Home = () => {
                             </p>
                         )}
                     </div>
-                    <div className="shadow-xl/30 inset-shadow-sm rounded-xl ">
+                    <div className="w-full shadow-xl/30 inset-shadow-sm rounded-xl ">
                         <SimpleEditor initialContent={null} onEditorReady={setEditorValue} />
                     </div>
                     <button

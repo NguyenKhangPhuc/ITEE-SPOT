@@ -63,7 +63,7 @@ const RegisterClient = ({ event, user, challenges }: { event: Event, user: User,
             <div className="flex flex-col gap-2 w-full">
                 <div className="text-lg">Group Members</div>
                 <div className="flex flex-col gap-1">
-                    <div className="input-group w-1/2">
+                    <div className="input-group lg:w-1/2 w-full">
                         <span className="event_input_label">Member 1 (You)</span>
                         <input
                             disabled
@@ -74,7 +74,7 @@ const RegisterClient = ({ event, user, challenges }: { event: Event, user: User,
                     </div>
 
                     {otherMembers.map((num, index) => (
-                        <div className="input-group w-1/2" key={`member ${num}`}>
+                        <div className="input-group lg:w-1/2 w-full" key={`member ${num}`}>
                             <span className="event_input_label">Member {num}</span>
                             <input
                                 autoComplete="off"
@@ -110,7 +110,7 @@ const RegisterClient = ({ event, user, challenges }: { event: Event, user: User,
             </div>
             <div className="flex flex-col gap-4 w-full mt-4">
                 <div className="text-lg font-bold uppercase tracking-tight">Select Challenges</div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid lg:grid-cols-2 grid-cols-1 gap-4">
                     {challenges.map((challenge) => (
                         <div key={challenge.id} className="group relative cursor-pointer">
 

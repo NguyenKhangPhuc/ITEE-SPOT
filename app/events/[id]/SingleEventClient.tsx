@@ -20,18 +20,23 @@ const SingleEventClient = ({ event, user }: { event: Event, user: Profile }) => 
                 <div className="absolute z-10 xl:w-40 xl:h-40 w-35 h-35 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-200
                     top-0 left-1/2 -translate-x-1/2 -translate-y-1/2
                     xl:top-1/2 xl:left-0 xl:-translate-y-1/2 xl:-translate-x-20">
-                    {event.poster_path ? (
-                        <Image
-                            src={handleGetUrl(event.poster_path)}
-                            alt={`poster_${event.id}`}
-                            fill
-                            className="object-cover"
-                        />
-                    ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-black text-white font-bold">
-                            No Image
-                        </div>
-                    )}
+                    <div className="relative w-full h-full rounded-full 
+                                             flex items-center justify-center cursor-pointer ">
+                        {event.poster_path ? (
+                            <Image
+                                src={handleGetUrl(event.poster_path)}
+                                alt="Avatar"
+                                width={200}
+                                height={200}
+                                sizes="200px"
+                                className="object-cover rounded-full "
+                            />
+                        ) : (
+                            <div className="w-full h-full flex items-center justify-center bg-black text-white font-bold">
+                                No Image
+                            </div>
+                        )}
+                    </div>
                 </div>
 
                 <div className="xl:pt-5 pt-20 xl:pl-24 w-full h-full flex flex-col justify-center">
@@ -96,7 +101,7 @@ const SingleEventClient = ({ event, user }: { event: Event, user: Profile }) => 
                 {user?.role == PROFILE_ROLE.JUDGES || user?.role == PROFILE_ROLE.ADMIN &&
 
                     <Link href={`/events/${event.id}/groups`} className="duration-300 cursor-pointer text-black
-                     p-5 text-center w-60 h-13 border-4 border-black bg-white hover:bg-black
+                     p-5 text-center w-60 h-13 border-4 border-black bg-white 
                      hover:scale-105 rounded-[10px] flex items-center justify-center ">
                         View all groups
                     </Link>}

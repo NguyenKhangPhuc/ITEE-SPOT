@@ -141,7 +141,7 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
         <form className="flex flex-col mt-5 p-5 gap-5 items-start content-main-color rounded-xl" onSubmit={handleSubmit(handleSaveSubmission)}>
             <div className="flex flex-col gap-4 w-full mt-4">
                 <div className="text-lg font-bold uppercase tracking-tight">Select Challenges</div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid md:grid-cols-2 grid-cols-1 gap-4">
                     {eventChallenges.map((challenge, index) => (
                         <div key={challenge.id} className={`rounded-xl group relative cursor-pointer duration-300 ${chosenGroupChallenges == index ? 'shadow-xl/30 translate-y-2' : ''}`
                         } onClick={() => handleChooseChallengeSubmission(index)}>
@@ -226,7 +226,7 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
                     </div>
                     {submittedFiles?.length > 0 && (
 
-                        <div className="grid grid-cols-7 gap-4 w-full">
+                        <div className="grid lg:grid-cols-7 md:grid-cols-5 grid-cols-3 gap-4 w-full">
                             {submittedFiles.map((fileItem, index) => (
                                 <div
                                     key={index}

@@ -116,23 +116,23 @@ const SingleGroupClient = ({ groupInfo, currentUser }: { groupInfo: GroupInfo, c
         <div className="w-full flex flex-col mt-5 gap-5 content-main-color shadow-xl/30 p-5 rounded-xl">
             <form className="w-full flex-col gap-3 " onSubmit={handleSubmitGroupName(handleSaveGroupName)}>
                 <div className="w-full flex flex-col items-center gap-5">
-                    <div className="relative w-32 h-32 group">
-
+                    <div className="relative w-40 h-40 group">
                         <div className="relative w-full h-full rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer overflow-hidden hover:border-black transition-all duration-300 bg-gray-50">
                             {previewUrl ? (
                                 <Image
                                     src={previewUrl}
                                     alt="Avatar"
-                                    fill
+                                    width={200}
+                                    height={200}
                                     sizes="200px"
-                                    className="object-cover"
+
+                                    className="object-cover rounded-full "
                                 />
                             ) : (
                                 <div className="text-center p-2 text-xs text-gray-500 font-medium">
                                     Pick an image to show
                                 </div>
                             )}
-
                             <input
                                 type="file"
                                 className="absolute inset-0 opacity-0 cursor-pointer"

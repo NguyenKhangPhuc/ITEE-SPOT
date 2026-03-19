@@ -34,7 +34,7 @@ const SubmissionFiles = ({ submittedFiles }: SubmissionFilesProps) => {
             <div className="text-lg font-bold uppercase tracking-tight">Submitted File</div>
             {submittedFiles?.length > 0 ? (
 
-                <div className="grid grid-cols-7 gap-4 w-full">
+                <div className="grid lg:grid-cols-7 md:grid-cols-5 grid-cols-3 gap-4 w-full">
                     {submittedFiles.map((fileItem, index) => (
                         <div
                             key={index}

@@ -49,7 +49,7 @@ const ReadOnlySubmission = ({ groupSubmissions, user }: { groupSubmissions: Grou
             reset(groupSubmissions![index])
             setSubmissionReaction(groupSubmissions![index].submission_reactions)
             setSubmittedFiles(groupSubmissions![index].submission_files)
-
+            setInitialEditorContent(groupSubmissions![index].description)
         } catch (error) {
             if (error instanceof Error) {
                 showNotification(error.message)
@@ -84,7 +84,7 @@ const ReadOnlySubmission = ({ groupSubmissions, user }: { groupSubmissions: Grou
                 <div className="text-lg font-bold uppercase tracking-tight">Select Challenges</div>
                 {groupSubmissions == null ? <div>
                     No submission yet
-                </div> : <div className="grid grid-cols-2 gap-4">
+                </div> : <div className="grid md:grid-cols-2 grid-cols-1 gap-4">
                     {groupSubmissions?.map((submission, index) => (
                         <div key={submission.id} className={`rounded-xl group relative cursor-pointer duration-300 ${chosenGroupChallenges == index ? 'shadow-xl/30 translate-y-2' : ''}`
                         } onClick={() => handleChooseChallengeSubmission(index)}>

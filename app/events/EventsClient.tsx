@@ -23,18 +23,24 @@ const EventsClient = ({ events }: { events: Array<Event> }) => {
                     top-0 left-1/2 -translate-x-1/2 -translate-y-1/2
                     xl:top-1/2 xl:left-0 xl:-translate-y-1/2 xl:-translate-x-20"
                     >
-                        {event.poster_path ? (
-                            <Image
-                                src={handleGetUrl(event.poster_path)}
-                                alt={`poster_${event.id}`}
-                                fill
-                                className="object-cover"
-                            />
-                        ) : (
-                            <div className="w-full h-full flex items-center justify-center bg-black text-white font-bold">
-                                No Image
-                            </div>
-                        )}
+                        <div className="relative w-full h-full rounded-full 
+                         flex items-center justify-center cursor-pointer ">
+                            {event.poster_path ? (
+                                <Image
+                                    src={handleGetUrl(event.poster_path)}
+                                    alt="Avatar"
+                                    width={200}
+                                    height={200}
+                                    sizes="200px"
+                                    className="object-cover rounded-full "
+                                />
+                            ) : (
+                                <div className="w-full h-full flex items-center justify-center bg-black text-white font-bold">
+                                    No Image
+                                </div>
+                            )}
+                        </div>
+
                     </div>
 
                     <div className="xl:pt-5 pt-20 xl:pl-24 pl-5 w-full h-full border border-black rounded-[40px]  flex flex-col justify-center pr-5 py-4 content-main-color

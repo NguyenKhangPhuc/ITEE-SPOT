@@ -261,12 +261,9 @@ export function SimpleEditor({ initialContent, onEditorReady }: { initialContent
       <EditorContext.Provider value={{ editor }}>
         <Toolbar
           ref={toolbarRef}
+          className="sticky top-0 z-50 bg-white border-b w-full flex overflow-x-auto scrollbar-hide flex-nowrap"
           style={{
-            ...(isMobile
-              ? {
-                bottom: `calc(100% - ${height - rect.y}px)`,
-              }
-              : {}),
+            // Bỏ phần tính toán style loằng ngoằng cũ đi
           }}
         >
           {mobileView === "main" ? (
