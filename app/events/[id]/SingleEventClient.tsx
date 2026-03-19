@@ -15,9 +15,11 @@ const SingleEventClient = ({ event, user }: { event: Event, user: Profile }) => 
         return data.publicUrl;
     }
     return (
-        <div className="w-full flex flex-col gap-10 content-main-color rounded-xl p-5">
-            <div key={event.id} className="relative flex items-center h-40">
-                <div className="-translate-x-20 absolute left-0 z-10 w-40 h-40 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-200">
+        <div className="xl:mt-0 mt-10 w-full flex flex-col gap-10 content-main-color rounded-xl p-5">
+            <div key={event.id} className="relative flex items-center min-h-[100px]">
+                <div className="absolute z-10 xl:w-40 xl:h-40 w-35 h-35 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-200
+                    top-0 left-1/2 -translate-x-1/2 -translate-y-1/2
+                    xl:top-1/2 xl:left-0 xl:-translate-y-1/2 xl:-translate-x-20">
                     {event.poster_path ? (
                         <Image
                             src={handleGetUrl(event.poster_path)}
@@ -32,8 +34,8 @@ const SingleEventClient = ({ event, user }: { event: Event, user: Profile }) => 
                     )}
                 </div>
 
-                <div className="w-full h-full flex flex-col justify-center pl-24 py-4 ">
-                    <div className="flex justify-between items-start mb-1 ">
+                <div className="xl:pt-5 pt-20 xl:pl-24 w-full h-full flex flex-col justify-center">
+                    <div className="flex lg:flex-row flex-col sm:w-auto w-full sm:justify-between justify-center items-center mb-2 ">
                         <h2 className="text-xl font-black uppercase tracking-tight leading-none">
                             {event.title}
                         </h2>
@@ -47,20 +49,32 @@ const SingleEventClient = ({ event, user }: { event: Event, user: Profile }) => 
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-x-4 text-sm font-bold mb-2">
+                    <div className="w-full lg:grid grid-cols-2 gap-x-4 flex sm:flex-row text-sm font-bold mb-2 flex-col items-center justify-center">
                         <div className="flex gap-1">
                             <span className="text-gray-500">Dates:</span>
-                            <span>{new Date(event.start_date!).toLocaleDateString()} - {new Date(event.end_date!).toLocaleDateString()}</span>
+                            <span className="">{new Date(event.start_date!).toLocaleDateString()} - {new Date(event.end_date!).toLocaleDateString()}</span>
                         </div>
                         <div className="flex gap-1">
                             <span className="text-gray-500">Max/Group:</span>
-                            <span>{event.max_group_members} members</span>
+                            <span className="">{event.max_group_members} members</span>
                         </div>
                     </div>
 
-                    <div className="mt-1">
+
+                    <div className="w-full lg:grid grid-cols-2 gap-x-4 flex sm:flex-row text-sm font-bold mb-2 flex-col items-center justify-center">
+                        <div className="flex gap-1">
+                            <span className="text-gray-500">Organized Date:</span>
+                            <span>{new Date(event.organized_date!).toLocaleDateString()}</span>
+                        </div>
+                        <div className=" flex gap-1">
+                            <span className="text-gray-500">Organized Date:</span>
+                            <span>{new Date(event.organized_date!).toLocaleTimeString()}</span>
+                        </div>
+                    </div>
+
+                    <div className="w-full mt-1 flex flex-col  lg:items-start justify-center items-center">
                         <p className="text-sm font-bold">Short Description</p>
-                        <p className="text-sm text-gray-800  leading-tight">
+                        <p className="text-sm text-gray-800 line-clamp-2 leading-tight w-full lg:text-start text-center">
                             {event.short_description || "Lorem ipsum dolor sit amet, consectetur adipiscing elit, esse cillum..."}
                         </p>
                     </div>

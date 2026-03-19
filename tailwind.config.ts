@@ -6,6 +6,13 @@ const config: Config = {
         "./components/**/*.{js,ts,jsx,tsx,mdx}",
     ],
     theme: {
+        screens: {
+            'iphone': '40rem', // 640px
+            'md': '48rem',     // 768px (Giữ nguyên hoặc đổi tên nếu muốn)
+            'lg': '64rem',     // 1024px
+            'ipad': '80rem',   // 1280px (Thay cho xl)
+            '2xl': '96rem',    // 1536px
+        },
         extend: {
             fontFamily: {
                 mono: ["var(--font-mono)"],
@@ -18,6 +25,7 @@ const config: Config = {
                 },
             },
         },
+
     },
     plugins: [
         typography,

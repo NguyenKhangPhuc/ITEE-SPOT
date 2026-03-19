@@ -11,7 +11,9 @@ export async function getUserGroups() {
         return { data: null, error: { message: 'Fail to verify user' } }
     }
 
-    const { data, error } = await supabase.from('group_members').select('*, groups (*, events (*))').eq('member_id', user.user.id);
+    const { data, error } = await supabase.from('groups')
+        .select('*, group_members!inner (member_id), group_challenge(challenge_id, event_challenges (company_name, title)), events(*), all_members:group_members (member_id, profiles (*))')
+        .eq('group_members.member_id', user.user.id)
 
     return { data, error }
 }

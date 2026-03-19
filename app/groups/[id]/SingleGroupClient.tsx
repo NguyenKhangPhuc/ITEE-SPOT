@@ -224,7 +224,7 @@ const SingleGroupClient = ({ groupInfo, currentUser }: { groupInfo: GroupInfo, c
                 <div className="w-full flex-col">
                     <div className="text-lg font-bold">Group Members</div>
                     {groupInfo?.group_members.map((member, index) => (
-                        <div className="input-group w-1/2" key={`member ${member.id}`}>
+                        <div className="input-group md:w-1/2 w-full" key={`member ${member.id}`}>
                             <span className="event_input_label">Member {index + 1}</span>
                             <input
                                 disabled
@@ -239,7 +239,7 @@ const SingleGroupClient = ({ groupInfo, currentUser }: { groupInfo: GroupInfo, c
                 <div className="w-full flex-col">
                     <div className="text-lg font-bold">Invite your group member</div>
                     <label className="event_input_label">New member email</label>
-                    <div className="w-full flex items-center gap-5">
+                    <div className="w-full flex md:flex-row flex-col md:items-center items-start gap-5">
                         <input placeholder="New member email" className={`event_input outline-none w-full h-[40px] font-bold opacity-70 `} type="text"
 
                             {...registerMemberInvitation('member_email', {

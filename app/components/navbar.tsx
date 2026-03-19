@@ -31,8 +31,7 @@ const NavBar = ({ initialUser }: { initialUser: User | null }) => {
                     <Link href={`/`} className="text-xl font-bold">
                         ITEE SKILLFORGE
                     </Link>
-
-                    <div className="hidden md:flex gap-6 items-center">
+                    <div className="flex gap-6 items-center">
                         <Link
                             href="/events"
                             className="px-3 py-1.5 rounded-md hover:bg-white/10 transition-colors duration-200"
@@ -57,7 +56,6 @@ const NavBar = ({ initialUser }: { initialUser: User | null }) => {
                         >
                             Profile
                         </Link>
-
                         <div className="absolute right-6 top-1/2 -translate-y-1/2">
                             {user ? (
                                 <button
@@ -75,11 +73,16 @@ const NavBar = ({ initialUser }: { initialUser: User | null }) => {
                                 </Link>
                             )}
                         </div>
+
                     </div>
                 </div>
+
             </div>
         </nav>
     )
 }
+
+
+
 
 export default NavBar
