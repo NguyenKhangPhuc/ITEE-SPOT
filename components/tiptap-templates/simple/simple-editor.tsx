@@ -1,7 +1,7 @@
 "use client"
 
 import { SetStateAction, useEffect, useRef, useState } from "react"
-import { Editor, EditorContent, EditorContext, useEditor } from "@tiptap/react"
+import { Editor, EditorContent, EditorContext, useEditor, useEditorState } from "@tiptap/react"
 
 // --- Tiptap Core Extensions ---
 import { StarterKit } from "@tiptap/starter-kit"
@@ -74,6 +74,7 @@ import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils"
 import "@/components/tiptap-templates/simple/simple-editor.scss"
 
 import content from "@/components/tiptap-templates/simple/data/content.json"
+import { CharacterCount } from '@tiptap/extensions'
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -183,7 +184,7 @@ const MobileToolbarContent = ({
   </>
 )
 
-export function SimpleEditor({ initialContent, onEditorReady }: { initialContent: string | null, onEditorReady: React.Dispatch<SetStateAction<Editor | null>> }) {
+export function SimpleEditor({ initialContent, onEditorReady, limit }: { initialContent: string | null, onEditorReady: React.Dispatch<SetStateAction<Editor | null>>, limit: number }) {
   const isMobile = useIsBreakpoint()
   const { height } = useWindowSize()
   const [mobileView, setMobileView] = useState<"main" | "highlighter" | "link">(
@@ -209,7 +210,7 @@ export function SimpleEditor({ initialContent, onEditorReady }: { initialContent
           openOnClick: false,
           enableClickSelection: true,
         },
-      }),
+      },),
       HorizontalRule,
       TextAlign.configure({ types: ["heading", "paragraph"] }),
       TaskList,
@@ -226,6 +227,9 @@ export function SimpleEditor({ initialContent, onEditorReady }: { initialContent
         limit: 3,
         upload: handleImageUpload,
         onError: (error) => console.error("Upload failed:", error),
+      }),
+      CharacterCount.configure({
+        limit,
       }),
     ],
     content: initialContent,
@@ -256,8 +260,21 @@ export function SimpleEditor({ initialContent, onEditorReady }: { initialContent
     }
   }, [isMobile, mobileView])
 
+  const editorState = useEditorState({
+    editor,
+    selector: (context): { charactersCount: number; wordsCount: number } => ({
+      charactersCount: context.editor?.storage.characterCount.characters() ?? 0,
+      wordsCount: context.editor?.storage.characterCount.words() ?? 0,
+    }),
+  })
+
+
+  const charactersCount = editorState?.charactersCount ?? 0
+  const wordsCount = editorState?.wordsCount ?? 0
+
+  const percentage = limit > 0 ? Math.round((100 / limit) * charactersCount) : 0
   return (
-    <div className="simple-editor-wrapper">
+    <div className="simple-editor-wrapper relative">
       <EditorContext.Provider value={{ editor }}>
         <Toolbar
           ref={toolbarRef}
@@ -285,6 +302,27 @@ export function SimpleEditor({ initialContent, onEditorReady }: { initialContent
           role="presentation"
           className="simple-editor-content"
         />
+        <div className={`character-count ${charactersCount === limit ? 'character-count--warning' : ''}`}>
+          <svg height="20" width="20" viewBox="0 0 20 20">
+            <circle r="10" cx="10" cy="10" fill="#e9ecef" />
+            <circle
+              r="5"
+              cx="10"
+              cy="10"
+              fill="transparent"
+              stroke="currentColor"
+              strokeWidth="10"
+              strokeDasharray={`calc(${percentage} * 31.4 / 100) 31.4`}
+              transform="rotate(-90) translate(-20)"
+            />
+            <circle r="6" cx="10" cy="10" fill="white" />
+          </svg>
+          {charactersCount} / {limit} characters
+          <br />
+          {wordsCount} words
+        </div>
+
+
       </EditorContext.Provider>
     </div>
   )

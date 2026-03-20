@@ -24,7 +24,7 @@ const GroupsClient = ({ groupsWithEvents }: { groupsWithEvents: UserGroupsWithEv
                                flex flex-col shadow-xl/10 duration-300 "
                 >
                     <div className="w-full flex justify-center items-center">
-                        <div className=" relative z-10 w-40 h-40 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-200">
+                        <div className=" relative z-10 w-40 h-40 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-800">
                             {item?.poster_path ? (
                                 <Image
                                     src={handleGetUrl(item.poster_path)}

@@ -8,20 +8,27 @@ import { SubmissionInsert } from "@/app/types/submission"
 import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor"
 import { Editor } from "@tiptap/core"
 import { useState } from "react"
-import { useForm } from "react-hook-form"
+import { useForm, useWatch } from "react-hook-form"
 import ClearIcon from '@mui/icons-material/Clear';
 import DownloadIcon from '@mui/icons-material/Download';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import { SubmissionFileExtended } from "@/app/types/submission_files"
 import { getSignedUrl } from "@/app/actions/file_url"
+import { SHORT_DESCRIPTION_LENGTH, STUDENT_SUBMISSION_DESCRIPTION } from "@/app/constants"
 const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { groupChallenges: Array<GroupChallengeRelation>, eventChallenges: Array<EventChallenge>, group_id: string }) => {
     const {
         register,
         handleSubmit,
         formState: { errors },
         reset,
-        getValues
+        getValues,
+        control
     } = useForm<SubmissionInsert>()
+    const descriptionValue = useWatch({
+        control: control,
+        name: "short_description",
+        defaultValue: "",
+    });
     const MAX_TOTAL_SIZE = 5 * 1024 * 1024;
     const [chosenGroupChallenges, setChosenGroupChallenges] = useState<number | null>(null)
     const [initialEditorContent, setInitialEditorContent] = useState<string | null>(null)
@@ -187,6 +194,7 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
                     <div className="input-group w-full ">
                         <label className="event_input_label">Short Description</label>
                         <textarea
+                            maxLength={SHORT_DESCRIPTION_LENGTH}
                             autoComplete="off"
                             placeholder="Short Description"
                             className="event_input outline-none w-full placeholder:font-bold h-[80px]"
@@ -199,9 +207,15 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
                                 {errors.short_description.message}
                             </p>
                         )}
+                        <div style={{ textAlign: 'right', marginTop: '5px', fontSize: '14px' }}>
+                            <span style={{ color: (descriptionValue?.length ?? 0) >= SHORT_DESCRIPTION_LENGTH ? 'red' : 'gray' }}>
+                                {descriptionValue?.length ?? 0}
+                            </span>
+                            /{SHORT_DESCRIPTION_LENGTH} Characters
+                        </div>
                     </div>
                     <div className="shadow-xl/30 inset-shadow-sm rounded-xl w-full">
-                        <SimpleEditor initialContent={initialEditorContent} onEditorReady={setEditorValue} />
+                        <SimpleEditor initialContent={initialEditorContent} onEditorReady={setEditorValue} limit={STUDENT_SUBMISSION_DESCRIPTION} />
                     </div>
                     <div className="relative w-full h-32 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center hover:bg-gray-50 transition-colors group">
                         <div className="text-center pointer-events-none">

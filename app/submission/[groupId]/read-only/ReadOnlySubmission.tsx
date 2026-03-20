@@ -5,7 +5,7 @@ import { useNotification } from "@/app/context/NotificationContext"
 import { GroupChallengeWithGroupAndChallenge } from "@/app/types/group_challenge"
 import { GroupSubmissions, SubmissionInsert } from "@/app/types/submission"
 import React, { useState } from "react"
-import { useForm } from "react-hook-form"
+import { useForm, useWatch } from "react-hook-form"
 import { SubmissionFileExtended } from "@/app/types/submission_files"
 import { SubmissionReaction } from "@/app/types/submission_reactions"
 import { User } from "@supabase/supabase-js"
@@ -27,9 +27,13 @@ const ReadOnlySubmission = ({ groupSubmissions, user }: { groupSubmissions: Grou
         handleSubmit,
         formState: { errors },
         reset,
-        getValues
+        getValues,
+        control
     } = useForm<SubmissionInsert>()
-
+    const descriptionValue = useWatch({
+        control: control,
+        name: "short_description",
+    });
     const [chosenGroupChallenges, setChosenGroupChallenges] = useState<number | null>(null)
     const [initialEditorContent, setInitialEditorContent] = useState<string | null>(null)
     const [submittedFiles, setSubmittedFiles] = useState<Array<SubmissionFileExtended>>([])
@@ -100,7 +104,13 @@ const ReadOnlySubmission = ({ groupSubmissions, user }: { groupSubmissions: Grou
             </div>
             {chosenGroupChallenges != null &&
                 <>
-                    <SubmissionInfo initialContent={initialEditorContent ?? ""} register={register} errors={errors} handleGetEmbeddedUrl={handleGetEmbeddedUrl} />
+                    <SubmissionInfo
+                        initialContent={initialEditorContent ?? ""}
+                        register={register}
+                        errors={errors}
+                        handleGetEmbeddedUrl={handleGetEmbeddedUrl}
+                        descriptionValue={descriptionValue ?? ""}
+                    />
 
                     <SubmissionFiles submittedFiles={submittedFiles} />
 

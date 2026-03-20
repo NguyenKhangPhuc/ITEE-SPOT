@@ -1,6 +1,7 @@
 'use client'
 
 import YoutubeVideo from "@/app/components/YoutubeVideo";
+import { SHORT_DESCRIPTION_LENGTH } from "@/app/constants";
 import ReadOnlyEditor from "@/components/tiptap-templates/simple/ReadOnlyEditor";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 
@@ -27,9 +28,10 @@ interface SubmissionInfoProps {
     }>
     handleGetEmbeddedUrl: () => string | null
     initialContent: string
+    descriptionValue: string
 }
 
-const SubmissionInfo = ({ register, errors, handleGetEmbeddedUrl, initialContent }: SubmissionInfoProps) => {
+const SubmissionInfo = ({ register, errors, handleGetEmbeddedUrl, initialContent, descriptionValue }: SubmissionInfoProps) => {
 
     return (
         <>
@@ -78,10 +80,17 @@ const SubmissionInfo = ({ register, errors, handleGetEmbeddedUrl, initialContent
                         {errors.short_description.message}
                     </p>
                 )}
+                <div style={{ textAlign: 'right', marginTop: '5px', fontSize: '14px' }}>
+                    <span style={{ color: descriptionValue.length >= SHORT_DESCRIPTION_LENGTH ? 'red' : 'gray' }}>
+                        {descriptionValue.length}
+                    </span>
+                    /{SHORT_DESCRIPTION_LENGTH} Characters
+                </div>
             </div>
             <div className="shadow-xl/30 inset-shadow-sm rounded-xl w-full p-5 cursor-not-allowed">
                 <ReadOnlyEditor content={initialContent} />
             </div>
+
         </>
     )
 }

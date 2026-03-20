@@ -1,3 +1,7 @@
 export const PAGE_SIZE = 2
 
 export const SHORT_DESCRIPTION_LENGTH = 200
+
+export const STUDENT_SUBMISSION_DESCRIPTION = 1500
+
+export const EVENT_CREATED_DESCRIPTION = 2000

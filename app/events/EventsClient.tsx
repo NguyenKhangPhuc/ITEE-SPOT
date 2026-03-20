@@ -24,7 +24,7 @@ const EventsClient = ({ events }: { events: Array<Event> }) => {
                     xl:top-1/2 xl:left-0 xl:-translate-y-1/2 xl:-translate-x-20"
                     >
                         <div className="relative w-full h-full rounded-full 
-                         flex items-center justify-center cursor-pointer ">
+                         flex items-center justify-center cursor-pointer bg-gray-800">
                             {event.poster_path ? (
                                 <Image
                                     src={handleGetUrl(event.poster_path)}

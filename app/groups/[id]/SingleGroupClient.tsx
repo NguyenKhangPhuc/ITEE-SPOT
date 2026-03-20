@@ -117,7 +117,8 @@ const SingleGroupClient = ({ groupInfo, currentUser }: { groupInfo: GroupInfo, c
             <form className="w-full flex-col gap-3 " onSubmit={handleSubmitGroupName(handleSaveGroupName)}>
                 <div className="w-full flex flex-col items-center gap-5">
                     <div className="relative w-40 h-40 group">
-                        <div className="relative w-full h-full rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer overflow-hidden hover:border-black transition-all duration-300 bg-gray-50">
+                        <div className="relative w-full h-full rounded-full border-2 border-dashed border-gray-500 
+                        flex items-center justify-center cursor-pointer overflow-hidden hover:border-black transition-all duration-300 bg-gray-50">
                             {previewUrl ? (
                                 <Image
                                     src={previewUrl}

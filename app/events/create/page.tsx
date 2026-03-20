@@ -11,6 +11,7 @@ import { Event, EventInsert } from "@/app/types/event"
 import { EventChallengeInsert } from "@/app/types/event_challenges"
 import Image from "next/image"
 import { SubmissionFileExtended } from "@/app/types/submission_files"
+import { EVENT_CREATED_DESCRIPTION } from "@/app/constants"
 
 
 const Home = () => {
@@ -61,7 +62,7 @@ const Home = () => {
                 <form className="flex flex-col content-main-color mt-5 p-5 rounded-xl gap-5 items-start" onSubmit={handleSubmit(handleCreateNewEvent)}>
                     <div className="w-full flex flex-col items-center">
                         <div className="relative w-40 h-40 group">
-                            <div className="relative w-full h-full rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer overflow-hidden hover:border-black transition-all duration-300 bg-gray-50">
+                            <div className="relative w-full h-full rounded-full border-2 border-dashed border-gray-500 flex items-center justify-center cursor-pointer overflow-hidden hover:border-black transition-all duration-300 bg-gray-50">
                                 {previewUrl ? (
                                     <Image
                                         src={previewUrl}
@@ -215,7 +216,7 @@ const Home = () => {
                         )}
                     </div>
                     <div className="w-full shadow-xl/30 inset-shadow-sm rounded-xl ">
-                        <SimpleEditor initialContent={null} onEditorReady={setEditorValue} />
+                        <SimpleEditor initialContent={null} onEditorReady={setEditorValue} limit={EVENT_CREATED_DESCRIPTION} />
                     </div>
                     <button
                         type="submit"
