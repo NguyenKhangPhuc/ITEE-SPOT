@@ -32,7 +32,9 @@ const Home = () => {
 
     return (
         <div className="w-full min-h-screen screen-bg flex justify-center items-center">
-            <form className="flex flex-col gap-2 bg-white p-8 min-w-[450px] rounded-2xl font-roboto-mono" onSubmit={handleSubmit(onSubmit)}>
+            <form className="flex flex-col gap-2 rounded-[50px] bg-[#e0e0e0] 
+                               shadow-[20px_20px_60px_#bebebe,-20px_-20px_60px_#ffffff]
+                               flex flex-col duration-300 p-8 w-[450px] rounded-2xl font-roboto-mono" onSubmit={handleSubmit(onSubmit)}>
                 <div className="flex flex-col">
                     <label className="text-[#151717] mb-1 font-semibold">Full Name</label>
                     <div className="border border-gray-200 rounded-xl h-12 flex items-center px-2 focus-within:border-blue-600 transition text-black/50">
@@ -105,7 +107,7 @@ const Home = () => {
                         <input type="checkbox" />
                         Remember me
                     </label>
-                    <span className="text-blue-600 font-medium text-sm cursor-pointer">Forgot password?</span>
+                    <Link href={`/forget-password`} className="text-blue-600 font-medium text-sm cursor-pointer">Forgot password?</Link>
                 </div>
 
                 <button className="mt-5 w-full text-white font-medium rounded-xl text-base uppercase login_btn"><i className="animation"></i>Sign Up<i className="animation"></i>
@@ -119,7 +121,7 @@ const Home = () => {
 
                 <div className="flex gap-2 mt-3 font-mono text-black">
 
-                    <div className="flex-1 cursor-pointer flex gap-2 justify-center items-center gap-2 h-12 rounded-xl border border-gray-400 bg-white font-medium transition hover:border-blue-600">
+                    <div className="cursor-pointer flex-1 cursor-pointer flex gap-2 justify-center items-center gap-2 h-12 rounded-xl border border-gray-400 bg-white font-medium transition hover:border-blue-600">
                         <GitHubIcon />
                         <div>Github</div>
                     </div>

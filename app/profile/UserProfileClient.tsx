@@ -64,15 +64,47 @@ const UserProfileClient = ({ user }: { user: Profile }) => {
                         )}
                     </div>
                     <div className="input-group w-1/2">
-                        <label className="event_input_label block mb-1">Company Name (Optional)</label>
+                        <label className="event_input_label block mb-1">Company Name</label>
                         <input
                             {...register('company_name')}
-                            className="event_input outline-none w-full h-[40px] bg-gray-100 opacity-70"
+                            className="event_input outline-none w-full h-[40px] bg-gray-100"
                             type="text"
+                            placeholder="Your company name (optional)"
                         />
                         {errors.company_name && (
                             <p className="text-red-500 text-sm mt-1">
                                 {errors.company_name.message}
+                            </p>
+                        )}
+                    </div>
+                </div>
+
+                <div className="flex gap-5 w-full">
+                    <div className="input-group w-1/2">
+                        <label className="event_input_label block mb-1">Position Title</label>
+                        <input
+                            {...register('job_title')}
+                            className="event_input outline-none w-full h-[40px] bg-gray-100 "
+                            type="text"
+                            placeholder="Your position at the company"
+                        />
+                        {errors.job_title && (
+                            <p className="text-red-500 text-sm mt-1">
+                                {errors.job_title.message}
+                            </p>
+                        )}
+                    </div>
+                    <div className="input-group w-1/2">
+                        <label className="event_input_label block mb-1">Company Unit</label>
+                        <input
+                            {...register('company_unit')}
+                            className="event_input outline-none w-full h-[40px] bg-gray-100 "
+                            type="text"
+                            placeholder="Your position unit at the company"
+                        />
+                        {errors.company_unit && (
+                            <p className="text-red-500 text-sm mt-1">
+                                {errors.company_unit.message}
                             </p>
                         )}
                     </div>
@@ -149,6 +181,36 @@ const UserProfileClient = ({ user }: { user: Profile }) => {
                         {errors.programme && (
                             <p className="text-red-500 text-sm mt-1">
                                 {errors.programme.message}
+                            </p>
+                        )}
+                    </div>
+                </div>
+                <div className="flex gap-5 w-full">
+                    <div className="input-group w-1/2">
+                        <label className="event_input_label block mb-1">Your Github</label>
+                        <input
+                            {...register('github')}
+                            className="event_input outline-none w-full h-[40px] bg-gray-100 "
+                            type="text"
+                            placeholder="Your Github profile"
+                        />
+                        {errors.github && (
+                            <p className="text-red-500 text-sm mt-1">
+                                {errors.github.message}
+                            </p>
+                        )}
+                    </div>
+                    <div className="input-group w-1/2">
+                        <label className="event_input_label block mb-1">Your LinkedIn</label>
+                        <input
+                            {...register('linkedIn')}
+                            className="event_input outline-none w-full h-[40px] bg-gray-100 "
+                            type="text"
+                            placeholder="Your LinkedIn profile"
+                        />
+                        {errors.linkedIn && (
+                            <p className="text-red-500 text-sm mt-1">
+                                {errors.linkedIn.message}
                             </p>
                         )}
                     </div>

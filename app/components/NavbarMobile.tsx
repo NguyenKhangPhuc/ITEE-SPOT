@@ -4,7 +4,7 @@ import Link from "next/link"
 import { useEffect, useState } from "react"
 import { signout } from "../actions/authentication"
 import { useNotification } from "../context/NotificationContext"
-
+import Image from "next/image"
 const NavbarMobile = ({ initialUser }: { initialUser: User | null }) => {
     const [isChecked, setIsChecked] = useState(false)
     const [user, setUser] = useState<User | null>(null)
@@ -27,10 +27,36 @@ const NavbarMobile = ({ initialUser }: { initialUser: User | null }) => {
     return (
         <div className="fixed top-0 left-0 w-full bg-black text-white z-50 font-roboto-mono">
             <div className="max-w-4xl mx-auto px-6 flex">
-                <div className="w-full flex items-center justify-between h-16">
+                <div className="w-full flex items-center justify-between h-18">
                     <Link href={`/`} className="text-xl font-bold z-100">
-                        ITEE SKILLFORGE
+                        ITEE CoLAB
                     </Link>
+                    <div className="flex items-center gap-1 h-full ">
+
+                        <div className=" relative z-10 sm:w-25 w-17 h-17 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-800 flex items-center justify-center bg-white">
+
+                            <Image
+                                src="/assets/IKAPO_logo.png"
+                                alt="ikapo"
+                                width={65}   // Kích thước mặc định (Desktop)
+                                height={100}
+                                className="w-[40px] sm:w-[65px] h-auto object-contain"
+
+                            />
+
+                        </div>
+
+                        <div className=" relative z-10 sm:w-30 w-17 h-17 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-800 flex items-center justify-center bg-white">
+
+                            <Image
+                                src="/assets/EU_LOGO.png"
+                                alt="EU Logo"
+                                width={65}   // Kích thước mặc định (Desktop)
+                                height={100}
+                                className="w-[50px] sm:w-[70px] h-auto"
+                            />
+                        </div>
+                    </div>
                     <label className="hamburger  z-100">
                         <input type="checkbox" checked={isChecked}
                             onChange={() => setIsChecked(!isChecked)} />

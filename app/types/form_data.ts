@@ -8,3 +8,10 @@ export interface SignupForm {
     email: string;
     password: string;
 }
+
+export interface ResetPasswordForm {
+    email: string,
+    otp: string,
+    newPassword: string,
+    confirmedNewPassword: string,
+}

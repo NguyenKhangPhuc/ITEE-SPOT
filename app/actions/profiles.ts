@@ -1,5 +1,6 @@
 'use server'
 
+import { ResetPasswordForm } from "../types/form_data";
 import { ProfileInsert } from "../types/profile";
 import { createClient } from "../utils/supabase/server";
 
@@ -18,4 +19,29 @@ export async function updateProfile({ profile }: { profile: ProfileInsert }) {
         throw new Error(error.message)
     }
     return data
+}
+
+export async function resetPassword(resetPasswordData: ResetPasswordForm) {
+    const supabase = await createClient()
+    const { data, error } = await supabase.auth.verifyOtp(
+        {
+            email: resetPasswordData.email,
+            token: resetPasswordData.otp,
+            type: 'email'
+        }
+    )
+    if (error) {
+        throw new Error(error.message)
+    }
+
+    if (data.session == null) {
+        throw new Error('Error occur when updating user password')
+    }
+    const { error: userError } = await supabase.auth.updateUser({ password: resetPasswordData.newPassword })
+    if (userError) {
+        throw new Error(userError.message)
+    }
+    await supabase.auth.signOut({ scope: 'global' });
+
+    return
 }

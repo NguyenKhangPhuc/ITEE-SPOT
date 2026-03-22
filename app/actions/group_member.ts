@@ -21,22 +21,22 @@ export async function insertGroupMembers(registerGroupMemberData: RegisterGroupM
         console.log(error)
         throw new Error(`Incorrect member email`)
     }
+    // Uncomment if you want user can only register one group / event
+    //     if (filteredOutEmails.length != 0) {
+    //         const { data: foundMembers, error: foundError } = await supabase
+    //             .from('group_members')
+    //             .select(`
+    //     profiles (email),
+    //     groups!inner (event_id)
+    //   `)
+    //             .eq('groups.event_id', registerGroupMemberData.event_id)
+    //             .in('profiles.email', filteredOutEmails);
 
-    if (filteredOutEmails.length != 0) {
-        const { data: foundMembers, error: foundError } = await supabase
-            .from('group_members')
-            .select(`
-    profiles (email),
-    groups!inner (event_id)
-  `)
-            .eq('groups.event_id', registerGroupMemberData.event_id)
-            .in('profiles.email', filteredOutEmails);
-
-        if (foundMembers && foundMembers.length > 0) {
-            const existingEmails = foundMembers.map(m => m.profiles?.email);
-            throw new Error(`User already register for the event: ${existingEmails.join(', ')}`);
-        }
-    }
+    //         if (foundMembers && foundMembers.length > 0) {
+    //             const existingEmails = foundMembers.map(m => m.profiles?.email);
+    //             throw new Error(`User already register for the event: ${existingEmails.join(', ')}`);
+    //         }
+    //     }
 
     const { data: createdGroup, error: groupError } = await supabase.from('groups').insert([{
         group_name: registerGroupMemberData.title,

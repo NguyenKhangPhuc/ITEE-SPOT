@@ -25,7 +25,7 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
         setNotification({ content, isOpen: true });
         setTimeout(() => {
             setNotification({ content: null, isOpen: false });
-        }, 2000)
+        }, 3000)
     }
     return (
         <NotificationContext.Provider value={{ notification, setNotification, showNotification }}>

@@ -209,11 +209,12 @@ const SingleGroupClient = ({ groupInfo, currentUser }: { groupInfo: GroupInfo, c
                         </div>
                     </div>
                 </div>
-                {disableGroupName ? <button className={`bg-black px-10 py-1 rounded-lg cursor-pointer h-full text-white hover:bg-black/80 duration-300`}
+                {disableGroupName == true && <button className={`bg-black px-10 py-1 rounded-lg cursor-pointer h-full text-white hover:bg-black/80 duration-300`}
                     type="button" onClick={() => setDisableGroupName(false)}
                 >
                     Edit
-                </button> : <button className={`bg-black px-10 py-1 rounded-lg cursor-pointer h-full text-white hover:bg-black/80 duration-300`}
+                </button>}
+                {disableGroupName == false && <button className={`bg-black px-10 py-1 rounded-lg cursor-pointer h-full text-white hover:bg-black/80 duration-300`}
                     type="submit"
                 >
                     Save

@@ -288,10 +288,14 @@ export type Database = {
         Row: {
           avatar_url: string | null
           company_name: string | null
+          company_unit: string | null
           degree: Database["public"]["Enums"]["DEGREE"] | null
           email: string | null
           full_name: string | null
+          github: string | null
           id: string
+          job_title: string | null
+          linkedIn: string | null
           programme: Database["public"]["Enums"]["PROGRAMME"] | null
           role: Database["public"]["Enums"]["PROFILE_ROLE"] | null
           university: Database["public"]["Enums"]["UNIVERSITY"] | null
@@ -300,10 +304,14 @@ export type Database = {
         Insert: {
           avatar_url?: string | null
           company_name?: string | null
+          company_unit?: string | null
           degree?: Database["public"]["Enums"]["DEGREE"] | null
           email?: string | null
           full_name?: string | null
+          github?: string | null
           id: string
+          job_title?: string | null
+          linkedIn?: string | null
           programme?: Database["public"]["Enums"]["PROGRAMME"] | null
           role?: Database["public"]["Enums"]["PROFILE_ROLE"] | null
           university?: Database["public"]["Enums"]["UNIVERSITY"] | null
@@ -312,10 +320,14 @@ export type Database = {
         Update: {
           avatar_url?: string | null
           company_name?: string | null
+          company_unit?: string | null
           degree?: Database["public"]["Enums"]["DEGREE"] | null
           email?: string | null
           full_name?: string | null
+          github?: string | null
           id?: string
+          job_title?: string | null
+          linkedIn?: string | null
           programme?: Database["public"]["Enums"]["PROGRAMME"] | null
           role?: Database["public"]["Enums"]["PROFILE_ROLE"] | null
           university?: Database["public"]["Enums"]["UNIVERSITY"] | null

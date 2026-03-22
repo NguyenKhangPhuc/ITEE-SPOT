@@ -4,6 +4,7 @@ import { User } from "@supabase/supabase-js"
 import { signout } from "../actions/authentication"
 import { useNotification } from "../context/NotificationContext"
 import { useEffect, useState } from "react"
+import Image from "next/image"
 
 const NavBar = ({ initialUser }: { initialUser: User | null }) => {
     const { showNotification } = useNotification()
@@ -27,9 +28,35 @@ const NavBar = ({ initialUser }: { initialUser: User | null }) => {
     return (
         <nav className="fixed top-0 left-0 w-full bg-black text-white z-50 font-roboto-mono">
             <div className="max-w-4xl mx-auto px-6">
-                <div className="flex items-center justify-between h-16">
-                    <Link href={`/`} className="text-xl font-bold">
-                        ITEE SKILLFORGE
+                <div className="flex items-center justify-between h-20">
+                    <div className="absolute left-2 flex items-center gap-4 h-full pointer-events-none">
+                        <div className=" relative z-10 2xl:w-25 w-17 h-17 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-800 flex items-center justify-center bg-white">
+
+                            <Image
+                                src="/assets/IKAPO_logo.png"
+                                alt="ikapo"
+                                width={65}   // Kích thước mặc định (Desktop)
+                                height={100}
+                                className="w-[50px] 2xl:w-[65px] h-auto object-contain"
+
+                            />
+
+                        </div>
+
+                        <div className=" relative z-10 2xl:w-30 w-20 h-17 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-800 flex items-center justify-center bg-white">
+
+                            <Image
+                                src="/assets/EU_LOGO.png"
+                                alt="EU Logo"
+                                width={65}   // Kích thước mặc định (Desktop)
+                                height={100}
+                                className="w-[50px] 2xl:w-[70px] h-auto"
+                            />
+
+                        </div>
+                    </div>
+                    <Link href={`/`} className="text-2xl font-bold">
+                        ITEE CoLAB
                     </Link>
                     <div className="flex gap-6 items-center">
                         <Link

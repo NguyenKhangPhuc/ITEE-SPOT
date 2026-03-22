@@ -19,7 +19,7 @@ export async function login(formData: LoginForm) {
 
     if (error) {
         console.log(error)
-        throw new Error(error.message)
+        throw new Error(error.code)
     }
 
     redirect('/')
@@ -66,4 +66,21 @@ export async function getUser() {
     const { data, error } = await supabase.auth.getUser()
 
     return { data, error }
+}
+
+export async function resendVerificationCode(email: string, origin: string) {
+    const supabase = await createClient();
+    const { data, error } = await supabase.auth.resend({
+        type: 'signup',
+        email: email,
+        options: {
+            emailRedirectTo: `${origin}/auth/callback`
+        }
+    })
+
+    if (error) {
+        throw new Error(error.message)
+    }
+
+    return data
 }

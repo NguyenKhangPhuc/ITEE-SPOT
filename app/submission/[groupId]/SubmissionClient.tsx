@@ -14,7 +14,8 @@ import DownloadIcon from '@mui/icons-material/Download';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import { SubmissionFileExtended } from "@/app/types/submission_files"
 import { getSignedUrl } from "@/app/actions/file_url"
-import { SHORT_DESCRIPTION_LENGTH, STUDENT_SUBMISSION_DESCRIPTION } from "@/app/constants"
+import { EXAMPLE_PROJECT_SUMMANRY, SHORT_DESCRIPTION_LENGTH, STUDENT_SUBMISSION_DESCRIPTION } from "@/app/constants"
+import ReadOnlyEditor from "@/components/tiptap-templates/simple/ReadOnlyEditor"
 const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { groupChallenges: Array<GroupChallengeRelation>, eventChallenges: Array<EventChallenge>, group_id: string }) => {
     const {
         register,
@@ -213,6 +214,10 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
                             </span>
                             /{SHORT_DESCRIPTION_LENGTH} Characters
                         </div>
+                    </div>
+                    <div className="shadow-xl/30 inset-shadow-sm rounded-xl w-full p-5 ">
+                        <label className="event_input_label">Example Submission Description</label>
+                        <ReadOnlyEditor content={EXAMPLE_PROJECT_SUMMANRY} />
                     </div>
                     <div className="shadow-xl/30 inset-shadow-sm rounded-xl w-full">
                         <SimpleEditor initialContent={initialEditorContent} onEditorReady={setEditorValue} limit={STUDENT_SUBMISSION_DESCRIPTION} />
