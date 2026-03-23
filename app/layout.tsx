@@ -6,6 +6,7 @@ import "./globals.css";
 import NotificationCard from "./components/Notification";
 import { NotificationProvider } from "./context/NotificationContext";
 import NavbarServer from "./components/NavbarServer";
+import BottomBar from "./components/BottomBar";
 
 const robotoMono = Roboto_Mono({
   subsets: ["latin"],
@@ -31,6 +32,7 @@ export default function RootLayout({
           <NavbarServer />
           <NotificationCard />
           <main className="mt-18 "> {children}</main>
+          <BottomBar />
         </body>
       </NotificationProvider>
 

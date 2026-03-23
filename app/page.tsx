@@ -9,7 +9,7 @@ export default function Home() {
 
 
         <h1 className="text-5xl md:text-7xl font-extrabold text-white tracking-tighter mb-2">
-          ITEE SKILLFORGE
+          ITEE CoLAB
         </h1>
 
 

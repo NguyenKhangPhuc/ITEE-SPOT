@@ -1,8 +1,9 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 import { Database } from '../types/database.types'
+import { PROFILE_ROLE } from '../types/enum'
 
-export async function submissionRoute(request: NextRequest) {
+export async function submissionReadOnlyRoute(request: NextRequest) {
     let supabaseResponse = NextResponse.next({
         request,
     })
@@ -28,21 +29,41 @@ export async function submissionRoute(request: NextRequest) {
         }
     )
     const pathname = request.nextUrl.pathname;
+    const pathnameSplitted = pathname.split('/');
     if (
-        pathname.startsWith('/submission/') && pathname.split('/').length === 3
+        pathname.startsWith('/submission/') && pathnameSplitted.length === 4 && pathnameSplitted[3] == 'read-only'
     ) {
         const groupId = pathname.split('/')[2]
-
         const { data: user, error: userError } = await supabase.auth.getUser()
         if (userError || user == null) {
             const url = request.nextUrl.clone()
             url.pathname = '/login'
             return NextResponse.redirect(url)
         }
+        const { data: userRole, error: userRoleError } = await supabase.from('profiles').select('role').eq('id', user.user.id).maybeSingle()
 
-        const { data, error } = await supabase.from('group_members').select('*').eq('group_id', groupId).eq('member_id', user.user.id).maybeSingle()
+        if (userRoleError) {
+            const url = request.nextUrl.clone()
+            url.pathname = '/events'
+            return NextResponse.redirect(url)
+        }
 
-        if (error || data == null) {
+        const { data, error } = await supabase
+            .from('groups')
+            .select('id, group_members!inner (member_id)')
+            .eq('group_members.member_id', user.user.id)
+            .eq('id', groupId)
+            .maybeSingle()
+        if (error) {
+            console.log(error)
+            const url = request.nextUrl.clone()
+            url.pathname = '/groups'
+            return NextResponse.redirect(url)
+        }
+        console.log("This is data " + data, userRole)
+
+        if (data == null && (userRole?.role != PROFILE_ROLE.ADMIN || userRole?.role != PROFILE_ROLE.ADMIN)) {
+            console.log(error)
             const url = request.nextUrl.clone()
             url.pathname = '/groups'
             return NextResponse.redirect(url)

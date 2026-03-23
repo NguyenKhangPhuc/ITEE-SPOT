@@ -4,6 +4,8 @@ import { registerRoute } from "./app/middleware/register_proxy"
 import { submissionRoute } from "./app/middleware/submission_proxy"
 import { createEventRoute } from "./app/middleware/create_event_proxy"
 import { viewAllGroups } from "./app/middleware/view_all_groups"
+import { userGroupRoute } from "./app/middleware/user_group"
+import { submissionReadOnlyRoute } from "./app/middleware/submission_read_only"
 
 
 export async function proxy(request: NextRequest) {
@@ -17,6 +19,10 @@ export async function proxy(request: NextRequest) {
     if (createEventRouteCheck.status !== 200) return createEventRouteCheck
     const viewAllGroupsEventCheck = await viewAllGroups(request)
     if (viewAllGroupsEventCheck.status !== 200) return viewAllGroupsEventCheck
+    const checkUserInGroup = await userGroupRoute(request)
+    if (checkUserInGroup.status !== 200) return checkUserInGroup
+    const submissionReadOnlyRouteCheck = await submissionReadOnlyRoute(request)
+    if (submissionReadOnlyRouteCheck.status !== 200) return submissionReadOnlyRouteCheck
 }
 
 export const config = {

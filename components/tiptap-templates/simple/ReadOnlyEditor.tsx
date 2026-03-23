@@ -53,11 +53,17 @@ const ReadOnlyEditor = ({ content }: { content: string }) => {
         content,
     })
     return (
-        <div className="font-roboto-mono">
-            <EditorContent
-                editor={editor}
-                className="simple-editor-content font-roboto-mono"
-            />
+        <div className="simple-editor-wrapper relative">
+            <EditorContext.Provider value={{ editor }}>
+
+                <EditorContent
+                    editor={editor}
+                    role="presentation"
+                    className="simple-editor-content"
+                />
+
+
+            </EditorContext.Provider>
         </div>
     )
 }

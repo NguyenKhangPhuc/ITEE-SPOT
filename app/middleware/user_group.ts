@@ -2,7 +2,7 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 import { Database } from '../types/database.types'
 
-export async function submissionRoute(request: NextRequest) {
+export async function userGroupRoute(request: NextRequest) {
     let supabaseResponse = NextResponse.next({
         request,
     })
@@ -29,26 +29,27 @@ export async function submissionRoute(request: NextRequest) {
     )
     const pathname = request.nextUrl.pathname;
     if (
-        pathname.startsWith('/submission/') && pathname.split('/').length === 3
+        pathname.startsWith('/groups/') && pathname.split('/').length === 3
     ) {
         const groupId = pathname.split('/')[2]
-
         const { data: user, error: userError } = await supabase.auth.getUser()
         if (userError || user == null) {
             const url = request.nextUrl.clone()
             url.pathname = '/login'
             return NextResponse.redirect(url)
         }
-
-        const { data, error } = await supabase.from('group_members').select('*').eq('group_id', groupId).eq('member_id', user.user.id).maybeSingle()
-
+        const { data, error } = await supabase
+            .from('group_members')
+            .select('*')
+            .eq('member_id', user.user.id)
+            .eq('group_id', groupId)
+            .maybeSingle()
         if (error || data == null) {
+            console.log(error)
             const url = request.nextUrl.clone()
             url.pathname = '/groups'
             return NextResponse.redirect(url)
         }
-
-
     }
 
     // IMPORTANT: You *must* return the supabaseResponse object as it is. If you're

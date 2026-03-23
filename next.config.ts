@@ -16,12 +16,18 @@ const nextConfig: NextConfig = {
         port: '54321',
         pathname: '/storage/v1/object/public/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'vppatwwxdwxfkmoensot.supabase.co',
+        port: '',
+        pathname: '/storage/v1/object/public/**',
+      },
     ],
     dangerouslyAllowLocalIP: true,
   },
   experimental: {
     serverActions: {
-      bodySizeLimit: '10mb', // Tăng giới hạn lên 10MB
+      bodySizeLimit: '10mb',
     },
   },
 };
