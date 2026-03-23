@@ -98,9 +98,9 @@ const RegisterClient = ({ event, user, challenges }: { event: Event, user: User,
 
                                 })}
                             />
-                            {errors.member_emails?.[index + 1] && (
+                            {errors.member_emails?.[index + 1]?.message && (
                                 <p className="text-red-500 text-sm mt-1">
-                                    {errors.member_emails?.[index + 1].message}
+                                    {errors.member_emails[index + 1]?.message}
                                 </p>
                             )}
                         </div>

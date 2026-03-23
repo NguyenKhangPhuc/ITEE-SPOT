@@ -1,12 +1,14 @@
 export interface LoginForm {
     email: string;
     password: string;
+    isTermAccepted: boolean;
 }
 
 export interface SignupForm {
     fullName: string;
     email: string;
     password: string;
+    isTermAccepted: boolean;
 }
 
 export interface ResetPasswordForm {

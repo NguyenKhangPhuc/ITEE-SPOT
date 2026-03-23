@@ -15,7 +15,8 @@ const Home = () => {
     const {
         register,
         handleSubmit,
-        formState: { errors }
+        formState: { errors },
+        getValues
     } = useForm<SignupForm>()
 
     const onSubmit = async (signupInfo: SignupForm) => {
@@ -29,7 +30,19 @@ const Home = () => {
             }
         }
     }
-
+    const handleLoginWithGithub = async () => {
+        const isAcceptedTerm = getValues('isTermAccepted');
+        if (isAcceptedTerm) {
+            await supabase.auth.signInWithOAuth({
+                provider: 'github',
+                options: {
+                    redirectTo: `${window.location.origin}/auth/callback`,
+                },
+            })
+        } else {
+            showNotification('Please accept the terms conditions and privacy policy')
+        }
+    }
     return (
         <div className="w-full min-h-screen screen-bg flex justify-center items-center">
             <form className="flex flex-col gap-2 rounded-[50px] bg-[#e0e0e0] 
@@ -110,6 +123,35 @@ const Home = () => {
                     <Link href={`/forget-password`} className="text-blue-600 font-medium text-sm cursor-pointer">Forgot password?</Link>
                 </div>
 
+                <div className="flex flex-col mt-4">
+                    <div className="flex items-start space-x-2">
+                        <input
+                            type="checkbox"
+                            id="isTermAccepted"
+                            className="mt-1 h-4 w-4 cursor-pointer accent-blue-600"
+                            {...register("isTermAccepted", {
+                                required: "You must accept the Terms and Privacy Policy to continue"
+                            })}
+                        />
+                        <label htmlFor="isTermAccepted" className="text-sm text-[#151717] cursor-pointer leading-tight font-roboto-mono">
+                            I have read and agree to the{" "}
+                            <Link href="/terms-and-conditions" target="_blank" className="text-blue-600 underline hover:text-blue-800">
+                                Terms & Conditions
+                            </Link>{" "}
+                            and{" "}
+                            <Link href="/privacy-policy" target="_blank" className="text-blue-600 underline hover:text-blue-800">
+                                Privacy Policy
+                            </Link>.
+                        </label>
+                    </div>
+
+                    {errors.isTermAccepted && (
+                        <p className="text-red-500 text-xs mt-1 font-roboto-mono">
+                            {errors.isTermAccepted.message}
+                        </p>
+                    )}
+                </div>
+
                 <button className="mt-5 w-full text-white font-medium rounded-xl text-base uppercase login_btn"><i className="animation"></i>Sign Up<i className="animation"></i>
                 </button>
 
@@ -121,7 +163,11 @@ const Home = () => {
 
                 <div className="flex gap-2 mt-3 font-mono text-black">
 
-                    <div className="cursor-pointer flex-1 cursor-pointer flex gap-2 justify-center items-center gap-2 h-12 rounded-xl border border-gray-400 bg-white font-medium transition hover:border-blue-600">
+                    <div
+                        className="cursor-pointer flex-1 cursor-pointer flex gap-2 justify-center items-center
+                     gap-2 h-12 rounded-xl border border-gray-400 bg-white font-medium transition hover:border-blue-600"
+                        onClick={() => handleLoginWithGithub()}
+                    >
                         <GitHubIcon />
                         <div>Github</div>
                     </div>

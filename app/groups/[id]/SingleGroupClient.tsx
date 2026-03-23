@@ -33,7 +33,7 @@ const SingleGroupClient = ({ groupInfo, currentUser }: { groupInfo: GroupInfo, c
         formState: { errors: groupErrors },
         reset: resetGroupName,
         control
-    } = useForm({
+    } = useForm<{ groupName: string, short_description: string }>({
         defaultValues: {
             groupName: groupInfo?.group_name ?? "",
             short_description: groupInfo?.short_description ?? "",
@@ -57,7 +57,7 @@ const SingleGroupClient = ({ groupInfo, currentUser }: { groupInfo: GroupInfo, c
         }
     })
 
-    const handleSaveGroupName = async (data: { groupName: string }) => {
+    const handleSaveGroupName = async (data: { groupName: string, short_description: string }) => {
         if (disableGroupName == true) {
             setDisableGroupName(false)
         } else {
