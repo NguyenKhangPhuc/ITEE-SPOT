@@ -234,8 +234,8 @@ const EventGroupsClient = ({ event, eventGroups }: { event: EventWithChallenges,
                                         className="w-full flex flex-col sm:text-sm md:text-[13px] text-[10px]"
                                     >
                                         <div className="">Member {index + 1}</div>
-                                        <div className="opacity-50 sm:text-sm md:text-[13px] text-[10px]">{member.profiles?.full_name ?? "Empty (submit your profile)"}</div>
-                                        <div className="opacity-50 sm:text-sm md:text-[13px] text-[10px]">{member.profiles?.email ?? "Empty (submit your profile)"} </div>
+                                        <div className="opacity-50 sm:text-sm md:text-[13px] text-[10px]">{member.profiles?.full_name && member.profiles.full_name.length != 0 ? member.profiles?.full_name : "Empty full name"}</div>
+                                        <div className="opacity-50 sm:text-sm md:text-[13px] text-[10px]">{member.profiles?.email && member.profiles.email.length != 0 ? member.profiles?.email : "Empty email"} </div>
                                     </div>
                                 })}
                             </div>

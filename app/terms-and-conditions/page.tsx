@@ -9,12 +9,12 @@ const Home = () => {
                 <div className="space-y-8 text-color leading-relaxed text-sm">
                     <section>
                         <h2 className="text-lg font-semibold text-color mb-2">1. Acceptance of Terms</h2>
-                        <p>By accessing or using ITEE CoLAB, you agree to be bound by these Terms & Conditions. This platform is developed and managed by the IKAPO project team at the University of Oulu.</p>
+                        <p>By accessing or using ITEE SPOT, you agree to be bound by these Terms & Conditions. This platform is developed and managed by the IKAPO project team at the University of Oulu.</p>
                     </section>
 
                     <section>
                         <h2 className="text-lg font-semibold text-color mb-2">2. Description of Service</h2>
-                        <p>ITEE CoLAB is a collaborative tool designed to facilitate connections between students, academic staff, and industry partners within the Faculty of Information Technology and Electrical Engineering (ITEE).</p>
+                        <p>ITEE SPOT is a collaborative tool designed to facilitate connections between students, academic staff, and industry partners within the Faculty of Information Technology and Electrical Engineering (ITEE).</p>
                     </section>
 
                     <section className="flex flex-col gap-5">

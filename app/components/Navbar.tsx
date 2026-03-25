@@ -56,7 +56,7 @@ const NavBar = ({ initialUser }: { initialUser: User | null }) => {
                         </div>
                     </div>
                     <Link href={`/`} className="text-2xl font-bold">
-                        ITEE CoLAB
+                        ITEE SPOT
                     </Link>
                     <div className="flex gap-6 items-center">
                         <Link
