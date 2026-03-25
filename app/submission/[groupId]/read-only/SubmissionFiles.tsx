@@ -14,7 +14,13 @@ const SubmissionFiles = ({ submittedFiles }: SubmissionFilesProps) => {
     const handleDownloadFile = async (file: SubmissionFileExtended) => {
         if (file.storage_path != null && file.storage_path != "") {
             try {
-                const data = await getSignedUrl(file.storage_path)
+                const { data, error } = await getSignedUrl(file.storage_path)
+                if (error) {
+                    throw new Error(error)
+                }
+                if (!data) {
+                    throw new Error("Fail to load url")
+                }
                 if (data.signedUrl) {
                     window.open(data.signedUrl, '_blank');
                 }

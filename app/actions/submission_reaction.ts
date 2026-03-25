@@ -13,16 +13,16 @@ export async function getSubmissionReactions({ submissionId }: { submissionId: s
 export async function createReaction({ submissionId, userId }: { submissionId: string, userId: string }) {
     const supabase = await createClient();
 
-    const { data: createdReaction, error: reactionError } = await supabase.from('submission_reactions').insert([{
+    const { data, error: reactionError } = await supabase.from('submission_reactions').insert([{
         user_id: userId,
         submission_id: submissionId
     }]).select('*').maybeSingle()
 
     if (reactionError) {
-        throw new Error(reactionError.message)
+        return { error: "Fail to create the reaction" }
     }
 
-    return createdReaction
+    return { data, error: reactionError }
 }
 
 
@@ -32,8 +32,8 @@ export async function deleteReaction({ submissionId, userId }: { submissionId: s
     const { data, error } = await supabase.from('submission_reactions').delete().eq('submission_id', submissionId).eq('user_id', userId)
 
     if (error) {
-        throw new Error(error.message)
+        return { error: "Fail to delete the reaction" }
     }
 
-    return data
+    return { data, error }
 }

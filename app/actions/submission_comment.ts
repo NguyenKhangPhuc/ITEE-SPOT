@@ -18,11 +18,12 @@ export async function getSubmissionComments({ submissionId, page }: { submission
         .eq('submission_id', submissionId)
 
     if (error) {
-        throw new Error(error.message)
+        console.log(error)
+        return { error: "Fail to load the comments" }
     }
 
     const totalPages = Math.ceil((count ?? 0) / PAGE_SIZE)
-    return { data, totalPages }
+    return { data, totalPages, error: null }
 }
 
 
@@ -31,9 +32,9 @@ export async function createSubmissionComment(submissionComment: SubmissionComme
 
     const { data, error } = await supabase.from('submission_comments').insert(submissionComment).select('*').maybeSingle()
     if (error) {
-        throw new Error(error.message)
+        return { error: "Failed to create the comment" }
     }
 
-    return data
+    return { data, error }
 
 }

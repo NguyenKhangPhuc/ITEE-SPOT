@@ -14,9 +14,9 @@ export async function getGoupChallengeSubmission({ groupId, groupChallengeId }: 
         .maybeSingle()
 
     if (error) {
-        throw new Error(error.message)
+        return { error: "Fail to get group's submissions" }
     }
-    return data
+    return { data, error }
 }
 
 
@@ -48,8 +48,12 @@ export async function saveGroupChallengeSubmission({ submission, submittedFiles 
         .select()
         .maybeSingle()
 
-    if (subError) throw new Error(`Sub Error: ${subError.message}`);
-    if (!subData) throw new Error("No submission data returned");
+    if (subError) {
+        return { error: "Fail to update the submission" }
+    };
+    if (!subData) {
+        return { error: "Fail to update the submission" }
+    };
 
     const newFiles = submittedFiles.filter(f => !f.id);
     const existingFileIds = submittedFiles.filter(f => f.id).map(f => f.id);
@@ -66,15 +70,11 @@ export async function saveGroupChallengeSubmission({ submission, submittedFiles 
             .in('id', deletedFilesId);
 
         if (dbError) {
-            throw new Error(`${dbError.message}`);
+            return { error: "Failed to delete the submission files" }
         }
         const { error: storageError } = await supabase.storage
             .from('attachments')
             .remove(deleteFilesStorage);
-
-        if (storageError) {
-            console.error(storageError.message);
-        }
     }
 
     // 4. Upload file mới
@@ -84,7 +84,9 @@ export async function saveGroupChallengeSubmission({ submission, submittedFiles 
             const filePath = `${submission.group_id}/${Date.now()}-${file.name}`;
 
             const { error: storageError } = await supabase.storage.from('attachments').upload(filePath, file);
-            if (storageError) throw storageError;
+            if (storageError) {
+                return { error: "Fail to upload files to storage" }
+            };
 
             return {
                 submission_id: subData.id,
@@ -101,9 +103,9 @@ export async function saveGroupChallengeSubmission({ submission, submittedFiles 
         const { data: insertedFile, error: insertedFileEror } = await supabase.from('submission_files').insert(recordsToInsert);
         if (insertedFileEror) {
             console.error(insertedFileEror)
-            throw new Error(insertedFileEror.message)
+            return { error: "Fail to insert files" }
         }
     }
 
-    return subData;
+    return { data: subData, error: null };
 }

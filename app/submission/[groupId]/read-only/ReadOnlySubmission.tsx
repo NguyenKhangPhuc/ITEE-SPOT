@@ -44,7 +44,10 @@ const ReadOnlySubmission = ({ groupSubmissions, user }: { groupSubmissions: Grou
 
     const handleChooseChallengeSubmission = async (index: number) => {
         try {
-            const receivedUserRating = await getSubmissionRatingById({ submissionId: groupSubmissions![index].id!, userId: user.id })
+            const { data: receivedUserRating, error } = await getSubmissionRatingById({ submissionId: groupSubmissions![index].id!, userId: user.id })
+            if (error) {
+                throw new Error(error)
+            }
             if (receivedUserRating) {
                 setUserRating(receivedUserRating)
                 console.log(receivedUserRating)

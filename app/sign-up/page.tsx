@@ -9,6 +9,7 @@ import { createClient } from '../utils/supabase/client';
 import { signup } from '../actions/authentication';
 import { useNotification } from '../context/NotificationContext';
 import Link from 'next/link';
+import { AUTH_ERROR_CODE } from '../types/enum';
 const Home = () => {
     const { showNotification } = useNotification();
     const supabase = createClient();
@@ -21,12 +22,16 @@ const Home = () => {
 
     const onSubmit = async (signupInfo: SignupForm) => {
         try {
-            await signup(signupInfo, window.location.origin)
+            const { error } = await signup(signupInfo, window.location.origin)
+            throw new Error(error)
         } catch (error) {
             console.log(error + `--- ${error == 'Error: NEXT_REDIRECT' ? 'true' : 'false'}`)
             if (error instanceof Error && error.message !== 'NEXT_REDIRECT') {
-
-                showNotification(error.message)
+                if (error.message == AUTH_ERROR_CODE.EXISTED_USER) {
+                    showNotification('User already existed')
+                } else {
+                    showNotification('Fail to sign up')
+                }
             }
         }
     }

@@ -32,7 +32,10 @@ const SubmissionReactions = ({ submissionReaction, setSubmissionReaction, user, 
                 if (!submissionId) {
                     throw new Error('Please choose a challenge before reaction')
                 }
-                await deleteReaction({ submissionId: submissionId ?? "", userId: user.id })
+                const { data, error } = await deleteReaction({ submissionId: submissionId ?? "", userId: user.id })
+                if (error) {
+                    throw new Error(error)
+                }
                 const newReactions = submissionReaction.filter(r => r.user_id !== user.id);
                 console.log(newReactions)
                 setSubmissionReaction(newReactions)
@@ -47,7 +50,10 @@ const SubmissionReactions = ({ submissionReaction, setSubmissionReaction, user, 
                 if (!submissionId) {
                     throw new Error('Please choose a challenge before reaction')
                 }
-                const data = await createReaction({ submissionId: submissionId ?? "", userId: user.id })
+                const { data, error } = await createReaction({ submissionId: submissionId ?? "", userId: user.id })
+                if (error) {
+                    throw new Error(error)
+                }
                 if (data == null) {
                     throw new Error('Error when trying to create reaction')
                 }

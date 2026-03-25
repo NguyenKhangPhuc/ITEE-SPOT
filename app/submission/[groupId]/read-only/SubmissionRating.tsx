@@ -36,7 +36,10 @@ const SubmissionRating = ({ getValues, user, userRating, setUserRating }: Submis
                 rating: parseInt(value),
             }
 
-            await createSubmissionRating({ submissionRating: upsertedRating })
+            const { data, error } = await createSubmissionRating({ submissionRating: upsertedRating })
+            if (error) {
+                throw new Error(error)
+            }
             setUserRating(upsertedRating)
             showNotification('Give a rating successfully')
         } catch (error) {

@@ -35,11 +35,18 @@ const RegisterClient = ({ event, user, challenges }: { event: Event, user: User,
     const handleCreateGroup = async (data: RegisterGroupMember) => {
 
         try {
-            const { createdGroup } = await insertGroupMembers(data)
+            const { createdGroup, error } = await insertGroupMembers(data)
+            if (error) {
+                throw new Error(error)
+            }
+            if (!createdGroup) {
+                throw new Error("Failed to load created group")
+            }
             showNotification('Create group successfully')
             router.push(`/groups/${createdGroup.id}`)
         } catch (error) {
             if (error instanceof Error) {
+                console.log(error)
                 showNotification(error.message)
             }
         }
@@ -122,7 +129,14 @@ const RegisterClient = ({ event, user, challenges }: { event: Event, user: User,
                                     <label className="checkbox_container">
                                         <input type="checkbox" value={challenge.id}
 
-                                            {...register('challenges')} />
+                                            {...register('challenges', {
+                                                validate: (value) => {
+                                                    if (!value || value.length == 0) {
+                                                        return "Please choose your challenges";
+                                                    }
+                                                    return true
+                                                }
+                                            })} />
                                         <div className="checkmark"></div>
                                     </label>
                                 </div>
@@ -130,6 +144,11 @@ const RegisterClient = ({ event, user, challenges }: { event: Event, user: User,
                         </div>
                     ))}
                 </div>
+                {errors.challenges?.message && (
+                    <p className="text-red-500 text-sm mt-1">
+                        {errors.challenges.message}
+                    </p>
+                )}
             </div>
             <button type="submit" className="cursor-pointer mt-10 bg-black hover:bg-black/80 text-white p-3 rounded-lg duration-300" >
                 Register Now

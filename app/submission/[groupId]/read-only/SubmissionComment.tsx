@@ -38,10 +38,15 @@ const SubmissionComment = ({ getValues, user }: SubmissionCommentProps) => {
             if (!submissionId) {
                 throw new Error('Please choose a challenge before reaction')
             }
-            const { data, totalPages } = await getSubmissionComments({ submissionId, page: 1 })
+            const { data, totalPages, error } = await getSubmissionComments({ submissionId, page: 1 })
+            if (error) {
+                throw new Error(error)
+            }
+
             setShowComment(true)
-            setSubmissionComments({ submissionComments: data, totalPages })
-            console.log(data, totalPages)
+            setSubmissionComments({ submissionComments: data ?? [], totalPages: totalPages ?? 0 })
+
+
         } catch (error) {
             if (error instanceof Error) {
                 showNotification(error.message)
@@ -61,7 +66,10 @@ const SubmissionComment = ({ getValues, user }: SubmissionCommentProps) => {
             }
             data.submission_id = submissionId
             data.user_id = user.id
-            const newComment = await createSubmissionComment(data)
+            const { data: newComment, error } = await createSubmissionComment(data)
+            if (error) {
+                throw new Error(error)
+            }
             if (newComment) {
                 setSubmissionComments({ submissionComments: [...submissionComments?.submissionComments ?? [], newComment], totalPages: submissionComments?.totalPages ?? 0 });
             }
@@ -78,10 +86,14 @@ const SubmissionComment = ({ getValues, user }: SubmissionCommentProps) => {
             if (!submissionId) {
                 throw new Error('Please choose a challenge before reaction')
             }
-            const { data, totalPages } = await getSubmissionComments({ submissionId, page })
-            setSubmissionComments({ submissionComments: data, totalPages })
+            const { data, totalPages, error } = await getSubmissionComments({ submissionId, page })
+            if (error) {
+                throw new Error(error)
+            }
             setChosenPage(page)
+            setSubmissionComments({ submissionComments: data ?? [], totalPages: totalPages ?? 0 })
             console.log(data, totalPages)
+
         } catch (error) {
             if (error instanceof Error) {
                 showNotification(error.message)

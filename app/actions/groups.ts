@@ -31,9 +31,9 @@ export async function updateGroupNameAndDescription({ groupId, groupName, descri
     const supabase = await createClient()
     const { data, error } = await supabase.from('groups').update({ group_name: groupName, short_description: description }).eq('id', groupId).select().maybeSingle();
     if (error) {
-        throw new Error(error.message)
+        return { error: "Fail to update the group information" }
     }
-    return data
+    return { data, error }
 }
 
 export async function getEventGroups(eventId: string) {
@@ -54,32 +54,26 @@ export async function updateGroupPosterPath({ groupId, avatarFile, originalPath 
 
         const { error: storageError } = await supabase.storage.from('attachments').upload(avatarUrlPath, avatarFile);
         if (storageError) {
-            throw new Error(storageError.message)
+            return { error: "Failed to upload the group image" }
         }
 
         if (originalPath != null || originalPath != "") {
             const { error: storageError } = await supabase.storage.from('attachments').remove([originalPath!]);
-            if (storageError) {
-                throw new Error(storageError.message)
-            }
         }
 
         const { data, error } = await supabase.from('groups').update({ poster_path: avatarUrlPath }).eq('id', groupId)
         if (error) {
-            throw new Error(error.message)
+            return { error: "Fail to update the group image" }
         }
-        return data
+        return { data, error }
     }
 
     if (originalPath != null || originalPath != "") {
         const { error: storageError } = await supabase.storage.from('attachments').remove([originalPath!]);
-        if (storageError) {
-            throw new Error(storageError.message)
-        }
     }
     const { data, error } = await supabase.from('groups').update({ poster_path: null }).eq('id', groupId)
     if (error) {
-        throw new Error(error.message)
+        return { error: "Fail to delete the group image" }
     }
-    return data
+    return { data, error }
 }

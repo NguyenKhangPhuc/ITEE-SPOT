@@ -18,8 +18,7 @@ export async function login(formData: LoginForm) {
     const { error } = await supabase.auth.signInWithPassword(data)
 
     if (error) {
-        console.log(error)
-        throw new Error(error.code)
+        return { error: error.code }
     }
 
     redirect('/')
@@ -39,8 +38,7 @@ export async function signup(formData: SignupForm, origin: string) {
     })
 
     if (error) {
-        console.log(error)
-        throw new Error(error.message)
+        return { error: error.code }
     }
 
     redirect('/')
@@ -54,8 +52,7 @@ export async function signout() {
     const { error } = await supabase.auth.signOut()
 
     if (error) {
-        console.log(error)
-        throw new Error(error.message)
+        return { error: error.code }
     }
     redirect('/login')
 }
@@ -64,7 +61,6 @@ export async function getUser() {
     const supabase = await createClient();
 
     const { data, error } = await supabase.auth.getUser()
-
     return { data, error }
 }
 
@@ -79,8 +75,8 @@ export async function resendVerificationCode(email: string, origin: string) {
     })
 
     if (error) {
-        throw new Error(error.message)
+        return { data, error: error.code }
     }
 
-    return data
+    return { data }
 }

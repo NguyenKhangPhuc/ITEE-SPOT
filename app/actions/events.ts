@@ -20,7 +20,7 @@ export async function createEvent({ event, challenges, avatarFile }: { event: Ev
         if (avatarUrlPath) {
             const { error: storageError } = await supabase.storage.from('attachments').upload(avatarUrlPath, avatarFile);
             if (storageError) {
-                throw new Error(storageError.message)
+                return { error: "Failed to upload to storage" }
             }
         }
     }
@@ -42,7 +42,7 @@ export async function createEvent({ event, challenges, avatarFile }: { event: Ev
     ).select().single()
 
     if (error) {
-        throw new Error(error.message)
+        return { error: error.message }
     }
 
 
@@ -54,11 +54,11 @@ export async function createEvent({ event, challenges, avatarFile }: { event: Ev
     const { error: challengeError } = await supabase.from("event_challenges").insert(updatedChallenges)
 
     if (challengeError) {
-        throw new Error(challengeError.message)
+        return { error: challengeError.message }
     }
 
     revalidatePath('/events');
-    return data
+    return { data, error: null }
 }
 
 export async function getAllEvents() {

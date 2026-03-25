@@ -19,7 +19,10 @@ const UserProfileClient = ({ user }: { user: Profile }) => {
 
     const onSubmit = async (data: ProfileInsert) => {
         try {
-            const updatedValue = await updateProfile({ profile: data })
+            const { data: updatedValue, error } = await updateProfile({ profile: data })
+            if (error) {
+                throw new Error(error)
+            }
             if (updatedValue) {
                 reset(updatedValue)
                 showNotification('Update Successfully')

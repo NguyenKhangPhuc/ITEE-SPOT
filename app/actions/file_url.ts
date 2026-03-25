@@ -8,8 +8,8 @@ export async function getSignedUrl(storage_path: string) {
     const { data, error } = await supabase.storage.from('attachments').createSignedUrl(storage_path, 60)
 
     if (error) {
-        throw new Error(error.message)
+        return { error: "Fail to load url" }
     }
 
-    return data
+    return { data, error }
 }

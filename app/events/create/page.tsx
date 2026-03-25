@@ -32,9 +32,15 @@ const Home = () => {
     const handleCreateNewEvent = async (event: EventInsert) => {
         event.content = editorValue?.getHTML()
         try {
-            const data = await createEvent({ event, challenges, avatarFile })
+            const { data, error } = await createEvent({ event, challenges, avatarFile })
+            if (error) {
+                throw new Error(error)
+            }
+            if (data == null) {
+                throw new Error('Cannot find created event')
+            }
             showNotification("Create event successfully")
-            router.push(`/events/${data!.id}`)
+            router.push(`/events/${data.id}`)
         } catch (error) {
             if (error instanceof Error) {
                 showNotification(error.message)

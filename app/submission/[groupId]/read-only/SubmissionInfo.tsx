@@ -87,7 +87,7 @@ const SubmissionInfo = ({ register, errors, handleGetEmbeddedUrl, initialContent
                     /{SHORT_DESCRIPTION_LENGTH} Characters
                 </div>
             </div>
-            <div className="shadow-xl/30 inset-shadow-sm rounded-xl w-full p-5 cursor-not-allowed">
+            <div className="flex flex-col gap-4 h-[800px] shadow shadow-xl p-5">
                 <ReadOnlyEditor content={initialContent} />
             </div>
 

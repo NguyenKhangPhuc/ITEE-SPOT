@@ -61,7 +61,13 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
     const handleDownloadFile = async (file: SubmissionFileExtended) => {
         if (file.storage_path != null && file.storage_path != "") {
             try {
-                const data = await getSignedUrl(file.storage_path)
+                const { data, error } = await getSignedUrl(file.storage_path)
+                if (error) {
+                    throw new Error(error)
+                }
+                if (!data) {
+                    throw new Error("Fail to load url")
+                }
                 if (data.signedUrl) {
                     window.open(data.signedUrl, '_blank');
                 }
@@ -89,7 +95,10 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
             if (data.group_challenge_id == null || data.group_challenge_id == "") {
                 throw new Error('Fail to save because unknown error')
             }
-            await saveGroupChallengeSubmission({ submission: data, submittedFiles })
+            const { error } = await saveGroupChallengeSubmission({ submission: data, submittedFiles })
+            if (error) {
+                throw new Error(error)
+            }
             showNotification('Save submission successfully')
         } catch (error) {
             console.log(error)
@@ -101,7 +110,10 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
 
     const handleChooseChallengeSubmission = async (index: number) => {
         try {
-            const data = await getGoupChallengeSubmission({ groupChallengeId: groupChallenges[index].id, groupId: groupChallenges[index].group_id! })
+            const { data, error } = await getGoupChallengeSubmission({ groupChallengeId: groupChallenges[index].id, groupId: groupChallenges[index].group_id! })
+            if (error) {
+                throw new Error(error)
+            }
             setChosenGroupChallenges(index)
             if (data) {
                 reset(data)
@@ -215,7 +227,7 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
                             /{SHORT_DESCRIPTION_LENGTH} Characters
                         </div>
                     </div>
-                    <div className="shadow-xl/30 inset-shadow-sm rounded-xl w-full p-5 ">
+                    <div className="flex flex-col gap-4 h-[400px] shadow shadow-xl p-5">
                         <label className="event_input_label">Example Submission Description</label>
                         <ReadOnlyEditor content={EXAMPLE_PROJECT_SUMMANRY} />
                     </div>

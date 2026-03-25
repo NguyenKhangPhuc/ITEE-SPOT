@@ -12,19 +12,19 @@ export async function sendInvitations(invitation: InvitationInsert) {
         .eq('group_id', invitation.group_id!).eq('profiles.email', invitation.member_email ?? "").maybeSingle()
 
     if (foundMemberError) {
-        throw new Error(foundMemberError.message)
+        return { error: "Fail to check the user information" }
     }
     console.log(foundMember)
     if (foundMember) {
-        throw new Error('Member is already in a team')
+        return { error: "Member is already in the team" }
     }
 
     const { data, error } = await supabase.from('invitation').upsert(invitation, { onConflict: 'group_id,member_email' })
 
     if (error) {
-        throw new Error(error.message)
+        return { error: "Fail to create the invitation to the other member" }
     }
-    return data
+    return { data, error }
 }
 
 export async function getUserInvitations(userEmail: string) {
@@ -42,7 +42,7 @@ export async function acceptInvitation({ invitationId, groupId, userId }: { invi
     const { data, error } = await supabase.from('invitation').update({ invitation_status: INVITATION_STATUS.ACCEPTED }).eq('id', invitationId)
 
     if (error) {
-        throw new Error(error.message)
+        return { error: "Fail to accept the invitation" }
     }
 
     const { data: createdMember, error: memberError } = await supabase.from('group_members').insert({
@@ -51,10 +51,10 @@ export async function acceptInvitation({ invitationId, groupId, userId }: { invi
     })
 
     if (memberError) {
-        throw new Error(memberError.message)
+        return { error: "Failed to become a member, please contact staff" }
     }
 
-    return data
+    return { data, error }
 }
 
 export async function rejectInvitation({ invitationId }: { invitationId: string }) {
@@ -63,8 +63,8 @@ export async function rejectInvitation({ invitationId }: { invitationId: string 
     const { data, error } = await supabase.from('invitation').update({ invitation_status: INVITATION_STATUS.REJECTED }).eq('id', invitationId)
 
     if (error) {
-        throw new Error(error.message)
+        return { error: 'Failed to reject the invitation' }
     }
 
-    return data
+    return { data, error }
 }
