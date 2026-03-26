@@ -43,7 +43,7 @@ export async function createEvent({ event, challenges, avatarFile }: { event: Ev
     ).select().single()
 
     if (error) {
-        return { error: error.message }
+        return { error: "Fail to create the event, please contact staffs" }
     }
 
 
@@ -55,7 +55,7 @@ export async function createEvent({ event, challenges, avatarFile }: { event: Ev
     const { error: challengeError } = await supabase.from("event_challenges").insert(updatedChallenges)
 
     if (challengeError) {
-        return { error: challengeError.message }
+        return { error: "Fail to create the event challenges, please contact staffs" }
     }
 
     revalidatePath('/events');

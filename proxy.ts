@@ -16,8 +16,8 @@ export async function proxy(request: NextRequest) {
     if (registerRouteCheck.status !== 200) return registerRouteCheck
     const submissionRouteCheck = await submissionRoute(request)
     if (submissionRouteCheck.status !== 200) return submissionRouteCheck
-    const createEventRouteCheck = await createEventRoute(request)
-    if (createEventRouteCheck.status !== 200) return createEventRouteCheck
+    // const createEventRouteCheck = await createEventRoute(request)
+    // if (createEventRouteCheck.status !== 200) return createEventRouteCheck
     const viewAllGroupsEventCheck = await viewAllGroups(request)
     if (viewAllGroupsEventCheck.status !== 200) return viewAllGroupsEventCheck
     const checkUserInGroup = await userGroupRoute(request)

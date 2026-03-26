@@ -13,7 +13,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import DownloadIcon from '@mui/icons-material/Download';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import { SubmissionFileExtended } from "@/app/types/submission_files"
-import { getSignedUrl } from "@/app/actions/file_url"
+import { getPublicFileURL, getSignedUrl } from "@/app/actions/file_url"
 import { EXAMPLE_PROJECT_SUMMANRY, SHORT_DESCRIPTION_LENGTH, STUDENT_SUBMISSION_DESCRIPTION } from "@/app/constants"
 import ReadOnlyEditor from "@/components/tiptap-templates/simple/ReadOnlyEditor"
 const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { groupChallenges: Array<GroupChallengeRelation>, eventChallenges: Array<EventChallenge>, group_id: string }) => {
@@ -61,15 +61,15 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
     const handleDownloadFile = async (file: SubmissionFileExtended) => {
         if (file.storage_path != null && file.storage_path != "") {
             try {
-                const { data, error } = await getSignedUrl(file.storage_path)
+                const { data, error } = await getPublicFileURL(file.storage_path)
                 if (error) {
                     throw new Error(error)
                 }
                 if (!data) {
                     throw new Error("Fail to load url")
                 }
-                if (data.signedUrl) {
-                    window.open(data.signedUrl, '_blank');
+                if (data.publicUrl) {
+                    window.open(data.publicUrl, '_blank');
                 }
             } catch (error) {
                 console.log(error)

@@ -78,10 +78,12 @@ export async function saveGroupChallengeSubmission({ submission, submittedFiles 
     }
 
     // 4. Upload file mới
+
     if (newFiles.length > 0) {
         const uploadPromises = newFiles.map(async (item) => {
             const file = item.file!;
-            const filePath = `${submission.group_id}/${Date.now()}-${file.name}`;
+            console.log("file encode + " + encodeURIComponent(file.name))
+            const filePath = `${submission.group_id}/${Date.now()}-${encodeURIComponent(file.name)}`;
 
             const { error: storageError } = await supabase.storage.from('attachments').upload(filePath, file);
             if (storageError) {
