@@ -40,7 +40,7 @@ export async function submissionRoute(request: NextRequest) {
             return NextResponse.redirect(url)
         }
 
-        const { data, error } = await supabase.from('group_members').select('*').eq('group_id', groupId).eq('member_id', user.user.id).maybeSingle()
+        const { data, error } = await supabase.from('group_members').select('group_id, member_id').eq('group_id', groupId).eq('member_id', user.user.id).maybeSingle()
 
         if (error || data == null) {
             const url = request.nextUrl.clone()

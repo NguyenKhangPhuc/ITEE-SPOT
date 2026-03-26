@@ -10,6 +10,7 @@ import { signup } from '../actions/authentication';
 import { useNotification } from '../context/NotificationContext';
 import Link from 'next/link';
 import { AUTH_ERROR_CODE } from '../types/enum';
+import { useLoader } from '../context/LoaderContext';
 const Home = () => {
     const { showNotification } = useNotification();
     const supabase = createClient();
@@ -19,11 +20,15 @@ const Home = () => {
         formState: { errors },
         getValues
     } = useForm<SignupForm>()
-
+    const { setIsOpenLoader } = useLoader()
     const onSubmit = async (signupInfo: SignupForm) => {
+        setIsOpenLoader(true)
         try {
             const { error } = await signup(signupInfo, window.location.origin)
-            throw new Error(error)
+            if (error) {
+                throw new Error(error)
+            }
+            setIsOpenLoader(false)
         } catch (error) {
             if (error instanceof Error && error.message !== 'NEXT_REDIRECT') {
                 if (error.message == AUTH_ERROR_CODE.EXISTED_USER) {
@@ -32,6 +37,7 @@ const Home = () => {
                     showNotification('Fail to sign up')
                 }
             }
+            setIsOpenLoader(false)
         }
     }
     const handleLoginWithGithub = async () => {

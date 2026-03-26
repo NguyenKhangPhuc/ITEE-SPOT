@@ -84,17 +84,14 @@ const SingleEventClient = ({ event, user }: { event: Event, user: Profile }) => 
                     </div>
                 </div>
             </div>
-
-
             <hr className="border-black/30" />
-
-            <div className="flex flex-col gap-4 h-[800px] shadow shadow-xl p-5">
-                <ReadOnlyEditor content={event.content!} />
+            <div className="w-full h-[600px] shadow-xl/30 p-5">
+                <ReadOnlyEditor content={event.content ?? ""} />
             </div>
             <hr className="border-black/30" />
             <div className="flex flex-col gap-3">
                 <div className="flex gap-5">
-                    {user?.role == PROFILE_ROLE.JUDGES || user?.role == PROFILE_ROLE.ADMIN &&
+                    {user?.role == PROFILE_ROLE.JUDGES || user?.role == PROFILE_ROLE.ADMIN ?
 
                         <>
                             <Link href={`/events/${event.id}/groups`} className="duration-300 cursor-pointer text-black
@@ -107,7 +104,7 @@ const SingleEventClient = ({ event, user }: { event: Event, user: Profile }) => 
                      hover:scale-105 rounded-[10px] flex items-center justify-center ">
                                 Edit Event
                             </Link>
-                        </>}
+                        </> : <></>}
                 </div>
                 <Link href={`/register/${event.id}`} className="transition duration-300 ease-in-out cursor-pointer 
                 w-full h-13 bg-black hover:bg-black/80 hover:scale-105 border rounded-[10px] flex items-center justify-center text-white">

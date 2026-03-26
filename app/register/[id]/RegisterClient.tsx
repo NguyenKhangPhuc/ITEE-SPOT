@@ -1,6 +1,7 @@
 'use client'
 
 import { insertGroupMembers } from "@/app/actions/group_member"
+import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
 import { Event } from "@/app/types/event"
 import { EventChallengeInsert } from "@/app/types/event_challenges"
@@ -23,7 +24,7 @@ const RegisterClient = ({ event, user, challenges }: { event: Event, user: User,
             user_id: user.id,
         }
     });
-
+    const { setIsOpenLoader } = useLoader()
     const router = useRouter()
 
     const { showNotification } = useNotification()
@@ -33,7 +34,7 @@ const RegisterClient = ({ event, user, challenges }: { event: Event, user: User,
     );
 
     const handleCreateGroup = async (data: RegisterGroupMember) => {
-
+        setIsOpenLoader(true)
         try {
             const { createdGroup, error } = await insertGroupMembers(data)
             if (error) {
@@ -42,12 +43,14 @@ const RegisterClient = ({ event, user, challenges }: { event: Event, user: User,
             if (!createdGroup) {
                 throw new Error("Failed to load created group")
             }
+            setIsOpenLoader(false)
             showNotification('Create group successfully')
             router.push(`/groups/${createdGroup.id}`)
         } catch (error) {
             if (error instanceof Error) {
                 showNotification(error.message)
             }
+            setIsOpenLoader(false)
         }
     }
 

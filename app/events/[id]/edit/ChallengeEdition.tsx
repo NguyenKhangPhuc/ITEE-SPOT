@@ -1,4 +1,5 @@
 import { updateEventChallenges } from "@/app/actions/events"
+import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
 import { EventChallengeInsert } from "@/app/types/event_challenges"
 import { useState } from "react"
@@ -7,18 +8,21 @@ const ChallengeEdition = ({ receivedChallenge }: { receivedChallenge: EventChall
     const { showNotification } = useNotification()
 
     const [challenge, setChallenge] = useState<EventChallengeInsert>(receivedChallenge)
-
+    const { setIsOpenLoader } = useLoader()
     const handleUpdateChallenge = async () => {
+        setIsOpenLoader(true)
         try {
             const { data, error } = await updateEventChallenges({ eventChallenge: challenge })
             if (error) {
                 throw new Error(error)
             }
+            setIsOpenLoader(false)
             showNotification('Update successfully')
         } catch (error) {
             if (error instanceof Error) {
                 showNotification(error.message)
             }
+            setIsOpenLoader(false)
         }
     }
     return (

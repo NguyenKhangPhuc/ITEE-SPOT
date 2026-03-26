@@ -10,6 +10,7 @@ import { login } from '../actions/authentication';
 import { useNotification } from '../context/NotificationContext';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { useRouter } from 'next/navigation';
+import { useLoader } from '../context/LoaderContext';
 const Home = () => {
     const { showNotification } = useNotification();
     const supabase = createClient();
@@ -19,6 +20,7 @@ const Home = () => {
         handleSubmit,
         formState: { errors }
     } = useForm<LoginForm>()
+    const { setIsOpenLoader } = useLoader()
     const handleLoginWithGithub = async () => {
         await supabase.auth.signInWithOAuth({
             provider: 'github',
@@ -28,14 +30,17 @@ const Home = () => {
         })
     }
     const onSubmit = async (userInfo: LoginForm) => {
+        setIsOpenLoader(true)
         try {
             await supabase.auth.resetPasswordForEmail(userInfo.email)
             showNotification('Send OTP code successfully')
+            setIsOpenLoader(false)
             router.push(`/reset-password?email=${userInfo.email}`)
         } catch (error) {
             if (error instanceof Error) {
                 showNotification(error.message)
             }
+            setIsOpenLoader(false)
         }
     }
     return (
