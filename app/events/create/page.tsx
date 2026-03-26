@@ -12,6 +12,7 @@ import { EventChallengeInsert } from "@/app/types/event_challenges"
 import Image from "next/image"
 import { SubmissionFileExtended } from "@/app/types/submission_files"
 import { EVENT_CREATED_DESCRIPTION } from "@/app/constants"
+import { useLoader } from "@/app/context/LoaderContext"
 
 
 const Home = () => {
@@ -24,13 +25,14 @@ const Home = () => {
 
     const router = useRouter()
     const { showNotification } = useNotification()
-
+    const { setIsOpenLoader } = useLoader()
     const [editorValue, setEditorValue] = useState<Editor | null>(null)
     const [challenges, setChallenges] = useState<Array<EventChallengeInsert>>([])
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [avatarFile, setAvatarFile] = useState<File | null>(null)
     const handleCreateNewEvent = async (event: EventInsert) => {
         event.content = editorValue?.getHTML()
+        setIsOpenLoader(true)
         try {
             const { data, error } = await createEvent({ event, challenges, avatarFile })
             if (error) {
@@ -39,6 +41,7 @@ const Home = () => {
             if (data == null) {
                 throw new Error('Cannot find created event')
             }
+            setIsOpenLoader(false)
             showNotification("Create event successfully")
             router.push(`/events/${data.id}`)
         } catch (error) {
@@ -47,6 +50,7 @@ const Home = () => {
             } else {
                 showNotification("Unknown error when create the event")
             }
+            setIsOpenLoader(false)
         }
     }
     const handleFileChange = (file: File) => {

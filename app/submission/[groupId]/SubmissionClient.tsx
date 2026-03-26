@@ -17,6 +17,7 @@ import { getPublicFileURL, getSignedUrl } from "@/app/actions/file_url"
 import { EXAMPLE_PROJECT_SUMMANRY, SHORT_DESCRIPTION_LENGTH, STUDENT_SUBMISSION_DESCRIPTION } from "@/app/constants"
 import ReadOnlyEditor from "@/components/tiptap-templates/simple/ReadOnlyEditor"
 import Link from "next/link"
+import { useLoader } from "@/app/context/LoaderContext"
 const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { groupChallenges: Array<GroupChallengeRelation>, eventChallenges: Array<EventChallenge>, group_id: string }) => {
     const {
         register,
@@ -37,7 +38,7 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
     const [editorValue, setEditorValue] = useState<Editor | null>(null)
     const [submittedFiles, setSubmittedFiles] = useState<Array<SubmissionFileExtended>>([])
     const { showNotification } = useNotification()
-
+    const { setIsOpenLoader } = useLoader()
     const handleCatchFiles = (file: File) => {
         const currentFilesSize = submittedFiles.reduce((acc, submittedFile) => acc + submittedFile.size!, 0);
         if (currentFilesSize + file.size > MAX_TOTAL_SIZE) {
@@ -84,7 +85,7 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
     }
 
     const handleSaveSubmission = async (data: SubmissionInsert) => {
-
+        setIsOpenLoader(true)
         try {
             data.group_id = group_id
             data.group_challenge_id = groupChallenges[chosenGroupChallenges!].id
@@ -99,12 +100,14 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
             if (error) {
                 throw new Error(error)
             }
+            setIsOpenLoader(false)
             showNotification('Save submission successfully')
         } catch (error) {
 
             if (error instanceof Error) {
                 showNotification(error.message)
             }
+            setIsOpenLoader(false)
         }
     }
 
@@ -227,10 +230,11 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
                             /{SHORT_DESCRIPTION_LENGTH} Characters
                         </div>
                     </div>
-                    <div className="flex flex-col gap-4 h-[400px] shadow shadow-xl p-5">
+                    <div className="flex flex-col gap-4 h-[600px] shadow-xl p-5">
                         <label className="event_input_label">Example Submission Description</label>
                         <ReadOnlyEditor content={EXAMPLE_PROJECT_SUMMANRY} />
                     </div>
+
                     <div className="shadow-xl/30 inset-shadow-sm rounded-xl w-full">
                         <SimpleEditor initialContent={initialEditorContent} onEditorReady={setEditorValue} limit={STUDENT_SUBMISSION_DESCRIPTION} />
                     </div>
@@ -305,7 +309,7 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
                         <Link href={`/submission/${group_id}/read-only`} className="duration-300 cursor-pointer text-black
                      p-5 text-center w-1/2 h-13 border-4 border-black bg-white 
                      hover:scale-105 rounded-[10px] flex items-center justify-center ">
-                            Edit Event
+                            See your submission
                         </Link>
                     </div>
                 </>

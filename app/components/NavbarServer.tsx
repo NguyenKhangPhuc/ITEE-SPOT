@@ -1,10 +1,10 @@
+import { getUser } from "../actions/authentication";
 import { createClient } from "../utils/supabase/server";
 import NavBar from "./Navbar";
 import NavbarMobile from "./NavbarMobile";
 
 const NavbarServer = async () => {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await getUser()
 
     return <>
         <div className="xl:block hidden"><NavBar initialUser={user} /></div>

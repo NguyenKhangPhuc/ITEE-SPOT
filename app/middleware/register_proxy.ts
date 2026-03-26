@@ -41,7 +41,7 @@ export async function registerRoute(request: NextRequest) {
         }
         const { data, error } = await supabase
             .from('group_members')
-            .select('*, groups!inner(event_id)')
+            .select('member_id,group_id, groups!inner(event_id)')
             .eq('member_id', user.user.id)
             .eq('groups.event_id', id)
             .maybeSingle()

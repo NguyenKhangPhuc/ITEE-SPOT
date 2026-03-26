@@ -9,6 +9,7 @@ import { createClient } from '../utils/supabase/client';
 import { login, resendVerificationCode } from '../actions/authentication';
 import { useNotification } from '../context/NotificationContext';
 import { AUTH_ERROR_CODE } from '../types/enum';
+import { useLoader } from '../context/LoaderContext';
 const Home = () => {
     const { showNotification } = useNotification();
     const supabase = createClient();
@@ -18,6 +19,7 @@ const Home = () => {
         formState: { errors },
         getValues
     } = useForm<LoginForm>()
+    const { setIsOpenLoader } = useLoader()
     const handleLoginWithGithub = async () => {
         const isAcceptedTerm = getValues('isTermAccepted');
         if (isAcceptedTerm) {
@@ -32,10 +34,14 @@ const Home = () => {
         }
     }
     const onSubmit = async (userInfo: LoginForm) => {
+        setIsOpenLoader(true)
         try {
             const { error } = await login(userInfo)
 
-            throw new Error(error)
+            if (error) {
+                throw new Error(error)
+            }
+            setIsOpenLoader(false)
         } catch (error) {
 
             if (error instanceof Error && error.message !== 'NEXT_REDIRECT') {
@@ -52,6 +58,7 @@ const Home = () => {
                     showNotification('Failed to login')
                 }
             }
+            setIsOpenLoader(false)
 
         }
     }

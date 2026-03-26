@@ -1,5 +1,6 @@
 'use client'
 import { updateProfile } from "../actions/profiles"
+import { useLoader } from "../context/LoaderContext"
 import { useNotification } from "../context/NotificationContext"
 import { DEGREE, PROGRAMME, UNIVERSITY, YEAR } from "../types/enum"
 import { Profile, ProfileInsert } from "../types/profile"
@@ -16,8 +17,9 @@ const UserProfileClient = ({ user }: { user: Profile }) => {
     })
 
     const { showNotification } = useNotification()
-
+    const { setIsOpenLoader } = useLoader()
     const onSubmit = async (data: ProfileInsert) => {
+        setIsOpenLoader(true)
         try {
             const { data: updatedValue, error } = await updateProfile({ profile: data })
             if (error) {
@@ -29,10 +31,13 @@ const UserProfileClient = ({ user }: { user: Profile }) => {
             } else {
                 showNotification('Fail to update the profile')
             }
+            setIsOpenLoader(false)
         } catch (error) {
+
             if (error instanceof Error) {
                 showNotification(error.message)
             }
+            setIsOpenLoader(false)
         }
     }
 

@@ -9,6 +9,7 @@ import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import Link from 'next/link';
 import { resetPassword } from "../actions/profiles";
 import { useRouter } from "next/navigation";
+import { useLoader } from "../context/LoaderContext";
 export const ResetPasswordClient = ({ email }: { email: string }) => {
     const { showNotification } = useNotification();
     const router = useRouter()
@@ -22,7 +23,7 @@ export const ResetPasswordClient = ({ email }: { email: string }) => {
             email
         }
     })
-
+    const { setIsOpenLoader } = useLoader()
     const newPasswordValue = useWatch({
         defaultValue: "",
         name: 'newPassword',
@@ -30,6 +31,7 @@ export const ResetPasswordClient = ({ email }: { email: string }) => {
 
     });
     const onSubmit = async (userInfo: ResetPasswordForm) => {
+        setIsOpenLoader(true)
         try {
             const { error } = await resetPassword(userInfo)
             if (error) {
@@ -41,7 +43,7 @@ export const ResetPasswordClient = ({ email }: { email: string }) => {
             if (error instanceof Error && error.message !== 'NEXT_REDIRECT') {
                 showNotification(error.message)
             }
-
+            setIsOpenLoader(false)
         }
     }
     return (
@@ -83,14 +85,6 @@ export const ResetPasswordClient = ({ email }: { email: string }) => {
                         className="flex-1 h-full border-none outline-none px-2 placeholder-gray-400"
                         {...register('otp', {
                             required: "OTP is required",
-                            minLength: {
-                                value: 6,
-                                message: "OTP must be 6 number"
-                            },
-                            maxLength: {
-                                value: 6,
-                                message: "OTP must be 6 number"
-                            }
                         })}
                     />
                 </div>

@@ -16,10 +16,12 @@ import Image from "next/image"
 import { SHORT_DESCRIPTION_LENGTH } from "@/app/constants"
 import { useWatch } from "react-hook-form";
 import { createClient } from "@/app/utils/supabase/client"
+import { useLoader } from "@/app/context/LoaderContext"
 const SingleGroupClient = ({ groupInfo, currentUser }: { groupInfo: GroupInfo, currentUser: User }) => {
     const supabase = createClient()
     const [disableGroupName, setDisableGroupName] = useState(true);
     const { showNotification } = useNotification()
+    const { setIsOpenLoader } = useLoader()
     const handleGetInitialImage = (imagePath: string) => {
         const { data } = supabase.storage.from('attachments').getPublicUrl(imagePath);
 
@@ -58,6 +60,7 @@ const SingleGroupClient = ({ groupInfo, currentUser }: { groupInfo: GroupInfo, c
     })
 
     const handleSaveGroupName = async (data: { groupName: string, short_description: string }) => {
+        setIsOpenLoader(true)
         if (disableGroupName == true) {
             setDisableGroupName(false)
         } else {
@@ -66,18 +69,22 @@ const SingleGroupClient = ({ groupInfo, currentUser }: { groupInfo: GroupInfo, c
                 if (error) {
                     throw new Error(error)
                 }
-                showNotification("Update group name successfully")
+
                 resetGroupName({ groupName: updatedGroupInfo?.group_name ?? "" })
                 setDisableGroupName(true)
+                setIsOpenLoader(false)
+                showNotification("Update group name successfully")
             } catch (error) {
                 if (error instanceof Error) {
                     showNotification(error.message)
                 }
+                setIsOpenLoader(false)
             }
         }
     }
 
     const handleSendInvitation = async (invitationInfo: InvitationInsert) => {
+        setIsOpenLoader(true)
         if (groupInfo?.group_members.length == groupInfo?.events?.max_group_members) {
             showNotification(`Reach maximum ${groupInfo?.events?.max_group_members} members per group`)
         } else {
@@ -86,11 +93,14 @@ const SingleGroupClient = ({ groupInfo, currentUser }: { groupInfo: GroupInfo, c
                 if (error) {
                     throw new Error(error)
                 }
+                setIsOpenLoader(false)
                 showNotification('Send invitation successfully')
             } catch (error) {
+
                 if (error instanceof Error) {
                     showNotification(error.message)
                 }
+                setIsOpenLoader(false)
             }
         }
     }
@@ -108,13 +118,16 @@ const SingleGroupClient = ({ groupInfo, currentUser }: { groupInfo: GroupInfo, c
     }
 
     const handleUpdateImage = async () => {
+        setIsOpenLoader(true)
         try {
             const { data, error } = await updateGroupPosterPath({ groupId: groupInfo!.id, avatarFile, originalPath: groupInfo?.poster_path ?? null })
             if (error) {
                 throw new Error(error)
             }
+            setIsOpenLoader(false)
             showNotification('Update successfully')
         } catch (error) {
+            setIsOpenLoader(false)
             if (error instanceof Error) {
                 showNotification(error.message)
             }

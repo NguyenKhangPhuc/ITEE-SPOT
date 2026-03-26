@@ -7,6 +7,8 @@ import NotificationCard from "./components/Notification";
 import { NotificationProvider } from "./context/NotificationContext";
 import NavbarServer from "./components/NavbarServer";
 import BottomBar from "./components/BottomBar";
+import Loader from "./components/Loader";
+import { LoaderProvider } from "./context/LoaderContext";
 
 const robotoMono = Roboto_Mono({
   subsets: ["latin"],
@@ -25,16 +27,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <NotificationProvider>
-        <body
-          className={`${robotoMono.variable} antialiased min-h-screen flex flex-col`}
-        >
-          <NavbarServer />
-          <NotificationCard />
-          <main className="mt-18 flex-1"> {children}</main>
-          <BottomBar />
-        </body>
-      </NotificationProvider>
+      <LoaderProvider>
+        <NotificationProvider>
+          <body
+            className={`${robotoMono.variable} antialiased min-h-screen flex flex-col`}
+          >
+            <NavbarServer />
+            <NotificationCard />
+            <Loader />
+            <main className="mt-18 flex-1"> {children}</main>
+            <BottomBar />
+          </body>
+        </NotificationProvider>
+      </LoaderProvider>
 
     </html>
   );

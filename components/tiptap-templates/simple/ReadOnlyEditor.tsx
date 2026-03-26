@@ -26,6 +26,7 @@ import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils"
 
 // --- Styles ---
 import "@/components/tiptap-templates/simple/simple-editor.scss"
+import { useEffect } from "react"
 
 const ReadOnlyEditor = ({ content }: { content: string }) => {
     const editor = useEditor({

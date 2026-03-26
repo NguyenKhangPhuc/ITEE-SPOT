@@ -15,6 +15,7 @@ import { EVENT_CREATED_DESCRIPTION } from "@/app/constants"
 import { createClient } from "@/app/utils/supabase/client"
 import { createEventChallenge } from "@/app/actions/event_challenges"
 import ChallengeCreationForm from "./EventChallengeClient"
+import { useLoader } from "@/app/context/LoaderContext"
 
 
 const EditEventClient = ({ event }: { event: EventWithChallenges }) => {
@@ -33,6 +34,7 @@ const EditEventClient = ({ event }: { event: EventWithChallenges }) => {
 
     const router = useRouter()
     const { showNotification } = useNotification()
+    const { setIsOpenLoader } = useLoader()
     const supabase = createClient()
     const [editorValue, setEditorValue] = useState<Editor | null>(null)
     const [challenges, setChallenges] = useState<Array<EventChallengeInsert>>(event.event_challenges)
@@ -44,12 +46,13 @@ const EditEventClient = ({ event }: { event: EventWithChallenges }) => {
     const [avatarFile, setAvatarFile] = useState<File | null>(null)
     const handleCreateNewEvent = async (event: EventInsert) => {
         event.content = editorValue?.getHTML()
+        setIsOpenLoader(true)
         try {
             const { data, error } = await updateEventInfo({ event })
             if (error) {
                 throw new Error(error)
             }
-
+            setIsOpenLoader(false)
             showNotification("Update event successfully")
         } catch (error) {
             if (error instanceof Error) {
@@ -57,6 +60,7 @@ const EditEventClient = ({ event }: { event: EventWithChallenges }) => {
             } else {
                 showNotification("Unknown error when create the event")
             }
+            setIsOpenLoader(false)
         }
     }
     const handleFileChange = (file: File) => {
@@ -73,16 +77,19 @@ const EditEventClient = ({ event }: { event: EventWithChallenges }) => {
     }
 
     const handleUpdateImage = async () => {
+        setIsOpenLoader(true)
         try {
             const { error } = await updateEventPoster({ eventId: event.id, posterFile: avatarFile, originalPath: event.poster_path })
             if (error) {
                 throw new Error(error)
             }
+            setIsOpenLoader(false)
             showNotification("Update image successfully")
         } catch (error) {
             if (error instanceof Error) {
                 showNotification(error.message)
             }
+            setIsOpenLoader(false)
         }
     }
     return (

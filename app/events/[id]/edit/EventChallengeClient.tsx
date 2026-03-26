@@ -5,6 +5,7 @@ import { EventChallengeInsert } from "@/app/types/event_challenges"
 import { SetStateAction, useState } from "react"
 import { useForm } from "react-hook-form"
 import ChallengeEdition from "./ChallengeEdition"
+import { useLoader } from "@/app/context/LoaderContext"
 
 const ChallengeCreationForm = ({ challenges, setChallenges, event }: {
     challenges: Array<EventChallengeInsert>,
@@ -17,9 +18,9 @@ const ChallengeCreationForm = ({ challenges, setChallenges, event }: {
         reset
     } = useForm<EventChallengeInsert>()
     const { showNotification } = useNotification()
-
+    const { setIsOpenLoader } = useLoader()
     const handleCreateNewChallenge = async (challenge: EventChallengeInsert) => {
-
+        setIsOpenLoader(true)
         try {
             if (!event.id) {
                 throw new Error('Fail to create event challenge')
@@ -37,12 +38,13 @@ const ChallengeCreationForm = ({ challenges, setChallenges, event }: {
                 company_name: "",
                 title: ""
             });
-
+            setIsOpenLoader(false)
             showNotification('Create successfully')
         } catch (error) {
             if (error instanceof Error) {
                 showNotification(error.message)
             }
+            setIsOpenLoader(false)
         }
     }
 
