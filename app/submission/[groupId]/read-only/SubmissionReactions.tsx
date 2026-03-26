@@ -7,10 +7,11 @@ import { User } from "@supabase/supabase-js"
 import { UseFormGetValues, UseFormRegister } from "react-hook-form"
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import CommentIcon from '@mui/icons-material/Comment';
+import { ProfileInsert } from "@/app/types/profile"
 interface SubmissionReactionsProps {
     submissionReaction: SubmissionReaction[]
     setSubmissionReaction: React.Dispatch<React.SetStateAction<SubmissionReaction[]>>
-    user: User,
+    user: ProfileInsert,
     getValues: UseFormGetValues<{
         created_at?: string;
         description?: string | null;
@@ -37,7 +38,6 @@ const SubmissionReactions = ({ submissionReaction, setSubmissionReaction, user, 
                     throw new Error(error)
                 }
                 const newReactions = submissionReaction.filter(r => r.user_id !== user.id);
-                console.log(newReactions)
                 setSubmissionReaction(newReactions)
             } catch (error) {
                 if (error instanceof Error) {
@@ -68,7 +68,6 @@ const SubmissionReactions = ({ submissionReaction, setSubmissionReaction, user, 
 
     const handleCheckReaction = () => {
         const foundReaction = submissionReaction.findIndex((reaction) => reaction.user_id == user.id)
-        console.log(foundReaction)
         if (foundReaction == -1) {
             return false
         }

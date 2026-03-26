@@ -25,7 +25,6 @@ const SubmissionFiles = ({ submittedFiles }: SubmissionFilesProps) => {
                     window.open(data.publicUrl, '_blank');
                 }
             } catch (error) {
-                console.log(error)
                 if (error instanceof Error) {
                     showNotification(error.message)
                 }

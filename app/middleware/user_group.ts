@@ -45,7 +45,6 @@ export async function userGroupRoute(request: NextRequest) {
             .eq('group_id', groupId)
             .maybeSingle()
         if (error || data == null) {
-            console.log(error)
             const url = request.nextUrl.clone()
             url.pathname = '/groups'
             return NextResponse.redirect(url)

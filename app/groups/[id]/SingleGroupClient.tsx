@@ -22,7 +22,7 @@ const SingleGroupClient = ({ groupInfo, currentUser }: { groupInfo: GroupInfo, c
     const { showNotification } = useNotification()
     const handleGetInitialImage = (imagePath: string) => {
         const { data } = supabase.storage.from('attachments').getPublicUrl(imagePath);
-        console.log(data)
+
         return data.publicUrl;
     }
     const [previewUrl, setPreviewUrl] = useState(groupInfo?.poster_path ? handleGetInitialImage(groupInfo.poster_path!) : null)

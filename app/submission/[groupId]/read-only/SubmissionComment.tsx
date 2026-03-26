@@ -8,6 +8,7 @@ import { useState } from "react";
 import { useForm, UseFormGetValues } from "react-hook-form";
 import SendIcon from '@mui/icons-material/Send';
 import PersonIcon from '@mui/icons-material/Person';
+import { ProfileInsert } from "@/app/types/profile";
 interface SubmissionCommentProps {
     getValues: UseFormGetValues<{
         created_at?: string;
@@ -19,7 +20,7 @@ interface SubmissionCommentProps {
         short_description?: string | null;
         youtube_link?: string | null;
     }>
-    user: User,
+    user: ProfileInsert,
 }
 const SubmissionComment = ({ getValues, user }: SubmissionCommentProps) => {
     const {
@@ -92,7 +93,6 @@ const SubmissionComment = ({ getValues, user }: SubmissionCommentProps) => {
             }
             setChosenPage(page)
             setSubmissionComments({ submissionComments: data ?? [], totalPages: totalPages ?? 0 })
-            console.log(data, totalPages)
 
         } catch (error) {
             if (error instanceof Error) {
@@ -142,8 +142,8 @@ const SubmissionComment = ({ getValues, user }: SubmissionCommentProps) => {
                                     })}
                                     className="h-[40px] border border-gray-300 rounded px-2 outline-none bg-white cursor-pointer"
                                 >
-                                    <option value="Anonymous">Anonymous</option>
-                                    <option value={user?.email}>{user?.email}</option>
+                                    <option value="Anonymous">Anonymous Company Representatives</option>
+                                    <option value={user?.full_name ?? ""}>{user?.full_name && user.full_name.length != 0 ? user?.full_name : "Empty, please edit your profile"}</option>
                                 </select>
                                 {commentErrors.display_name && (
                                     <p className="text-red-500 text-sm mt-1">

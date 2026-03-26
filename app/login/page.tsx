@@ -34,10 +34,10 @@ const Home = () => {
     const onSubmit = async (userInfo: LoginForm) => {
         try {
             const { error } = await login(userInfo)
-            console.log(error)
+
             throw new Error(error)
         } catch (error) {
-            console.log(error + `--- ${error == 'Error: NEXT_REDIRECT' ? 'true' : 'false'}`)
+
             if (error instanceof Error && error.message !== 'NEXT_REDIRECT') {
                 if (error instanceof Error && error.message == AUTH_ERROR_CODE.EMAIL_NOT_CONFIRMED) {
                     try {

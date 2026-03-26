@@ -25,7 +25,6 @@ const Home = () => {
             const { error } = await signup(signupInfo, window.location.origin)
             throw new Error(error)
         } catch (error) {
-            console.log(error + `--- ${error == 'Error: NEXT_REDIRECT' ? 'true' : 'false'}`)
             if (error instanceof Error && error.message !== 'NEXT_REDIRECT') {
                 if (error.message == AUTH_ERROR_CODE.EXISTED_USER) {
                     showNotification('User already existed')

@@ -14,9 +14,7 @@ export async function insertGroupMembers(registerGroupMemberData: RegisterGroupM
     const supabase = await createClient();
 
     const filteredOutEmails = registerGroupMemberData.member_emails.filter((value) => value != null).splice(1)
-    console.log(filteredOutEmails, registerGroupMemberData.member_emails)
     const { data, error } = await supabase.from('profiles').select('email').in('email', filteredOutEmails);
-    console.log(data)
     if (data?.length == 0 && filteredOutEmails.length != 0) {
         return { error: "Incorrect member email" }
     }
@@ -53,7 +51,6 @@ export async function insertGroupMembers(registerGroupMemberData: RegisterGroupM
     const { data: createdChallengeRelation, error: challengeRelationError } = await supabase.from('group_challenge').insert(groupChallengeRelation)
 
     if (challengeRelationError) {
-        console.log(challengeRelationError)
         return { error: 'Failed to choose the challenges for the group, please contact the staff' }
     }
 

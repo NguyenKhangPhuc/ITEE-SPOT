@@ -9,10 +9,10 @@ const GroupsClient = ({ groupsWithEvents }: { groupsWithEvents: UserGroupsWithEv
     const supabase = createClient()
     const handleGetUrl = (imagePath: string) => {
         const { data } = supabase.storage.from('attachments').getPublicUrl(imagePath);
-        console.log(data)
+
         return data.publicUrl;
     }
-    console.log(groupsWithEvents)
+
     return (
         <div className="w-full flex flex-col gap-8 mt-5  min-h-screen">
             {groupsWithEvents?.map((item, index) => (

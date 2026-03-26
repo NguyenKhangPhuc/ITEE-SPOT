@@ -6,7 +6,6 @@ import { NextResponse } from 'next/server'
 export async function GET(request: Request) {
     const { searchParams, origin } = new URL(request.url)
     const code = searchParams.get('code')
-    console.log(`This is code? ${code}`)
     // if "next" is in param, use it as the redirect URL
     let next = searchParams.get('next') ?? '/'
     if (!next.startsWith('/')) {
@@ -21,14 +20,14 @@ export async function GET(request: Request) {
             const forwardedHost = request.headers.get('x-forwarded-host') // original origin before load balancer
             const isLocalEnv = process.env.NODE_ENV === 'development'
             if (isLocalEnv) {
-                console.log("1 -- env dev " + `${origin}${next}`)
+
                 // we can be sure that there is no load balancer in between, so no need to watch for X-Forwarded-Host
                 return NextResponse.redirect(`${origin}${next}`)
             } else if (forwardedHost) {
-                console.log("2 -- env dev " + `https://${forwardedHost}${next}`)
+
                 return NextResponse.redirect(`https://${forwardedHost}${next}`)
             } else {
-                console.log("3 -- env dev " + `${origin}${next}`)
+
                 return NextResponse.redirect(`${origin}${next}`)
             }
         }

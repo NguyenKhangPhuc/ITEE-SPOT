@@ -38,7 +38,6 @@ const EditEventClient = ({ event }: { event: EventWithChallenges }) => {
     const [challenges, setChallenges] = useState<Array<EventChallengeInsert>>(event.event_challenges)
     const handleGetInitialImage = (imagePath: string) => {
         const { data } = supabase.storage.from('attachments').getPublicUrl(imagePath);
-        console.log(data)
         return data.publicUrl;
     }
     const [previewUrl, setPreviewUrl] = useState(event.poster_path ? handleGetInitialImage(event.poster_path!) : null);
@@ -76,7 +75,6 @@ const EditEventClient = ({ event }: { event: EventWithChallenges }) => {
     const handleUpdateImage = async () => {
         try {
             const { error } = await updateEventPoster({ eventId: event.id, posterFile: avatarFile, originalPath: event.poster_path })
-            console.log(error)
             if (error) {
                 throw new Error(error)
             }

@@ -6,7 +6,6 @@ import { createClient } from "../utils/supabase/server";
 
 export async function sendInvitations(invitation: InvitationInsert) {
     const supabase = await createClient();
-    console.log(invitation)
     const { data: foundMember, error: foundMemberError } = await supabase.from('group_members')
         .select('*, profiles!inner(email)')
         .eq('group_id', invitation.group_id!).eq('profiles.email', invitation.member_email ?? "").maybeSingle()
@@ -14,7 +13,6 @@ export async function sendInvitations(invitation: InvitationInsert) {
     if (foundMemberError) {
         return { error: "Fail to check the user information" }
     }
-    console.log(foundMember)
     if (foundMember) {
         return { error: "Member is already in the team" }
     }

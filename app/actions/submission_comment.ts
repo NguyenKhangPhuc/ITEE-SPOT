@@ -18,7 +18,6 @@ export async function getSubmissionComments({ submissionId, page }: { submission
         .eq('submission_id', submissionId)
 
     if (error) {
-        console.log(error)
         return { error: "Fail to load the comments" }
     }
 

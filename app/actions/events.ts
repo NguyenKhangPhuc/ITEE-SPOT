@@ -43,7 +43,6 @@ export async function createEvent({ event, challenges, avatarFile }: { event: Ev
     ).select().single()
 
     if (error) {
-        console.log(error)
         return { error: "Fail to create the event, please contact staffs" }
     }
 
@@ -112,13 +111,13 @@ export async function updateEventPoster({ eventId, posterFile, originalPath }: {
 
 export async function updateEventChallenges({ eventChallenge }: { eventChallenge: EventChallengeInsert }) {
     const supabase = await createClient()
-    console.log(eventChallenge)
+
     const { data, error } = await supabase
         .from('event_challenges')
         .update({ title: eventChallenge.title, company_name: eventChallenge.company_name })
         .eq('id', eventChallenge.id!)
         .select()
-    console.log(error, data)
+
     if (error) {
         return { error: 'Failed to update challenge information' };
     }
@@ -139,7 +138,6 @@ export async function updateEventInfo({ event }: { event: EventInsert }) {
     }).eq('id', event.id!)
 
     if (error) {
-        console.log(error, event)
         return { error: "Fail to update event information" }
     }
     return { data, error }

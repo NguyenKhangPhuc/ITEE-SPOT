@@ -55,15 +55,15 @@ export async function submissionReadOnlyRoute(request: NextRequest) {
             .eq('id', groupId)
             .maybeSingle()
         if (error) {
-            console.log(error)
+
             const url = request.nextUrl.clone()
             url.pathname = '/groups'
             return NextResponse.redirect(url)
         }
-        console.log("This is data " + data, userRole)
+
 
         if (data == null && (userRole?.role != PROFILE_ROLE.ADMIN || userRole?.role != PROFILE_ROLE.ADMIN)) {
-            console.log(error)
+
             const url = request.nextUrl.clone()
             url.pathname = '/groups'
             return NextResponse.redirect(url)

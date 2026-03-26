@@ -1,5 +1,5 @@
 const YoutubeVideo = ({ embeddedUrl }: { embeddedUrl: string }) => {
-    console.log('This is youtube link ' + embeddedUrl)
+
     return (
         <div className="w-full ">
             {embeddedUrl != null && embeddedUrl != "" ? <iframe

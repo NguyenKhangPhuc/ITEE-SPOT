@@ -17,7 +17,7 @@ const NavBar = ({ initialUser }: { initialUser: User | null }) => {
         try {
             await signout()
         } catch (error) {
-            console.log(error + `--- ${error == 'Error: NEXT_REDIRECT' ? 'true' : 'false'}`)
+
             if (error instanceof Error && error.message !== 'NEXT_REDIRECT') {
 
                 showNotification(error.message)

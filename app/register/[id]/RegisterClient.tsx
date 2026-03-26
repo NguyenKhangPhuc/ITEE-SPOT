@@ -46,7 +46,6 @@ const RegisterClient = ({ event, user, challenges }: { event: Event, user: User,
             router.push(`/groups/${createdGroup.id}`)
         } catch (error) {
             if (error instanceof Error) {
-                console.log(error)
                 showNotification(error.message)
             }
         }
