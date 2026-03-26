@@ -27,11 +27,11 @@ export default function RootLayout({
     <html lang="en">
       <NotificationProvider>
         <body
-          className={`${robotoMono.variable} antialiased`}
+          className={`${robotoMono.variable} antialiased min-h-screen flex flex-col`}
         >
           <NavbarServer />
           <NotificationCard />
-          <main className="mt-18 "> {children}</main>
+          <main className="mt-18 flex-1"> {children}</main>
           <BottomBar />
         </body>
       </NotificationProvider>

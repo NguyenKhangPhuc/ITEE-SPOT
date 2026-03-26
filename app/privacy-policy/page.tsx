@@ -9,7 +9,7 @@ const Home = () => {
                 <div className="space-y-8 text-color leading-relaxed text-sm">
                     <section>
                         <h2 className="text-lg font-semibold text-color mb-2">1. Data Controller</h2>
-                        <p>The IKAPO Project Team at the University of Oulu acts as the Data Controller for the personal data processed within the ITEE CoLAB platform.</p>
+                        <p>The IKAPO Project Team at the University of Oulu acts as the Data Controller for the personal data processed within the ITEE SPOT platform.</p>
                     </section>
 
                     <section>

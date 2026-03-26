@@ -9,7 +9,7 @@ export default function Home() {
 
 
         <h1 className="text-5xl md:text-7xl font-extrabold text-white tracking-tighter mb-2">
-          ITEE CoLAB
+          ITEE SPOT
         </h1>
 
 
@@ -19,13 +19,13 @@ export default function Home() {
 
 
         <p className="text-gray-300 text-lg md:text-xl leading-relaxed italic mb-10">
-          &quot;We&apos;re here to create <span className="text-white font-semibold">opportunity for students</span>,
-          boost connection between <span className="text-white font-semibold">students and SMEs</span> in Oulu city.&quot;
+          Students&apos; <span className="text-white font-semibold">spot-on solutions</span>,
+          in the  <span className="text-white font-semibold">spotlight</span>
         </p>
 
 
         <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-          <Link href={'#events'} className="cursor-pointer px-8 py-3 bg-white text-black font-bold rounded-full hover:bg-gray-200 transition-all duration-300 shadow-lg shadow-white/5">
+          <Link href={'/login'} className="cursor-pointer px-8 py-3 bg-white text-black font-bold rounded-full hover:bg-gray-200 transition-all duration-300 shadow-lg shadow-white/5">
             Explore our event
           </Link>
 

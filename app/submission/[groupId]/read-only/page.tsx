@@ -5,6 +5,7 @@ import { getGroupChallenges } from "@/app/actions/group_challenge";
 
 import ReadOnlySubmission from "./ReadOnlySubmission";
 import { getSubmissionByGroupId } from "@/app/actions/submissions";
+import { getUserProfile } from "@/app/actions/profiles";
 
 
 interface PageProps {
@@ -21,11 +22,15 @@ export default async function Home({ params }: PageProps) {
     if (userError) {
         return <div className="w-full flex items-center justify-center text-red-500">Đã có lỗi xảy ra: {userError?.message}</div>;
     }
+    const { data: userProfile, error: profileError } = await getUserProfile(userInfo.user?.id ?? "")
+    if (profileError) {
+        return <div className="w-full flex items-center justify-center text-red-500">Đã có lỗi xảy ra: {profileError?.message}</div>;
+    }
     return (
         <div className="w-full min-h-screen screen-bg font-roboto-mono">
             <div className="max-w-4xl mx-auto px-6 flex flex-col p-5 ">
                 <div className="text-2xl font-bold text-color">Read Only Submission</div>
-                <ReadOnlySubmission groupSubmissions={data} user={userInfo.user!} />
+                <ReadOnlySubmission groupSubmissions={data} user={userProfile!} />
             </div>
         </div>
     );

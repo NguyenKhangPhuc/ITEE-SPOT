@@ -1,5 +1,5 @@
 'use client'
-import { createEvent } from "@/app/actions/events"
+import { createEvent, updateEventChallenges, updateEventInfo, updateEventPoster } from "@/app/actions/events"
 import { useNotification } from "@/app/context/NotificationContext"
 import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor"
 import { Editor } from "@tiptap/core"
@@ -7,40 +7,50 @@ import { useRouter } from "next/navigation"
 import { ChangeEvent, SetStateAction, useState } from "react"
 import { useForm } from "react-hook-form"
 import ClearIcon from '@mui/icons-material/Clear';
-import { Event, EventInsert } from "@/app/types/event"
+import { Event, EventInsert, EventWithChallenges } from "@/app/types/event"
 import { EventChallengeInsert } from "@/app/types/event_challenges"
 import Image from "next/image"
 import { SubmissionFileExtended } from "@/app/types/submission_files"
 import { EVENT_CREATED_DESCRIPTION } from "@/app/constants"
+import { createClient } from "@/app/utils/supabase/client"
+import { createEventChallenge } from "@/app/actions/event_challenges"
+import ChallengeCreationForm from "./EventChallengeClient"
 
 
-const Home = () => {
+const EditEventClient = ({ event }: { event: EventWithChallenges }) => {
     const {
         register,
         handleSubmit,
         formState: { errors },
 
-    } = useForm<EventInsert>()
+    } = useForm<EventInsert>({
+        defaultValues: {
+            ...event, organized_date: new Date(event.organized_date ?? "")
+                .toISOString()
+                .slice(0, 16)
+        }
+    })
 
     const router = useRouter()
     const { showNotification } = useNotification()
-
+    const supabase = createClient()
     const [editorValue, setEditorValue] = useState<Editor | null>(null)
-    const [challenges, setChallenges] = useState<Array<EventChallengeInsert>>([])
-    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+    const [challenges, setChallenges] = useState<Array<EventChallengeInsert>>(event.event_challenges)
+    const handleGetInitialImage = (imagePath: string) => {
+        const { data } = supabase.storage.from('attachments').getPublicUrl(imagePath);
+        return data.publicUrl;
+    }
+    const [previewUrl, setPreviewUrl] = useState(event.poster_path ? handleGetInitialImage(event.poster_path!) : null);
     const [avatarFile, setAvatarFile] = useState<File | null>(null)
     const handleCreateNewEvent = async (event: EventInsert) => {
         event.content = editorValue?.getHTML()
         try {
-            const { data, error } = await createEvent({ event, challenges, avatarFile })
+            const { data, error } = await updateEventInfo({ event })
             if (error) {
                 throw new Error(error)
             }
-            if (data == null) {
-                throw new Error('Cannot find created event')
-            }
-            showNotification("Create event successfully")
-            router.push(`/events/${data.id}`)
+
+            showNotification("Update event successfully")
         } catch (error) {
             if (error instanceof Error) {
                 showNotification(error.message)
@@ -51,7 +61,6 @@ const Home = () => {
     }
     const handleFileChange = (file: File) => {
         if (file) {
-            // Tạo Blob URL cho file vừa chọn
             const url = URL.createObjectURL(file);
             setPreviewUrl(url);
             setAvatarFile(file)
@@ -62,11 +71,25 @@ const Home = () => {
         setPreviewUrl(null)
         setAvatarFile(null)
     }
+
+    const handleUpdateImage = async () => {
+        try {
+            const { error } = await updateEventPoster({ eventId: event.id, posterFile: avatarFile, originalPath: event.poster_path })
+            if (error) {
+                throw new Error(error)
+            }
+            showNotification("Update image successfully")
+        } catch (error) {
+            if (error instanceof Error) {
+                showNotification(error.message)
+            }
+        }
+    }
     return (
         <div className="w-full min-h-screen screen-bg font-roboto-mono">
             <div className="max-w-4xl mx-auto px-6 pt-5 pb-5">
                 <form className="flex flex-col content-main-color mt-5 p-5 rounded-xl gap-5 items-start" onSubmit={handleSubmit(handleCreateNewEvent)}>
-                    <div className="w-full flex flex-col items-center">
+                    <div className="w-full flex flex-col items-center gap-3">
                         <div className="relative w-40 h-40 group">
                             <div className="relative w-full h-full rounded-full border-2 border-dashed border-gray-500 flex items-center justify-center cursor-pointer overflow-hidden hover:border-black transition-all duration-300 bg-gray-50">
                                 {previewUrl ? (
@@ -109,6 +132,11 @@ const Home = () => {
                                 </button>
                             )}
                         </div>
+                        <button className={`bg-black px-5 py-1 rounded-lg cursor-pointer h-full text-white hover:bg-black/80 duration-300`}
+                            type="button" onClick={() => handleUpdateImage()}
+                        >
+                            Save image
+                        </button>
                     </div>
 
 
@@ -203,8 +231,6 @@ const Home = () => {
                         )}
                     </div>
 
-                    <ChallengeCreationForm challenges={challenges} setChallenges={setChallenges} />
-
                     <div className="input-group w-full ">
                         <label className="event_input_label">Short Description</label>
                         <textarea
@@ -222,102 +248,20 @@ const Home = () => {
                         )}
                     </div>
                     <div className="w-full shadow-xl/30 inset-shadow-sm rounded-xl ">
-                        <SimpleEditor initialContent={null} onEditorReady={setEditorValue} limit={EVENT_CREATED_DESCRIPTION} />
+                        <SimpleEditor initialContent={event.content} onEditorReady={setEditorValue} limit={EVENT_CREATED_DESCRIPTION} />
                     </div>
                     <button
                         type="submit"
-                        className="cursor-pointer px-6 py-2 rounded-md bg-black hover:bg-black/80 transition-colors duration-300 text-white"
+                        className="cursor-pointer w-full py-2 rounded-md bg-black hover:bg-black/80 transition-colors duration-300 text-white"
                     >
-                        Create New
+                        Save
                     </button>
+                    <ChallengeCreationForm challenges={challenges} setChallenges={setChallenges} event={event} />
                 </form>
             </div>
         </div>
     )
 }
 
-const ChallengeCreationForm = ({ challenges, setChallenges }: { challenges: Array<EventChallengeInsert>, setChallenges: React.Dispatch<SetStateAction<Array<EventChallengeInsert>>> }) => {
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-        reset
-    } = useForm<EventChallengeInsert>()
 
-
-    const handleCreateNewChallenge = (challenge: EventChallengeInsert) => {
-        setChallenges([...challenges, challenge])
-        reset({
-            company_name: "",
-            title: ""
-        });
-    }
-    const handleDeleteChallenge = (index: number) => {
-        setChallenges(prev => prev.filter((_, i) => i !== index))
-    }
-
-
-    return (
-        <>
-            <div className="w-full flex gap-5">
-                <div className="input-group w-1/2">
-                    <label className="event_input_label">Company</label>
-                    <input autoComplete="off" placeholder="Company name" id="Title" className="event_input outline-none w-full  h-[40px] placeholder:font-bold " type="text"
-
-                        {...register('company_name', {
-                            required: "Company name for challenge is required",
-                        })} />
-                    {errors.company_name && (
-                        <p className="text-red-500 text-sm mt-1">
-                            {errors.company_name.message}
-                        </p>
-                    )}
-                </div>
-                <div className="input-group w-1/2">
-                    <label className="event_input_label">Title</label>
-                    <input autoComplete="off" placeholder="Challenge title" id="Title" className="event_input outline-none w-full  h-[40px] placeholder:font-bold " type="text"
-
-                        {...register('title', {
-                            required: "Challenge title is required",
-                        })} />
-                    {errors.title && (
-                        <p className="text-red-500 text-sm mt-1">
-                            {errors.title.message}
-                        </p>
-                    )}
-                </div>
-            </div>
-            {challenges.length > 0 && (
-                <div className="flex gap-3 flex-wrap">
-                    {challenges.map((challenge, index) => (
-                        <div
-                            key={index}
-                            className="flex items-center gap-2 px-3 py-1 bg-gray-200 rounded-md"
-                        >
-                            <span className="font-semibold">{challenge.title}</span>
-
-                            <button
-                                type="button"
-                                onClick={() => handleDeleteChallenge(index)}
-                                className="cursor-pointer hover:text-red-500"
-                            >
-                                <ClearIcon />
-                            </button>
-                        </div>
-                    ))}
-                </div>
-            )}
-            <button
-                className="cursor-pointer px-6 py-2 rounded-md bg-black hover:bg-black/90 transition-colors duration-300 text-white"
-                onClick={handleSubmit(handleCreateNewChallenge)}
-                type="button"
-            >
-                Add challenge
-            </button>
-        </>
-
-    )
-}
-
-
-export default Home
+export default EditEventClient

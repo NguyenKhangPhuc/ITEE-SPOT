@@ -16,9 +16,9 @@ export async function updateProfile({ profile }: { profile: ProfileInsert }) {
     const supabase = await createClient()
     const { data, error } = await supabase.from('profiles').update(profile).eq('id', profile.id!).select().maybeSingle();
     if (error) {
-        throw new Error(error.message)
+        return { error: 'Fail to update the profile' }
     }
-    return data
+    return { data, error }
 }
 
 export async function resetPassword(resetPasswordData: ResetPasswordForm) {
@@ -31,17 +31,17 @@ export async function resetPassword(resetPasswordData: ResetPasswordForm) {
         }
     )
     if (error) {
-        throw new Error(error.message)
+        return { error: 'Fail to verify the OTP' }
     }
 
     if (data.session == null) {
-        throw new Error('Error occur when updating user password')
+        return { error: 'Fail to update the user password' }
     }
     const { error: userError } = await supabase.auth.updateUser({ password: resetPasswordData.newPassword })
     if (userError) {
-        throw new Error(userError.message)
+        return { error: 'Fail to update the user password' }
     }
     await supabase.auth.signOut({ scope: 'global' });
 
-    return
+    return { error: null }
 }

@@ -7,10 +7,11 @@ import { User } from "@supabase/supabase-js"
 import { UseFormGetValues, UseFormRegister } from "react-hook-form"
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import CommentIcon from '@mui/icons-material/Comment';
+import { ProfileInsert } from "@/app/types/profile"
 interface SubmissionReactionsProps {
     submissionReaction: SubmissionReaction[]
     setSubmissionReaction: React.Dispatch<React.SetStateAction<SubmissionReaction[]>>
-    user: User,
+    user: ProfileInsert,
     getValues: UseFormGetValues<{
         created_at?: string;
         description?: string | null;
@@ -32,9 +33,11 @@ const SubmissionReactions = ({ submissionReaction, setSubmissionReaction, user, 
                 if (!submissionId) {
                     throw new Error('Please choose a challenge before reaction')
                 }
-                await deleteReaction({ submissionId: submissionId ?? "", userId: user.id })
+                const { data, error } = await deleteReaction({ submissionId: submissionId ?? "", userId: user.id })
+                if (error) {
+                    throw new Error(error)
+                }
                 const newReactions = submissionReaction.filter(r => r.user_id !== user.id);
-                console.log(newReactions)
                 setSubmissionReaction(newReactions)
             } catch (error) {
                 if (error instanceof Error) {
@@ -47,7 +50,10 @@ const SubmissionReactions = ({ submissionReaction, setSubmissionReaction, user, 
                 if (!submissionId) {
                     throw new Error('Please choose a challenge before reaction')
                 }
-                const data = await createReaction({ submissionId: submissionId ?? "", userId: user.id })
+                const { data, error } = await createReaction({ submissionId: submissionId ?? "", userId: user.id })
+                if (error) {
+                    throw new Error(error)
+                }
                 if (data == null) {
                     throw new Error('Error when trying to create reaction')
                 }
@@ -62,7 +68,6 @@ const SubmissionReactions = ({ submissionReaction, setSubmissionReaction, user, 
 
     const handleCheckReaction = () => {
         const foundReaction = submissionReaction.findIndex((reaction) => reaction.user_id == user.id)
-        console.log(foundReaction)
         if (foundReaction == -1) {
             return false
         }

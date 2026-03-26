@@ -9,10 +9,10 @@ const GroupsClient = ({ groupsWithEvents }: { groupsWithEvents: UserGroupsWithEv
     const supabase = createClient()
     const handleGetUrl = (imagePath: string) => {
         const { data } = supabase.storage.from('attachments').getPublicUrl(imagePath);
-        console.log(data)
+
         return data.publicUrl;
     }
-    console.log(groupsWithEvents)
+
     return (
         <div className="w-full flex flex-col gap-8 mt-5  min-h-screen">
             {groupsWithEvents?.map((item, index) => (
@@ -67,13 +67,14 @@ const GroupsClient = ({ groupsWithEvents }: { groupsWithEvents: UserGroupsWithEv
                         </div>
                         <div className="mt-5 ">
                             <p className="md:text-lg text-sm font-bold">Group member</p>
-                            <div className="grid md:grid-cols-4 md:gap-x-4 grid-cols-2 gap-x-1 text-sm font-bold pt-2 pb-2">
+                            <div className="grid grid-cols-2 md:gap-x-4  gap-x-1 text-sm font-bold pt-2 pb-2">
                                 {item?.all_members.map((member, index) => {
                                     return <div key={`group ${item.id} - member ${member.member_id}`}
                                         className="w-full flex flex-col sm:text-sm md:text-[13px] text-[10px]"
                                     >
                                         <div className="">Member {index + 1}</div>
-                                        <div className="opacity-50 sm:text-sm md:text-[13px] text-[10px]">{member.profiles?.full_name}</div>
+                                        <div className="opacity-50 sm:text-sm md:text-[13px] text-[10px]">{member.profiles?.full_name && member.profiles.full_name.length != 0 ? member.profiles?.full_name : "Empty (Please edit profile)"}</div>
+                                        <div className="opacity-50 sm:text-sm md:text-[13px] text-[10px]">{member.profiles?.email && member.profiles.email.length != 0 ? member.profiles?.email : "Empty (Please edit profile)"} </div>
                                     </div>
                                 })}
                             </div>

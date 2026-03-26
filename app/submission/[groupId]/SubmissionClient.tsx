@@ -13,9 +13,10 @@ import ClearIcon from '@mui/icons-material/Clear';
 import DownloadIcon from '@mui/icons-material/Download';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import { SubmissionFileExtended } from "@/app/types/submission_files"
-import { getSignedUrl } from "@/app/actions/file_url"
+import { getPublicFileURL, getSignedUrl } from "@/app/actions/file_url"
 import { EXAMPLE_PROJECT_SUMMANRY, SHORT_DESCRIPTION_LENGTH, STUDENT_SUBMISSION_DESCRIPTION } from "@/app/constants"
 import ReadOnlyEditor from "@/components/tiptap-templates/simple/ReadOnlyEditor"
+import Link from "next/link"
 const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { groupChallenges: Array<GroupChallengeRelation>, eventChallenges: Array<EventChallenge>, group_id: string }) => {
     const {
         register,
@@ -38,7 +39,6 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
     const { showNotification } = useNotification()
 
     const handleCatchFiles = (file: File) => {
-        console.log(file)
         const currentFilesSize = submittedFiles.reduce((acc, submittedFile) => acc + submittedFile.size!, 0);
         if (currentFilesSize + file.size > MAX_TOTAL_SIZE) {
             showNotification("File uploaded exceed 5MB")
@@ -61,12 +61,18 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
     const handleDownloadFile = async (file: SubmissionFileExtended) => {
         if (file.storage_path != null && file.storage_path != "") {
             try {
-                const data = await getSignedUrl(file.storage_path)
-                if (data.signedUrl) {
-                    window.open(data.signedUrl, '_blank');
+                const { data, error } = await getPublicFileURL(file.storage_path)
+                if (error) {
+                    throw new Error(error)
+                }
+                if (!data) {
+                    throw new Error("Fail to load url")
+                }
+                if (data.publicUrl) {
+                    window.open(data.publicUrl, '_blank');
                 }
             } catch (error) {
-                console.log(error)
+
                 if (error instanceof Error) {
                     showNotification(error.message)
                 }
@@ -78,7 +84,7 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
     }
 
     const handleSaveSubmission = async (data: SubmissionInsert) => {
-        console.log(data)
+
         try {
             data.group_id = group_id
             data.group_challenge_id = groupChallenges[chosenGroupChallenges!].id
@@ -89,10 +95,13 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
             if (data.group_challenge_id == null || data.group_challenge_id == "") {
                 throw new Error('Fail to save because unknown error')
             }
-            await saveGroupChallengeSubmission({ submission: data, submittedFiles })
+            const { error } = await saveGroupChallengeSubmission({ submission: data, submittedFiles })
+            if (error) {
+                throw new Error(error)
+            }
             showNotification('Save submission successfully')
         } catch (error) {
-            console.log(error)
+
             if (error instanceof Error) {
                 showNotification(error.message)
             }
@@ -101,7 +110,10 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
 
     const handleChooseChallengeSubmission = async (index: number) => {
         try {
-            const data = await getGoupChallengeSubmission({ groupChallengeId: groupChallenges[index].id, groupId: groupChallenges[index].group_id! })
+            const { data, error } = await getGoupChallengeSubmission({ groupChallengeId: groupChallenges[index].id, groupId: groupChallenges[index].group_id! })
+            if (error) {
+                throw new Error(error)
+            }
             setChosenGroupChallenges(index)
             if (data) {
                 reset(data)
@@ -215,7 +227,7 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
                             /{SHORT_DESCRIPTION_LENGTH} Characters
                         </div>
                     </div>
-                    <div className="shadow-xl/30 inset-shadow-sm rounded-xl w-full p-5 ">
+                    <div className="flex flex-col gap-4 h-[400px] shadow shadow-xl p-5">
                         <label className="event_input_label">Example Submission Description</label>
                         <ReadOnlyEditor content={EXAMPLE_PROJECT_SUMMANRY} />
                     </div>
@@ -283,12 +295,19 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
                         </div>
 
                     )}
-                    <button
-                        type="submit"
-                        className="cursor-pointer px-6 py-2 rounded-md bg-black hover:bg-black/80 transition-colors duration-300 text-white"
-                    >
-                        Save your submission
-                    </button>
+                    <div className="w-full flex gap-5">
+                        <button
+                            type="submit"
+                            className="cursor-pointer w-1/2 h-13 rounded-[10px] bg-black hover:bg-black/80 transition-colors duration-300 text-white hover:scale-105"
+                        >
+                            Save your submission
+                        </button>
+                        <Link href={`/submission/${group_id}/read-only`} className="duration-300 cursor-pointer text-black
+                     p-5 text-center w-1/2 h-13 border-4 border-black bg-white 
+                     hover:scale-105 rounded-[10px] flex items-center justify-center ">
+                            Edit Event
+                        </Link>
+                    </div>
                 </>
             }
 

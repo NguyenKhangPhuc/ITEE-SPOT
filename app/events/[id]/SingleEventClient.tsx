@@ -11,7 +11,6 @@ const SingleEventClient = ({ event, user }: { event: Event, user: Profile }) => 
     // const { showNotification } = useNotification()
     const handleGetUrl = (imagePath: string) => {
         const { data } = supabase.storage.from('attachments').getPublicUrl(imagePath);
-        console.log(data)
         return data.publicUrl;
     }
     return (
@@ -89,22 +88,31 @@ const SingleEventClient = ({ event, user }: { event: Event, user: Profile }) => 
 
             <hr className="border-black/30" />
 
-            <div className="flex flex-col gap-4 mb-10">
+            <div className="flex flex-col gap-4 h-[800px] shadow shadow-xl p-5">
                 <ReadOnlyEditor content={event.content!} />
             </div>
             <hr className="border-black/30" />
-            <div className="flex gap-5">
+            <div className="flex flex-col gap-3">
+                <div className="flex gap-5">
+                    {user?.role == PROFILE_ROLE.JUDGES || user?.role == PROFILE_ROLE.ADMIN &&
+
+                        <>
+                            <Link href={`/events/${event.id}/groups`} className="duration-300 cursor-pointer text-black
+                     p-5 text-center w-1/2 h-13 border-4 border-black bg-white 
+                     hover:scale-105 rounded-[10px] flex items-center justify-center ">
+                                View all groups
+                            </Link>
+                            <Link href={`/events/${event.id}/edit`} className="duration-300 cursor-pointer text-black
+                     p-5 text-center w-1/2 h-13 border-4 border-black bg-white 
+                     hover:scale-105 rounded-[10px] flex items-center justify-center ">
+                                Edit Event
+                            </Link>
+                        </>}
+                </div>
                 <Link href={`/register/${event.id}`} className="transition duration-300 ease-in-out cursor-pointer 
-                w-40 h-13 bg-black hover:bg-black/80 hover:scale-105 border rounded-[10px] flex items-center justify-center text-white">
+                w-full h-13 bg-black hover:bg-black/80 hover:scale-105 border rounded-[10px] flex items-center justify-center text-white">
                     Register
                 </Link>
-                {user?.role == PROFILE_ROLE.JUDGES || user?.role == PROFILE_ROLE.ADMIN &&
-
-                    <Link href={`/events/${event.id}/groups`} className="duration-300 cursor-pointer text-black
-                     p-5 text-center w-60 h-13 border-4 border-black bg-white 
-                     hover:scale-105 rounded-[10px] flex items-center justify-center ">
-                        View all groups
-                    </Link>}
             </div>
         </div>
     )

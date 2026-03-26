@@ -32,7 +32,7 @@ export async function registerRoute(request: NextRequest) {
         pathname.startsWith('/register/') && pathname.split('/').length === 3
     ) {
         const id = pathname.split('/')[2]
-        console.log('this is data -- ' + pathname.split('/'))
+
         const { data: user, error: userError } = await supabase.auth.getUser()
         if (userError || user == null) {
             const url = request.nextUrl.clone()
@@ -46,9 +46,9 @@ export async function registerRoute(request: NextRequest) {
             .eq('groups.event_id', id)
             .maybeSingle()
         if (error) {
-            console.log(error)
+
             const url = request.nextUrl.clone()
-            url.pathname = '/events'
+            url.pathname = '/groups'
             return NextResponse.redirect(url)
         }
 

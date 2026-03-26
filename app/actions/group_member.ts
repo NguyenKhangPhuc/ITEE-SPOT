@@ -14,12 +14,9 @@ export async function insertGroupMembers(registerGroupMemberData: RegisterGroupM
     const supabase = await createClient();
 
     const filteredOutEmails = registerGroupMemberData.member_emails.filter((value) => value != null).splice(1)
-    console.log(filteredOutEmails, registerGroupMemberData.member_emails)
     const { data, error } = await supabase.from('profiles').select('email').in('email', filteredOutEmails);
-    console.log(data)
     if (data?.length == 0 && filteredOutEmails.length != 0) {
-        console.log(error)
-        throw new Error(`Incorrect member email`)
+        return { error: "Incorrect member email" }
     }
     // Uncomment if you want user can only register one group / event
     //     if (filteredOutEmails.length != 0) {
@@ -44,7 +41,7 @@ export async function insertGroupMembers(registerGroupMemberData: RegisterGroupM
     }]).select().single()
 
     if (groupError) {
-        throw new Error('Fail to create the group, try again!')
+        return { error: 'Failed to create the event, please try again later' }
     }
 
     const groupChallengeRelation: Array<GroupChallengeRelationInsert> = registerGroupMemberData.challenges.map((challengeId) => {
@@ -54,7 +51,7 @@ export async function insertGroupMembers(registerGroupMemberData: RegisterGroupM
     const { data: createdChallengeRelation, error: challengeRelationError } = await supabase.from('group_challenge').insert(groupChallengeRelation)
 
     if (challengeRelationError) {
-        throw new Error(challengeRelationError.message)
+        return { error: 'Failed to choose the challenges for the group, please contact the staff' }
     }
 
     const { data: createdMember, error: memberError } = await supabase.from('group_members').insert([{
@@ -64,11 +61,11 @@ export async function insertGroupMembers(registerGroupMemberData: RegisterGroupM
 
     if (memberError) {
         await supabase.from('groups').delete().eq('id', createdGroup.id);
-        throw new Error(memberError.message)
+        return { error: 'Fail to insert the member to the group, please contact the staff' }
     }
 
     if (filteredOutEmails.length == 0) {
-        return { createdGroup, groupError }
+        return { createdGroup, error: groupError }
     }
 
     const invitations: Array<InvitationInsert> = filteredOutEmails.map((value) => {
@@ -78,7 +75,7 @@ export async function insertGroupMembers(registerGroupMemberData: RegisterGroupM
     const { data: createdInvitation, error: invitationError } = await supabase.from('invitation').insert(invitations)
 
     if (invitationError) {
-        throw new Error(invitationError.message)
+        return { error: 'Fail to send the invitation to other members' }
     }
-    return { createdGroup, groupError }
+    return { createdGroup, error: groupError }
 }

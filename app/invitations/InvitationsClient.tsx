@@ -52,7 +52,10 @@ const SingleInvitation = ({ invite, user }: { invite: InvitationWithGroupsEvent,
     }
     const handleAcceptInvitation = async () => {
         try {
-            await acceptInvitation({ invitationId: invite.id, groupId: invite.group_id!, userId: user.id })
+            const { data, error } = await acceptInvitation({ invitationId: invite.id, groupId: invite.group_id!, userId: user.id })
+            if (error) {
+                throw new Error(error)
+            }
             showNotification('Accepting Successfully')
             setInvitationStatus(INVITATION_STATUS.ACCEPTED)
 
@@ -65,7 +68,10 @@ const SingleInvitation = ({ invite, user }: { invite: InvitationWithGroupsEvent,
 
     const handleRejectinvitation = async () => {
         try {
-            await rejectInvitation({ invitationId: invite.id })
+            const { data, error } = await rejectInvitation({ invitationId: invite.id })
+            if (error) {
+                throw new Error(error)
+            }
             showNotification('Rejecting Successfully')
             setInvitationStatus(INVITATION_STATUS.REJECTED)
 

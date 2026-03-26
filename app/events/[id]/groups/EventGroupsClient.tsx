@@ -29,24 +29,21 @@ const EventGroupsClient = ({ event, eventGroups }: { event: EventWithChallenges,
     });
     const handleGetUrl = (imagePath: string) => {
         const { data } = supabase.storage.from('attachments').getPublicUrl(imagePath);
-        console.log(data)
         return data.publicUrl;
     }
     const onSubmit = (data: Filter) => {
-        console.log(data)
         if (data.challenges.length == 0 && data.degrees.length == 0 && data.programmes.length == 0) {
             setGroups(eventGroups)
         } else {
             const filteredGroups = eventGroups?.filter((group) => {
-                console.log()
                 const matchChallenge = data.challenges.length === 0 ? true :
                     group.group_challenge.some((ele) => data.challenges.includes(ele.event_challenges?.title ?? ""));
 
-                // 2. Logic cho Degrees
+
                 const matchDegree = data.degrees.length === 0 ? true :
                     group.group_members.some((mem) => data.degrees.includes(mem.profiles?.degree ?? ""));
 
-                // 3. Logic cho Programmes
+
                 const matchProgramme = data.programmes.length === 0 ? true :
                     group.group_members.some((mem) => data.programmes.includes(mem.profiles?.programme ?? ""));
 
@@ -234,7 +231,8 @@ const EventGroupsClient = ({ event, eventGroups }: { event: EventWithChallenges,
                                         className="w-full flex flex-col sm:text-sm md:text-[13px] text-[10px]"
                                     >
                                         <div className="">Member {index + 1}</div>
-                                        <div className="opacity-50 sm:text-sm md:text-[13px] text-[10px]">{member.profiles?.full_name}</div>
+                                        <div className="opacity-50 sm:text-sm md:text-[13px] text-[10px]">{member.profiles?.full_name && member.profiles.full_name.length != 0 ? member.profiles?.full_name : "Empty full name"}</div>
+                                        <div className="opacity-50 sm:text-sm md:text-[13px] text-[10px]">{member.profiles?.email && member.profiles.email.length != 0 ? member.profiles?.email : "Empty email"} </div>
                                     </div>
                                 })}
                             </div>

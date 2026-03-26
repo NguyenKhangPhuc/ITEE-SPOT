@@ -21,7 +21,9 @@ import SubmissionFiles from "./SubmissionFiles"
 import SubmissionRating from "./SubmissionRating"
 import SubmissionReactions from "./SubmissionReactions"
 import SubmissionComment from "./SubmissionComment"
-const ReadOnlySubmission = ({ groupSubmissions, user }: { groupSubmissions: GroupSubmissions, user: User }) => {
+import { Profile, ProfileInsert } from "@/app/types/profile"
+import { PROFILE_ROLE } from "@/app/types/enum"
+const ReadOnlySubmission = ({ groupSubmissions, user }: { groupSubmissions: GroupSubmissions, user: ProfileInsert }) => {
     const {
         register,
         handleSubmit,
@@ -44,10 +46,12 @@ const ReadOnlySubmission = ({ groupSubmissions, user }: { groupSubmissions: Grou
 
     const handleChooseChallengeSubmission = async (index: number) => {
         try {
-            const receivedUserRating = await getSubmissionRatingById({ submissionId: groupSubmissions![index].id!, userId: user.id })
+            const { data: receivedUserRating, error } = await getSubmissionRatingById({ submissionId: groupSubmissions![index].id!, userId: user.id })
+            if (error) {
+                throw new Error(error)
+            }
             if (receivedUserRating) {
                 setUserRating(receivedUserRating)
-                console.log(receivedUserRating)
             }
             setChosenGroupChallenges(index)
             reset(groupSubmissions![index])
@@ -114,7 +118,7 @@ const ReadOnlySubmission = ({ groupSubmissions, user }: { groupSubmissions: Grou
 
                     <SubmissionFiles submittedFiles={submittedFiles} />
 
-                    <SubmissionRating user={user} userRating={userRating} setUserRating={setUserRating} getValues={getValues} />
+                    {user.role == PROFILE_ROLE.ADMIN || user.role == PROFILE_ROLE.JUDGES && <SubmissionRating user={user} userRating={userRating} setUserRating={setUserRating} getValues={getValues} />}
 
                     <SubmissionReactions getValues={getValues} submissionReaction={submissionReaction} setSubmissionReaction={setSubmissionReaction} user={user} />
 

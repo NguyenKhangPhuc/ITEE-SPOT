@@ -22,7 +22,7 @@ const SingleGroupClient = ({ groupInfo, currentUser }: { groupInfo: GroupInfo, c
     const { showNotification } = useNotification()
     const handleGetInitialImage = (imagePath: string) => {
         const { data } = supabase.storage.from('attachments').getPublicUrl(imagePath);
-        console.log(data)
+
         return data.publicUrl;
     }
     const [previewUrl, setPreviewUrl] = useState(groupInfo?.poster_path ? handleGetInitialImage(groupInfo.poster_path!) : null)
@@ -62,7 +62,10 @@ const SingleGroupClient = ({ groupInfo, currentUser }: { groupInfo: GroupInfo, c
             setDisableGroupName(false)
         } else {
             try {
-                const updatedGroupInfo = await updateGroupNameAndDescription({ groupId: groupInfo!.id, groupName: data.groupName, description: data.short_description })
+                const { data: updatedGroupInfo, error } = await updateGroupNameAndDescription({ groupId: groupInfo!.id, groupName: data.groupName, description: data.short_description })
+                if (error) {
+                    throw new Error(error)
+                }
                 showNotification("Update group name successfully")
                 resetGroupName({ groupName: updatedGroupInfo?.group_name ?? "" })
                 setDisableGroupName(true)
@@ -74,12 +77,15 @@ const SingleGroupClient = ({ groupInfo, currentUser }: { groupInfo: GroupInfo, c
         }
     }
 
-    const handleSendInvitation = async (data: InvitationInsert) => {
+    const handleSendInvitation = async (invitationInfo: InvitationInsert) => {
         if (groupInfo?.group_members.length == groupInfo?.events?.max_group_members) {
             showNotification(`Reach maximum ${groupInfo?.events?.max_group_members} members per group`)
         } else {
             try {
-                await sendInvitations(data)
+                const { data, error } = await sendInvitations(invitationInfo)
+                if (error) {
+                    throw new Error(error)
+                }
                 showNotification('Send invitation successfully')
             } catch (error) {
                 if (error instanceof Error) {
@@ -103,7 +109,10 @@ const SingleGroupClient = ({ groupInfo, currentUser }: { groupInfo: GroupInfo, c
 
     const handleUpdateImage = async () => {
         try {
-            await updateGroupPosterPath({ groupId: groupInfo!.id, avatarFile, originalPath: groupInfo?.poster_path ?? null })
+            const { data, error } = await updateGroupPosterPath({ groupId: groupInfo!.id, avatarFile, originalPath: groupInfo?.poster_path ?? null })
+            if (error) {
+                throw new Error(error)
+            }
             showNotification('Update successfully')
         } catch (error) {
             if (error instanceof Error) {

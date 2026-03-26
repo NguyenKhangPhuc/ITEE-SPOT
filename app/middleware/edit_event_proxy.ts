@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server'
 import { Database } from '../types/database.types'
 import { PROFILE_ROLE } from '../types/enum'
 
-export async function submissionReadOnlyRoute(request: NextRequest) {
+export async function editEventRoute(request: NextRequest) {
     let supabaseResponse = NextResponse.next({
         request,
     })
@@ -29,11 +29,10 @@ export async function submissionReadOnlyRoute(request: NextRequest) {
         }
     )
     const pathname = request.nextUrl.pathname;
-    const pathnameSplitted = pathname.split('/');
+    const pathNameSplitted = pathname.split('/')
     if (
-        pathname.startsWith('/submission/') && pathnameSplitted.length === 4 && pathnameSplitted[3] == 'read-only'
+        pathname.startsWith('/events/') && pathNameSplitted.length == 4 && pathNameSplitted[3] == 'edit'
     ) {
-        const groupId = pathname.split('/')[2]
         const { data: user, error: userError } = await supabase.auth.getUser()
         if (userError || user == null) {
             const url = request.nextUrl.clone()
@@ -42,33 +41,11 @@ export async function submissionReadOnlyRoute(request: NextRequest) {
         }
         const { data: userRole, error: userRoleError } = await supabase.from('profiles').select('role').eq('id', user.user.id).maybeSingle()
 
-        if (userRoleError) {
+        if (userRoleError || userRole?.role != PROFILE_ROLE.ADMIN) {
             const url = request.nextUrl.clone()
             url.pathname = '/events'
             return NextResponse.redirect(url)
         }
-
-        const { data, error } = await supabase
-            .from('groups')
-            .select('id, group_members!inner (member_id)')
-            .eq('group_members.member_id', user.user.id)
-            .eq('id', groupId)
-            .maybeSingle()
-        if (error) {
-
-            const url = request.nextUrl.clone()
-            url.pathname = '/groups'
-            return NextResponse.redirect(url)
-        }
-
-
-        if (data == null && (userRole?.role != PROFILE_ROLE.ADMIN || userRole?.role != PROFILE_ROLE.ADMIN)) {
-
-            const url = request.nextUrl.clone()
-            url.pathname = '/groups'
-            return NextResponse.redirect(url)
-        }
-
 
     }
 

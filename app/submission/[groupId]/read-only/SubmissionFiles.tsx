@@ -1,6 +1,6 @@
 'use client'
 
-import { getSignedUrl } from "@/app/actions/file_url"
+import { getPublicFileURL, getSignedUrl } from "@/app/actions/file_url"
 import { useNotification } from "@/app/context/NotificationContext"
 import { SubmissionFileExtended } from "@/app/types/submission_files"
 
@@ -14,12 +14,17 @@ const SubmissionFiles = ({ submittedFiles }: SubmissionFilesProps) => {
     const handleDownloadFile = async (file: SubmissionFileExtended) => {
         if (file.storage_path != null && file.storage_path != "") {
             try {
-                const data = await getSignedUrl(file.storage_path)
-                if (data.signedUrl) {
-                    window.open(data.signedUrl, '_blank');
+                const { data, error } = await getPublicFileURL(file.storage_path)
+                if (error) {
+                    throw new Error(error)
+                }
+                if (!data) {
+                    throw new Error("Fail to load url")
+                }
+                if (data.publicUrl) {
+                    window.open(data.publicUrl, '_blank');
                 }
             } catch (error) {
-                console.log(error)
                 if (error instanceof Error) {
                     showNotification(error.message)
                 }

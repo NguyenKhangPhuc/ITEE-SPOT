@@ -44,7 +44,6 @@ export const FileSubmission = () => {
                     files.forEach(file => {
                         if (htmlContent) {
 
-                            console.log(htmlContent)
                             return false
                         }
 

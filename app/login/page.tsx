@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { createClient } from '../utils/supabase/client';
 import { login, resendVerificationCode } from '../actions/authentication';
 import { useNotification } from '../context/NotificationContext';
+import { AUTH_ERROR_CODE } from '../types/enum';
 const Home = () => {
     const { showNotification } = useNotification();
     const supabase = createClient();
@@ -32,21 +33,24 @@ const Home = () => {
     }
     const onSubmit = async (userInfo: LoginForm) => {
         try {
-            await login(userInfo)
+            const { error } = await login(userInfo)
+
+            throw new Error(error)
         } catch (error) {
-            console.log(error + `--- ${error == 'Error: NEXT_REDIRECT' ? 'true' : 'false'}`)
+
             if (error instanceof Error && error.message !== 'NEXT_REDIRECT') {
-                if (error instanceof Error && error.message == 'email_not_confirmed') {
+                if (error instanceof Error && error.message == AUTH_ERROR_CODE.EMAIL_NOT_CONFIRMED) {
                     try {
                         await resendVerificationCode(userInfo.email, window.location.origin)
                         showNotification('Please verify your email')
                     } catch (error) {
                         showNotification('Failed to send verification code')
                     }
+                } else if (error instanceof Error && error.message == AUTH_ERROR_CODE.INVALID_CREDENTIALS) {
+                    showNotification("Invalid credentials")
                 } else {
-                    showNotification(error.message)
+                    showNotification('Failed to login')
                 }
-
             }
 
         }

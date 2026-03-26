@@ -17,7 +17,7 @@ const NavbarMobile = ({ initialUser }: { initialUser: User | null }) => {
         try {
             await signout()
         } catch (error) {
-            console.log(error + `--- ${error == 'Error: NEXT_REDIRECT' ? 'true' : 'false'}`)
+
             if (error instanceof Error && error.message !== 'NEXT_REDIRECT') {
 
                 showNotification(error.message)
@@ -29,7 +29,7 @@ const NavbarMobile = ({ initialUser }: { initialUser: User | null }) => {
             <div className="max-w-4xl mx-auto px-6 flex">
                 <div className="w-full flex items-center justify-between h-18">
                     <Link href={`/`} className="text-xl font-bold z-100">
-                        ITEE CoLAB
+                        ITEE SPOT
                     </Link>
                     <div className="flex items-center gap-1 h-full ">
 

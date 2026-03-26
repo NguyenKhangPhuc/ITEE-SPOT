@@ -8,6 +8,7 @@ import { title } from 'process'
 import { EVENT_STATUS } from '../types/enum'
 import { PostgrestError } from '@supabase/supabase-js'
 import { v4 as uuidv4 } from 'uuid';
+import { EventChallengeInsert } from '../types/event_challenges'
 
 export async function createEvent({ event, challenges, avatarFile }: { event: EventInsert, challenges: Array<EventInsert>, avatarFile: File | null }) {
     const supabase = await createClient();
@@ -20,7 +21,7 @@ export async function createEvent({ event, challenges, avatarFile }: { event: Ev
         if (avatarUrlPath) {
             const { error: storageError } = await supabase.storage.from('attachments').upload(avatarUrlPath, avatarFile);
             if (storageError) {
-                throw new Error(storageError.message)
+                return { error: "Failed to upload to storage" }
             }
         }
     }
@@ -42,7 +43,7 @@ export async function createEvent({ event, challenges, avatarFile }: { event: Ev
     ).select().single()
 
     if (error) {
-        throw new Error(error.message)
+        return { error: "Fail to create the event, please contact staffs" }
     }
 
 
@@ -54,11 +55,11 @@ export async function createEvent({ event, challenges, avatarFile }: { event: Ev
     const { error: challengeError } = await supabase.from("event_challenges").insert(updatedChallenges)
 
     if (challengeError) {
-        throw new Error(challengeError.message)
+        return { error: "Fail to create the event challenges, please contact staffs" }
     }
 
     revalidatePath('/events');
-    return data
+    return { data, error: null }
 }
 
 export async function getAllEvents() {
@@ -77,3 +78,67 @@ export async function getSingleEvent(id: string) {
     return { data, error }
 }
 
+export async function updateEventPoster({ eventId, posterFile, originalPath }: { eventId: string, posterFile: File | null, originalPath: string | null }) {
+    const supabase = await createClient();
+    let posterPath = null
+    if (posterFile != null) {
+        posterPath = `${eventId}/${Date.now()}-${posterFile.name}`;
+
+        if (originalPath) {
+            const { error } = await supabase.storage.from('attachments').remove([originalPath])
+        }
+        const { error: storageError } = await supabase.storage.from('attachments').upload(posterPath, posterFile);
+        if (storageError) {
+            return { error: "Failed to upload to storage" }
+        }
+
+        const { error } = await supabase.from('events').update({ poster_path: posterPath }).eq('id', eventId)
+        if (error) {
+            return { error: "Failed to update image, please contact staff" }
+        }
+        return { error: null }
+    }
+
+    if (originalPath) {
+        const { error } = await supabase.storage.from('attachments').remove([originalPath])
+    }
+    const { error } = await supabase.from('events').update({ poster_path: null }).eq('id', eventId)
+    if (error) {
+        return { error: "Failed to update image, please contact staff" }
+    }
+    return { error }
+}
+
+export async function updateEventChallenges({ eventChallenge }: { eventChallenge: EventChallengeInsert }) {
+    const supabase = await createClient()
+
+    const { data, error } = await supabase
+        .from('event_challenges')
+        .update({ title: eventChallenge.title, company_name: eventChallenge.company_name })
+        .eq('id', eventChallenge.id!)
+        .select()
+
+    if (error) {
+        return { error: 'Failed to update challenge information' };
+    }
+    return { data, error }
+}
+
+export async function updateEventInfo({ event }: { event: EventInsert }) {
+    const supabase = await createClient()
+    const { data, error } = await supabase.from('events').update({
+        title: event.title,
+        start_date: event.start_date,
+        end_date: event.end_date,
+        short_description: event.short_description,
+        content: event.content,
+        max_group_members: event.max_group_members,
+        organized_date: event.organized_date,
+        location: event.location
+    }).eq('id', event.id!)
+
+    if (error) {
+        return { error: "Fail to update event information" }
+    }
+    return { data, error }
+}

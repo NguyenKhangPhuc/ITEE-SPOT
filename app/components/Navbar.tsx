@@ -17,7 +17,7 @@ const NavBar = ({ initialUser }: { initialUser: User | null }) => {
         try {
             await signout()
         } catch (error) {
-            console.log(error + `--- ${error == 'Error: NEXT_REDIRECT' ? 'true' : 'false'}`)
+
             if (error instanceof Error && error.message !== 'NEXT_REDIRECT') {
 
                 showNotification(error.message)
@@ -56,7 +56,7 @@ const NavBar = ({ initialUser }: { initialUser: User | null }) => {
                         </div>
                     </div>
                     <Link href={`/`} className="text-2xl font-bold">
-                        ITEE CoLAB
+                        ITEE SPOT
                     </Link>
                     <div className="flex gap-6 items-center">
                         <Link

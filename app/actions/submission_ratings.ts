@@ -10,9 +10,9 @@ export async function getSubmissionRatingById({ submissionId, userId }: { submis
         .eq('submission_id', submissionId).maybeSingle()
 
     if (error) {
-        throw new Error(error.message)
+        return { error: "Failed to get the user rating" }
     }
-    return data
+    return { data, error }
 }
 
 
@@ -23,8 +23,8 @@ export async function createSubmissionRating({ submissionRating }: { submissionR
     const { data, error } = await supabase.from('submission_ratings').upsert(submissionRating, { onConflict: 'user_id,submission_id' })
 
     if (error) {
-        throw new Error(error.message)
+        return { error: "Fail to create the submission ratings" }
     }
 
-    return data
+    return { data, error }
 }

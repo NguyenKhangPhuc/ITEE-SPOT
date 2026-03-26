@@ -10,7 +10,6 @@ const EventsClient = ({ events }: { events: Array<Event> }) => {
     // const { showNotification } = useNotification()
     const handleGetUrl = (imagePath: string) => {
         const { data } = supabase.storage.from('attachments').getPublicUrl(imagePath);
-        console.log(data)
         return data.publicUrl;
     }
     return (

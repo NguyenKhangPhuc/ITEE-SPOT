@@ -2,6 +2,7 @@
 
 import { createSubmissionRating } from "@/app/actions/submission_ratings"
 import { useNotification } from "@/app/context/NotificationContext"
+import { ProfileInsert } from "@/app/types/profile"
 import { SubmissionRatingInsert } from "@/app/types/submission_rating"
 import { User } from "@supabase/supabase-js"
 import React, { SetStateAction, useState } from "react"
@@ -18,7 +19,7 @@ interface SubmissionRatingProps {
         short_description?: string | null;
         youtube_link?: string | null;
     }>
-    user: User,
+    user: ProfileInsert,
     userRating: SubmissionRatingInsert | null
     setUserRating: React.Dispatch<SetStateAction<SubmissionRatingInsert | null>>
 }
@@ -36,7 +37,10 @@ const SubmissionRating = ({ getValues, user, userRating, setUserRating }: Submis
                 rating: parseInt(value),
             }
 
-            await createSubmissionRating({ submissionRating: upsertedRating })
+            const { data, error } = await createSubmissionRating({ submissionRating: upsertedRating })
+            if (error) {
+                throw new Error(error)
+            }
             setUserRating(upsertedRating)
             showNotification('Give a rating successfully')
         } catch (error) {
