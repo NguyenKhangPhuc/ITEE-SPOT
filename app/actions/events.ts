@@ -43,6 +43,7 @@ export async function createEvent({ event, challenges, avatarFile }: { event: Ev
     ).select().single()
 
     if (error) {
+        console.log(error)
         return { error: "Fail to create the event, please contact staffs" }
     }
 

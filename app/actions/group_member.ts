@@ -53,6 +53,7 @@ export async function insertGroupMembers(registerGroupMemberData: RegisterGroupM
     const { data: createdChallengeRelation, error: challengeRelationError } = await supabase.from('group_challenge').insert(groupChallengeRelation)
 
     if (challengeRelationError) {
+        console.log(challengeRelationError)
         return { error: 'Failed to choose the challenges for the group, please contact the staff' }
     }
 
