@@ -40,7 +40,7 @@ const UserProfileClient = ({ user }: { user: Profile }) => {
             setIsOpenLoader(false)
         }
     }
-
+    console.log(user)
     return (
         <div className="w-full p-5 mt-5 content-main-color rounded-xl">
             <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-4">
@@ -50,7 +50,7 @@ const UserProfileClient = ({ user }: { user: Profile }) => {
                         <label className="event_input_label block mb-1">Email</label>
                         <input
                             disabled
-                            value={user.email || ""}
+                            value={user.email ?? ""}
                             className="event_input outline-none w-full h-[40px] bg-gray-100 cursor-not-allowed cursor-not-allowed"
                             type="email"
                         />

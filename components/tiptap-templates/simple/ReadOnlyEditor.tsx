@@ -54,7 +54,7 @@ const ReadOnlyEditor = ({ content }: { content: string }) => {
         content,
     })
     return (
-        <div className="simple-editor-wrapper-readonly relative">
+        <div className="simple-editor-wrapper-readonly relative h-full">
             <EditorContext.Provider value={{ editor }}>
 
                 <EditorContent

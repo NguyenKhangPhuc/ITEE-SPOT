@@ -6,7 +6,7 @@ import { createClient } from "../utils/supabase/server";
 
 export async function getUserProfile(userId: string) {
     const supabase = await createClient()
-
+    console.log(userId)
     const { data: userProfile, error: profileError } = await supabase.from('profiles').select('*').eq('id', userId).maybeSingle()
 
     return { data: userProfile, error: profileError }

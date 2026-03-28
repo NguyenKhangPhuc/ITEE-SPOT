@@ -66,6 +66,41 @@ export type Database = {
           },
         ]
       }
+      event_grading_criteria: {
+        Row: {
+          created_at: string
+          criteria_description: string | null
+          criteria_name: string | null
+          event_id: string | null
+          id: string
+          percentage: number | null
+        }
+        Insert: {
+          created_at?: string
+          criteria_description?: string | null
+          criteria_name?: string | null
+          event_id?: string | null
+          id?: string
+          percentage?: number | null
+        }
+        Update: {
+          created_at?: string
+          criteria_description?: string | null
+          criteria_name?: string | null
+          event_id?: string | null
+          id?: string
+          percentage?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_grading_criteria_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       events: {
         Row: {
           content: string | null
@@ -425,6 +460,55 @@ export type Database = {
           },
         ]
       }
+      submission_grading: {
+        Row: {
+          created_at: string
+          event_criteria_id: string | null
+          grade: number | null
+          id: string
+          submission_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_criteria_id?: string | null
+          grade?: number | null
+          id?: string
+          submission_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_criteria_id?: string | null
+          grade?: number | null
+          id?: string
+          submission_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "submission_grading_event_criteria_id_fkey"
+            columns: ["event_criteria_id"]
+            isOneToOne: false
+            referencedRelation: "event_grading_criteria"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "submission_grading_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "submissions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "submission_grading_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       submission_ratings: {
         Row: {
           created_at: string
@@ -550,7 +634,22 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      submission_final_scores: {
+        Row: {
+          final_average_score: number | null
+          submission_id: string | null
+          total_graders: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "submission_grading_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       [_ in never]: never
