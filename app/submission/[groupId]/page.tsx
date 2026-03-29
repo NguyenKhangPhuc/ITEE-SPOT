@@ -15,7 +15,7 @@ export default async function Home({ params }: PageProps) {
     const { groupId } = await params;
     const { data, error } = await getGroupChallenges({ groupId })
     if (error) {
-        return <div className="w-full flex items-center justify-center text-red-500">Đã có lỗi xảy ra: {error?.message}</div>;
+        return <div className="w-full flex items-center justify-center text-red-500">Something went wrong:  {error?.message}</div>;
     }
     const eventChallenges: Array<EventChallenge> = data!.map((e) => {
         return e.event_challenges!

@@ -6,7 +6,7 @@ const Home = async () => {
     const { data: events, error } = await getAllEvents();
 
     if (error) {
-        return <div className="w-full flex items-center justify-center text-red-500">Đã có lỗi xảy ra: {error.message}</div>;
+        return <div className="w-full flex items-center justify-center text-red-500">Something went wrong:  {error.message}</div>;
     }
     return (
         <div className="w-full min-h-screen screen-bg font-roboto-mono">

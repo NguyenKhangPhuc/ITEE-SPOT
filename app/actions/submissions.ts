@@ -109,3 +109,13 @@ export async function saveGroupChallengeSubmission({ submission, submittedFiles 
 
     return { data: subData, error: null };
 }
+
+export async function getSubmissionById(submissionId: string) {
+    const supabase = await createClient()
+    const { data, error } = await supabase
+        .from('submissions')
+        .select('*, groups (event_id)').eq('id', submissionId).maybeSingle()
+
+    return { data, error }
+
+}

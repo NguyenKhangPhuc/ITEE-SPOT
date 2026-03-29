@@ -12,13 +12,13 @@ export default async function Home({ params }: PageProps) {
     const { data: event, error } = await getSingleEvent(id)
     const { data: user, error: userError } = await getUser()
     if (error || userError) {
-        return <div className="w-full flex items-center justify-center text-red-500">Đã có lỗi xảy ra: {error?.message ? error.message : userError?.message}</div>;
+        return <div className="w-full flex items-center justify-center text-red-500">Something went wrong:  {error?.message ? error.message : userError?.message}</div>;
     }
 
     const { data: challenges, error: challengesError } = await getEventChallenges(id)
     if (challengesError) {
 
-        return <div className="w-full flex items-center justify-center text-red-500">Đã có lỗi xảy ra: {challengesError.message}</div>;
+        return <div className="w-full flex items-center justify-center text-red-500">Something went wrong:  {challengesError.message}</div>;
 
     }
     return (

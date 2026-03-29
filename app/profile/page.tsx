@@ -8,12 +8,12 @@ export default async function Home() {
 
     const { data, error } = await getUser();
     if (error || data.user == null) {
-        return <div className="w-full flex items-center justify-center text-red-500">Đã có lỗi xảy ra: {error?.message ? error.message : 'Unknown Error'}</div>;
+        return <div className="w-full flex items-center justify-center text-red-500">Something went wrong:  {error?.message ? error.message : 'Unknown Error'}</div>;
     }
 
     const { data: user, error: userError } = await getUserProfile(data.user!.id)
     if (userError) {
-        return <div className="w-full flex items-center justify-center text-red-500">Đã có lỗi xảy ra: {userError?.message}</div>;
+        return <div className="w-full flex items-center justify-center text-red-500">Something went wrong:  {userError?.message}</div>;
     }
     console.log(user, data)
     return (

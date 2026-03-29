@@ -30,3 +30,9 @@ export async function createEventCriteria({ newCriteria, eventId }: { newCriteri
 
     return { data, error }
 }
+
+export async function getEventCriteriaById(eventId: string) {
+    const supabase = await createClient();
+    const { data, error } = await supabase.from('event_grading_criteria').select('*').eq('event_id', eventId).order('id', { ascending: false })
+    return { data, error }
+}

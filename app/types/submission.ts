@@ -44,3 +44,18 @@ export type GroupSubmissions = {
         user_id: string | null;
     }[];
 }[] | null
+
+export type SubmissionWithEventId = {
+    created_at: string;
+    description: string | null;
+    github_link: string | null;
+    group_challenge_id: string | null;
+    group_id: string | null;
+    id: string;
+    short_description: string | null;
+    title: string | null;
+    youtube_link: string | null;
+    groups: {
+        event_id: string | null;
+    } | null;
+} | null

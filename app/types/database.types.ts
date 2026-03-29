@@ -593,6 +593,7 @@ export type Database = {
           group_id: string | null
           id: string
           short_description: string | null
+          title: string | null
           youtube_link: string | null
         }
         Insert: {
@@ -603,6 +604,7 @@ export type Database = {
           group_id?: string | null
           id?: string
           short_description?: string | null
+          title?: string | null
           youtube_link?: string | null
         }
         Update: {
@@ -613,6 +615,7 @@ export type Database = {
           group_id?: string | null
           id?: string
           short_description?: string | null
+          title?: string | null
           youtube_link?: string | null
         }
         Relationships: [

@@ -181,6 +181,19 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
             {chosenGroupChallenges != null &&
                 <>
                     <div className="input-group w-full">
+                        <label className="event_input_label">Submission title</label>
+                        <input autoComplete="off" placeholder="Github source code link" id="Title" className="event_input outline-none w-full  h-[40px] placeholder:font-bold " type="text"
+
+                            {...register('title', {
+                                required: "Project title is required",
+                            })} />
+                        {errors.title && (
+                            <p className="text-red-500 text-sm mt-1">
+                                {errors.title.message}
+                            </p>
+                        )}
+                    </div>
+                    <div className="input-group w-full">
                         <label className="event_input_label">Github Link</label>
                         <input autoComplete="off" placeholder="Github source code link" id="Title" className="event_input outline-none w-full  h-[40px] placeholder:font-bold " type="text"
 

@@ -11,12 +11,12 @@ export default async function Home({ params }: PageProps) {
     const { data: event, error: eventError } = await getSingleEvent(id)
 
     if (eventError) {
-        return <div className="w-full flex items-center justify-center text-red-500">Đã có lỗi xảy ra: {eventError.message}</div>;
+        return <div className="w-full flex items-center justify-center text-red-500">Something went wrong:  {eventError.message}</div>;
     }
     const { data: groups, error: groupsError } = await getEventGroups(id);
 
     if (groupsError) {
-        return <div className="w-full flex items-center justify-center text-red-500">Đã có lỗi xảy ra: {groupsError.message}</div>;
+        return <div className="w-full flex items-center justify-center text-red-500">Something went wrong:  {groupsError.message}</div>;
     }
     return (
         <div className="w-full min-h-screen screen-bg font-roboto-mono">

@@ -23,6 +23,7 @@ import SubmissionReactions from "./SubmissionReactions"
 import SubmissionComment from "./SubmissionComment"
 import { Profile, ProfileInsert } from "@/app/types/profile"
 import { PROFILE_ROLE } from "@/app/types/enum"
+import Link from "next/link"
 const ReadOnlySubmission = ({ groupSubmissions, user }: { groupSubmissions: GroupSubmissions, user: ProfileInsert }) => {
     const {
         register,
@@ -106,7 +107,7 @@ const ReadOnlySubmission = ({ groupSubmissions, user }: { groupSubmissions: Grou
                     ))}
                 </div>}
             </div>
-            {chosenGroupChallenges != null &&
+            {chosenGroupChallenges != null && groupSubmissions != null &&
                 <>
                     <SubmissionInfo
                         initialContent={initialEditorContent ?? ""}
@@ -123,6 +124,15 @@ const ReadOnlySubmission = ({ groupSubmissions, user }: { groupSubmissions: Grou
                     <SubmissionReactions getValues={getValues} submissionReaction={submissionReaction} setSubmissionReaction={setSubmissionReaction} user={user} />
 
                     <SubmissionComment getValues={getValues} user={user} />
+
+                    <div className="w-full flex gap-5">
+
+                        <Link href={`/submission/grading/${groupSubmissions[chosenGroupChallenges].id}`} className="duration-300 cursor-pointer text-black
+                     p-5 text-center w-full h-13 border-4 border-black bg-white 
+                     hover:scale-105 rounded-[10px] flex items-center justify-center ">
+                            Grade this project
+                        </Link>
+                    </div>
                 </>
             }
 
