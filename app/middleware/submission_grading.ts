@@ -1,9 +1,10 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 import { Database } from '../types/database.types'
+import { PROFILE_ROLE } from '../types/enum'
 import { User } from '@supabase/supabase-js'
 
-export async function registerRoute({ request, user }: { request: NextRequest, user: User | null }) {
+export async function submissionGradingRoute({ request, user }: { request: NextRequest, user: User | null }) {
     let supabaseResponse = NextResponse.next({
         request,
     })
@@ -28,24 +29,30 @@ export async function registerRoute({ request, user }: { request: NextRequest, u
             },
         }
     )
-
     const pathname = request.nextUrl.pathname;
+    const pathnameSplitted = pathname.split('/');
     if (
-        pathname.startsWith('/register/') && pathname.split('/').length === 3
+        pathname.startsWith('/submission/grading') && pathnameSplitted.length === 4
     ) {
         if (user == null) {
             const url = request.nextUrl.clone()
             url.pathname = '/login'
             return NextResponse.redirect(url)
         }
-        const id = pathname.split('/')[2]
+        const submissionId = pathname.split('/')[3]
+        const { data: userRole, error: userRoleError } = await supabase.from('profiles').select('role').eq('id', user.id).maybeSingle()
 
+        if (userRoleError) {
+            const url = request.nextUrl.clone()
+            url.pathname = '/events'
+            return NextResponse.redirect(url)
+        }
 
         const { data, error } = await supabase
-            .from('group_members')
-            .select('member_id,group_id, groups!inner(event_id)')
-            .eq('member_id', user.id)
-            .eq('groups.event_id', id)
+            .from('groups')
+            .select('id, group_members!inner (member_id), submissions!inner (id)')
+            .eq('group_members.member_id', user.id)
+            .eq('submissions.id', submissionId)
             .maybeSingle()
         if (error) {
 
@@ -54,11 +61,15 @@ export async function registerRoute({ request, user }: { request: NextRequest, u
             return NextResponse.redirect(url)
         }
 
-        if (data != null) {
+
+        if (data == null && (userRole?.role != PROFILE_ROLE.ADMIN || userRole?.role != PROFILE_ROLE.ADMIN)) {
+
             const url = request.nextUrl.clone()
-            url.pathname = `/groups/${data.group_id}`
+            url.pathname = '/groups'
             return NextResponse.redirect(url)
         }
+
+
     }
 
     // IMPORTANT: You *must* return the supabaseResponse object as it is. If you're

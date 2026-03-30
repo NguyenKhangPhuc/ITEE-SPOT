@@ -30,6 +30,7 @@ const SubmissionGradingClient = ({ eventCriteria, submission, user, userGrading 
             }),
         },
     });
+    console.log(eventCriteria)
     const gradesValue = useWatch({
         name: 'grades',
         control: control
