@@ -13,14 +13,20 @@ export async function getUserGradingForSubmissionById({ userId, submissionId }: 
     return { data, error }
 }
 
-export async function updateUserGrading({ grades }: { grades: Array<UserSubmissionGradeInsert> }) {
+export async function updateUserGrading({ grades, submissionId }: { grades: Array<UserSubmissionGradeInsert>, submissionId: string }) {
     const supabase = await createClient();
     console.log(grades)
-    const { data, error } = await supabase.from('submission_grading').upsert(grades, { onConflict: 'user_id, submission_id, event_criteria_id' })
+    const { data, error } = await supabase.from('submission_grading')
+        .upsert(grades, { onConflict: 'user_id, submission_id, event_criteria_id' }).select('*, event_grading_criteria (percentage)')
+        .order('event_criteria_id', { ascending: false })
     if (error) {
         console.log(error)
         throw new Error('Fail to update the grades')
     }
-    return { data, error }
+    const { data: newFinalScore, error: finalScoreError } = await supabase.from('submission_final_scores').select('*').eq('submission_id', submissionId).single();
+    if (finalScoreError) {
+        return { error: 'Fail to fetch new final score, please reload' }
+    }
+    return { data, error, newFinalScore }
 }
 

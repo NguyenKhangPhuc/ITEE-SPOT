@@ -99,13 +99,19 @@ const SingleEventClient = ({ event, user }: { event: Event, user: Profile }) => 
                      hover:scale-105 rounded-[10px] flex items-center justify-center ">
                                 View all groups
                             </Link>
-                            <Link href={`/events/${event.id}/edit`} className="duration-300 cursor-pointer text-black
+                            <Link href={`/events/${event.id}/grade`} className="duration-300 cursor-pointer text-black
                      p-5 text-center w-1/2 h-13 border-4 border-black bg-white 
                      hover:scale-105 rounded-[10px] flex items-center justify-center ">
-                                Edit Event
+                                Grading Information
                             </Link>
                         </> : <></>}
                 </div>
+                {user.role == PROFILE_ROLE.ADMIN &&
+                    <Link href={`/events/${event.id}/edit`} className="duration-300 cursor-pointer text-black
+                     p-5 text-center w-full h-13 border-4 border-black bg-white 
+                     hover:scale-105 rounded-[10px] flex items-center justify-center ">
+                        Edit Event
+                    </Link>}
                 <Link href={`/register/${event.id}`} className="transition duration-300 ease-in-out cursor-pointer 
                 w-full h-13 bg-black hover:bg-black/80 hover:scale-105 border rounded-[10px] flex items-center justify-center text-white">
                     Register

@@ -27,7 +27,7 @@ const NavBar = ({ initialUser }: { initialUser: User | null }) => {
 
     return (
         <nav className="fixed top-0 left-0 w-full bg-black text-white z-50 font-roboto-mono">
-            <div className="max-w-4xl mx-auto px-6">
+            <div className="max-w-6xl mx-auto px-6">
                 <div className="flex items-center justify-between h-20">
                     <div className="absolute left-2 flex items-center gap-4 h-full pointer-events-none">
                         <div className=" relative z-10 2xl:w-25 w-17 h-17 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-800 flex items-center justify-center bg-white">

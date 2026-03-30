@@ -20,7 +20,7 @@ export default async function Home({ params }: PageProps) {
     }
     return (
         <div className="w-full min-h-screen screen-bg font-roboto-mono">
-            <div className="max-w-4xl mx-auto px-6 flex flex-col p-5 ">
+            <div className="max-w-6xl mx-auto px-6 flex flex-col p-5 ">
                 <div className="text-2xl font-bold text-color">Event {event?.title}&apos;s Groups</div>
                 <EventGroupsClient event={event!} eventGroups={groups!} />
             </div>

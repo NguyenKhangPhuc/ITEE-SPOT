@@ -49,7 +49,7 @@ const SubmissionGradingClient = ({ eventCriteria, submission, user, userGrading 
     const handleGiveGrade = async (data: { grades: Array<UserSubmissionGradeInsert> }) => {
         setIsOpenLoader(true)
         try {
-            const removedPercentageGrades: Array<UserSubmissionGradeInsert> = gradesValue.map((ele, index) => {
+            const removedPercentageGrades: Array<UserSubmissionGradeInsert> = data.grades.map((ele, index) => {
                 return {
                     event_criteria_id: ele.event_criteria_id,
                     user_id: ele.user_id,
@@ -57,7 +57,7 @@ const SubmissionGradingClient = ({ eventCriteria, submission, user, userGrading 
                     grade: ele.grade,
                 }
             })
-            const { error } = await updateUserGrading({ grades: removedPercentageGrades })
+            const { error } = await updateUserGrading({ grades: removedPercentageGrades, submissionId: submission?.id ?? "" })
             if (error) {
                 throw new Error(error)
             }

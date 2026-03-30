@@ -10,7 +10,7 @@ const Home = async () => {
     }
     return (
         <div className="w-full min-h-screen screen-bg font-roboto-mono">
-            <div className="max-w-4xl mx-auto px-6 flex flex-col p-5 ">
+            <div className="max-w-6xl mx-auto px-6 flex flex-col p-5 ">
 
                 <Link href={'/events/create'} className="create-button w-40 h-10">
                     <svg viewBox="0 0 24 24" className="arr-2" xmlns="http://www.w3.org/2000/svg">
