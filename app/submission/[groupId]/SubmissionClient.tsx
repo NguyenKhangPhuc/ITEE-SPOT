@@ -279,7 +279,7 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
                                 <div
                                     key={index}
                                     onClick={() => handleDownloadFile(fileItem)}
-                                    className="cursor-pointer relative h-30 min-w-full flex flex-col items-center justify-center p-2 bg-white rounded-md border border-gray-100 shadow-xl shadow-black/30 hover:scale-105 group duration-300 cursor"
+                                    className="cursor-pointer relative h-30 min-w-full flex flex-col items-center justify-center p-2 bg-white rounded-md border border-gray-100 shadow-xl shadow-black/30 hover:scale-102 group duration-300 cursor"
                                 >
                                     <button
                                         onClick={(e) => {
@@ -315,13 +315,13 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
                     <div className="w-full flex gap-5">
                         <button
                             type="submit"
-                            className="cursor-pointer w-1/2 h-13 rounded-[10px] bg-black hover:bg-black/80 transition-colors duration-300 text-white hover:scale-105"
+                            className="cursor-pointer w-1/2 h-13 rounded-[10px] bg-black hover:bg-black/80 transition-colors duration-300 text-white hover:scale-102"
                         >
                             Save your submission
                         </button>
                         <Link href={`/submission/${group_id}/read-only`} className="duration-300 cursor-pointer text-black
                      p-5 text-center w-1/2 h-13 border-4 border-black bg-white 
-                     hover:scale-105 rounded-[10px] flex items-center justify-center ">
+                     hover:scale-102 rounded-[10px] flex items-center justify-center ">
                             See your submission
                         </Link>
                     </div>

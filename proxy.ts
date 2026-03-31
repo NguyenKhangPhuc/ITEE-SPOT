@@ -10,6 +10,7 @@ import { editEventRoute } from "./app/middleware/edit_event_proxy"
 import { submissionGradingRoute } from "./app/middleware/submission_grading"
 import { Database } from "./app/types/database.types"
 import { createServerClient } from "@supabase/ssr"
+import { eventSubmissionGradingRoute } from "./app/middleware/submission_evaluation_all"
 
 
 export async function proxy(request: NextRequest) {
@@ -53,6 +54,8 @@ export async function proxy(request: NextRequest) {
     if (editEventRouteCheck.status !== 200) return editEventRouteCheck
     const submissionGradingRouteCheck = await submissionGradingRoute({ request, user: user.user })
     if (submissionGradingRouteCheck.status !== 200) return submissionGradingRouteCheck
+    const eventSubmissionGrading = await eventSubmissionGradingRoute({ request, user: user.user })
+    if (eventSubmissionGrading.status !== 200) return eventSubmissionGrading
 }
 
 export const config = {

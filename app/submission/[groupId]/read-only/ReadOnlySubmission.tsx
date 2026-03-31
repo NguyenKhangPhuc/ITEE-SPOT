@@ -8,12 +8,6 @@ import React, { useState } from "react"
 import { useForm, useWatch } from "react-hook-form"
 import { SubmissionFileExtended } from "@/app/types/submission_files"
 import { SubmissionReaction } from "@/app/types/submission_reactions"
-import { User } from "@supabase/supabase-js"
-import { createReaction, deleteReaction } from "@/app/actions/submission_reaction"
-import SendIcon from '@mui/icons-material/Send';
-import PersonIcon from '@mui/icons-material/Person';
-import { SubmissionCommentInsert, SubmissionCommentPagination } from "@/app/types/submission_comments"
-import { createSubmissionComment, getSubmissionComments } from "@/app/actions/submission_comment"
 import { createSubmissionRating, getSubmissionRatingById } from "@/app/actions/submission_ratings"
 import { SubmissionRatingInsert } from "@/app/types/submission_rating"
 import SubmissionInfo from "./SubmissionInfo"
@@ -119,20 +113,20 @@ const ReadOnlySubmission = ({ groupSubmissions, user }: { groupSubmissions: Grou
 
                     <SubmissionFiles submittedFiles={submittedFiles} />
 
-                    <SubmissionRating user={user} userRating={userRating} setUserRating={setUserRating} getValues={getValues} />
+                    {(user.role == PROFILE_ROLE.ADMIN || user.role == PROFILE_ROLE.JUDGES) && <SubmissionRating user={user} userRating={userRating} setUserRating={setUserRating} getValues={getValues} />}
 
                     <SubmissionReactions getValues={getValues} submissionReaction={submissionReaction} setSubmissionReaction={setSubmissionReaction} user={user} />
 
                     <SubmissionComment getValues={getValues} user={user} />
-
-                    <div className="w-full flex gap-5">
+                    {(user.role == PROFILE_ROLE.ADMIN || user.role == PROFILE_ROLE.JUDGES) && <div className="w-full flex gap-5">
 
                         <Link href={`/submission/grading/${groupSubmissions[chosenGroupChallenges].id}`} className="duration-300 cursor-pointer text-black
                      p-5 text-center w-full h-13 border-4 border-black bg-white 
-                     hover:scale-105 rounded-[10px] flex items-center justify-center ">
+                     hover:scale-102 rounded-[10px] flex items-center justify-center ">
                             Grade this project
                         </Link>
-                    </div>
+                    </div>}
+
                 </>
             }
 

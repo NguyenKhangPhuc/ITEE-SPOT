@@ -117,14 +117,14 @@ const EventCriteriaEdit = ({ receivedCriteria, eventId }: { receivedCriteria: Ar
                 <button
                     type="button"
                     onClick={handleSubmit(handleSaveCriteria)}
-                    className="cursor-pointer w-1/2 py-2 rounded-md  hover:scale-105 border-4 border-black transition-colors duration-300 text-black"
+                    className="cursor-pointer w-1/2 py-2 rounded-md  hover:scale-102 border-4 border-black transition-colors duration-300 text-black"
                 >
                     Save criteria
                 </button>
                 <button
                     type="button"
                     onClick={handleSubmit(handleAddingCriteria)}
-                    className="cursor-pointer w-1/2 py-2 rounded-md  hover:scale-105 border-4 border-black transition-colors duration-300 text-black"
+                    className="cursor-pointer w-1/2 py-2 rounded-md  hover:scale-102 border-4 border-black transition-colors duration-300 text-black"
                 >
                     Add grading criteria
                 </button>

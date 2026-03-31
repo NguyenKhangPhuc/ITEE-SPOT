@@ -69,7 +69,6 @@ const SubmissionGradingClient = ({ eventCriteria, submission, user, userGrading 
         name: 'specificGrades',
         control: control
     })
-    console.log(gradesValue, specificGrades)
     const handleCalculateFinalPoints = () => {
         if (!gradesValue || gradesValue.length === 0) return 0;
         const sumOfGrades = gradesValue.reduce((acc, cur) => {
@@ -110,7 +109,6 @@ const SubmissionGradingClient = ({ eventCriteria, submission, user, userGrading 
             }
         }
     }
-    console.log(specificCriteria)
 
     return (
         <div className="w-full flex flex-col p-5 shadow-xl/30 rounded-xl bg-white border border-gray-100 mt-5">
@@ -138,7 +136,7 @@ const SubmissionGradingClient = ({ eventCriteria, submission, user, userGrading 
                                 </p>
 
 
-                                <div className="PB-range-slider-div w-full border-4">
+                                <div className="PB-range-slider-div w-full border">
                                     <input type="range" min="1" max="100" className="PB-range-slider" id="myRange"
                                         {...register(`normalGrades.${index}.grade`, { valueAsNumber: true })}
                                     />
@@ -176,7 +174,7 @@ const SubmissionGradingClient = ({ eventCriteria, submission, user, userGrading 
                                 </p>
 
 
-                                <div className="PB-range-slider-div w-full">
+                                <div className="PB-range-slider-div w-full border">
                                     <input type="range" min="0" max="100" className="PB-range-slider" id="myRange"
                                         {...register(`specificGrades.${index}.grade`, { valueAsNumber: true })}
                                     />

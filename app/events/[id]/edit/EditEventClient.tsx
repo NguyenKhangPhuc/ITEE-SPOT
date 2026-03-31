@@ -260,7 +260,7 @@ const EditEventClient = ({ event }: { event: EventWithChallenges }) => {
                     </div>
                     <button
                         type="submit"
-                        className="cursor-pointer w-full py-2 rounded-md  hover:scale-105 border-4 border-black transition-colors duration-300 text-black"
+                        className="cursor-pointer w-full py-2 rounded-md  hover:scale-102 border-4 border-black transition-colors duration-300 text-black"
                     >
                         Save
                     </button>

@@ -132,10 +132,8 @@ export async function getSubmissionWithGrade({ eventId, userId }: { eventId: str
         .eq('submissions.groups.event_id', eventId)
         .eq('submissions.submission_grading.user_id', userId)
     if (error) {
-        console.log(error)
         return { error: "Fail to fetch all submission grade" }
     }
-    console.log(data)
     return { data, error }
 }
 

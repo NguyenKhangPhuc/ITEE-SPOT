@@ -15,7 +15,6 @@ export default async function Home() {
     if (userError) {
         return <div className="w-full flex items-center justify-center text-red-500">Something went wrong:  {userError?.message}</div>;
     }
-    console.log(user, data)
     return (
         <div className="w-full min-h-screen screen-bg font-roboto-mono">
             <div className="max-w-6xl mx-auto px-6 flex flex-col p-5 ">

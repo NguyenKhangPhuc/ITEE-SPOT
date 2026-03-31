@@ -146,7 +146,6 @@ const EventSubmissionGrade = ({ eventCriteria, user, eventId }: { eventCriteria:
     }
 
     const handleChoosingSubmissionGrade = (items: Array<UserSubmissionGradeWithPercentage>, submissionId: string | null) => {
-        console.log(items)
         if (!submissionId) {
             showNotification("Select unsuccessfully")
             return
@@ -209,7 +208,7 @@ const EventSubmissionGrade = ({ eventCriteria, user, eventId }: { eventCriteria:
             setIsOpenLoader(false)
             showNotification("Update successfully")
             const updatedSubmissionGroup = normalSubmissionsGroup?.map((ele) => {
-                console.log(`ele.submission_id ${ele.submission_id} == ${chosenSubmissionGrade} + `)
+
                 if (ele.submission_id == chosenSubmissionGrade && ele.submissions) {
                     ele.final_average_score = newFinalScore?.final_average_score ?? 0
                     ele.submissions.submission_grading = (data ?? [])
@@ -236,14 +235,14 @@ const EventSubmissionGrade = ({ eventCriteria, user, eventId }: { eventCriteria:
             <div className="w-full flex gap-5">
                 <button className={`duration-300 cursor-pointer ${chosenSubmissionFilter == 'all' ? 'text-white' : 'text-black'} 
                      p-5 text-center w-1/2 h-13 border-4 border-black ${chosenSubmissionFilter == 'all' ? 'bg-black' : 'bg-white'} 
-                     hover:scale-105 rounded-[10px] flex items-center justify-center `}
+                     hover:scale-102 rounded-[10px] flex items-center justify-center `}
                     onClick={() => getALlSubmission()}
                 >
                     All Evaluation Result
                 </button>
                 <button className={`duration-300 cursor-pointer ${chosenSubmissionFilter == 'top3' ? 'text-white' : 'text-black'} 
                      p-5 text-center w-1/2 h-13 border-4 border-black ${chosenSubmissionFilter == 'top3' ? 'bg-black' : 'bg-white'} 
-                     hover:scale-105 rounded-[10px] flex items-center justify-center `}
+                     hover:scale-102 rounded-[10px] flex items-center justify-center `}
                     onClick={() => getTop5Submission()}
                 >
                     Top 5 Evaluation Result

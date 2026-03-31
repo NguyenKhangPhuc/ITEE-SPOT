@@ -40,7 +40,6 @@ const UserProfileClient = ({ user }: { user: Profile }) => {
             setIsOpenLoader(false)
         }
     }
-    console.log(user)
     return (
         <div className="w-full p-5 mt-5 content-main-color rounded-xl">
             <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-4">
