@@ -15,6 +15,7 @@ interface SubmissionInfoProps {
         id?: string;
         short_description?: string | null;
         youtube_link?: string | null;
+        title?: string | null;
     }>
     errors: FieldErrors<{
         created_at?: string;
@@ -25,6 +26,7 @@ interface SubmissionInfoProps {
         id?: string;
         short_description?: string | null;
         youtube_link?: string | null;
+        title?: string | null;
     }>
     handleGetEmbeddedUrl: () => string | null
     initialContent: string
@@ -35,6 +37,20 @@ const SubmissionInfo = ({ register, errors, handleGetEmbeddedUrl, initialContent
 
     return (
         <>
+            <div className="input-group w-full">
+                <label className="event_input_label">Project Title</label>
+                <input autoComplete="off" placeholder="Project Title" id="Title"
+                    className="event_input outline-none w-full  h-[40px] placeholder:font-bold cursor-not-allowed" type="text"
+                    disabled
+                    {...register('title', {
+                        required: "Project Title is required",
+                    })} />
+                {errors.title && (
+                    <p className="text-red-500 text-sm mt-1">
+                        {errors.title.message}
+                    </p>
+                )}
+            </div>
             <div className="input-group w-full">
                 <label className="event_input_label">Github Link</label>
                 <input autoComplete="off" placeholder="Github source code link" id="Title"

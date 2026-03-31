@@ -9,6 +9,7 @@ import { useForm, UseFormGetValues } from "react-hook-form";
 import SendIcon from '@mui/icons-material/Send';
 import PersonIcon from '@mui/icons-material/Person';
 import { ProfileInsert } from "@/app/types/profile";
+import { PROFILE_ROLE } from "@/app/types/enum";
 interface SubmissionCommentProps {
     getValues: UseFormGetValues<{
         created_at?: string;
@@ -102,7 +103,7 @@ const SubmissionComment = ({ getValues, user }: SubmissionCommentProps) => {
     }
     return (
         <>
-            {showComment == false && <div className="w-full p-5 flex justify-center ">
+            {showComment == false && <div className="w-full p-5 flex justify-center " >
                 <button className="show_comment_button duration-300" onClick={() => handleShowComment()}>
                     <svg className="show_comment_button_svgIcon transform rotate-180" viewBox="0 0 384 512">
                         <path d="M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2V448c0 17.7 14.3 32 32 32s32-14.3 32-32V141.2L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z"></path>
@@ -119,7 +120,7 @@ const SubmissionComment = ({ getValues, user }: SubmissionCommentProps) => {
                                 <label className="event_input_label">Content</label>
                                 <input
                                     autoComplete="off"
-                                    placeholder="Write your comment"
+                                    placeholder="Write your comments/questions"
                                     id="comment"
                                     className="event_input outline-none w-full h-[40px] px-3 border border-gray-300 rounded placeholder:font-bold bg-gray-500"
                                     type="text"
@@ -142,7 +143,7 @@ const SubmissionComment = ({ getValues, user }: SubmissionCommentProps) => {
                                     })}
                                     className="h-[40px] border border-gray-300 rounded px-2 outline-none bg-white cursor-pointer"
                                 >
-                                    <option value="Anonymous">Anonymous Company Representatives</option>
+                                    {(user.role == PROFILE_ROLE.ADMIN || user.role == PROFILE_ROLE.JUDGES) && <option value="Anonymous Company Representatives">Anonymous Company Representatives</option>}
                                     <option value={user?.full_name ?? ""}>{user?.full_name && user.full_name.length != 0 ? user?.full_name : "Empty, please edit your profile"}</option>
                                 </select>
                                 {commentErrors.display_name && (

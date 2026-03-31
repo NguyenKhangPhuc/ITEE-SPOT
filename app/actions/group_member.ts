@@ -15,7 +15,8 @@ export async function insertGroupMembers(registerGroupMemberData: RegisterGroupM
 
     const filteredOutEmails = registerGroupMemberData.member_emails.filter((value) => value != null).splice(1)
     const { data, error } = await supabase.from('profiles').select('email').in('email', filteredOutEmails);
-    if (data?.length == 0 && filteredOutEmails.length != 0) {
+    if ((data?.length == 0 && filteredOutEmails.length != 0) || error) {
+        console.log(error, data, filteredOutEmails)
         return { error: "Incorrect member email" }
     }
     // Uncomment if you want user can only register one group / event
