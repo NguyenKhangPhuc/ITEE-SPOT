@@ -3,6 +3,7 @@
 import { createEventCriteria, updateEventCriteria } from "@/app/actions/event_criteria"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
+import { CRITERIA_TYPE } from "@/app/types/enum"
 import { EventChallengeInsert } from "@/app/types/event_challenges"
 import { EventCriteriaInsert } from "@/app/types/event_criteria"
 import { useState } from "react"
@@ -52,12 +53,13 @@ const EventCriteriaEdit = ({ receivedCriteria, eventId }: { receivedCriteria: Ar
             if (error) {
                 throw new Error(error)
             }
-            const index = criteria.findIndex(ele => ele.id = existedCriteria.id)
-            if (index == -1) {
-                throw new Error("Fail to fetch the updated criteria, please reload")
-            }
-            criteria[index] = existedCriteria
-            setCriteria(criteria)
+            const updatedCriteria = criteria.map((ele) => {
+                if (ele.id == existedCriteria.id) {
+                    return existedCriteria
+                }
+                return ele
+            })
+            setCriteria(updatedCriteria)
             setIsOpenLoader(false)
             showNotification("Update criteria successfully")
         } catch (error) {
@@ -68,7 +70,6 @@ const EventCriteriaEdit = ({ receivedCriteria, eventId }: { receivedCriteria: Ar
 
         }
     }
-
     return (
         <div className="w-full flex flex-col">
             <div className="w-full flex flex-col gap-2">
@@ -113,7 +114,22 @@ const EventCriteriaEdit = ({ receivedCriteria, eventId }: { receivedCriteria: Ar
                     {errors.criteria_description && <p className="text-red-500 text-sm mt-1">{errors.criteria_description.message}</p>}
                 </div>
             </div>
-            <div className="flex gap-5 ">
+            <div className="input-group w-full">
+                <label className="event_input_label">Criteria Type</label>
+                <select
+                    {...register('type', { required: "Type is required" })}
+                    className="event_input outline-none w-full placeholder:font-bold h-[40px] py-2"
+                >
+                    <option value="" disabled>
+                        Choose an option
+                    </option>
+
+                    <option value={CRITERIA_TYPE.NORMAL}>Normal</option>
+                    <option value={CRITERIA_TYPE.SPECIFIC}>Specific</option>
+
+                </select>
+            </div>
+            <div className="flex gap-5 mt-5">
                 <button
                     type="button"
                     onClick={handleSubmit(handleSaveCriteria)}
@@ -129,6 +145,7 @@ const EventCriteriaEdit = ({ receivedCriteria, eventId }: { receivedCriteria: Ar
                     Add grading criteria
                 </button>
             </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-5 mb-5">
                 {criteria.map((item, index) => (
                     <div
@@ -139,7 +156,9 @@ const EventCriteriaEdit = ({ receivedCriteria, eventId }: { receivedCriteria: Ar
 
 
                         <div className="flex justify-between items-center mb-1 pr-6">
-                            <h4 className="font-bold text-lg truncate">{item.criteria_name}</h4>
+                            <h4 className="font-bold text-lg truncate">{item.criteria_name}
+                                <div className="text-sm opacity-50">Type: {item.type}</div>
+                            </h4>
                             <span className="text-green-500 font-bold shrink-0">
                                 {item.percentage}%
                             </span>
