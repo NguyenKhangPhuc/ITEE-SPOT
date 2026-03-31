@@ -102,7 +102,7 @@ const SingleEventClient = ({ event, user }: { event: Event, user: Profile }) => 
                             <Link href={`/events/${event.id}/grade`} className="duration-300 cursor-pointer text-black
                      p-5 text-center w-1/2 h-13 border-4 border-black bg-white 
                      hover:scale-105 rounded-[10px] flex items-center justify-center ">
-                                Grading Information
+                                Project evaluation and points
                             </Link>
                         </> : <></>}
                 </div>

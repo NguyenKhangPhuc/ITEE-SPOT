@@ -138,8 +138,8 @@ const SubmissionGradingClient = ({ eventCriteria, submission, user, userGrading 
                                 </p>
 
 
-                                <div className="PB-range-slider-div w-full">
-                                    <input type="range" min="0" max="100" className="PB-range-slider" id="myRange"
+                                <div className="PB-range-slider-div w-full border-4">
+                                    <input type="range" min="1" max="100" className="PB-range-slider" id="myRange"
                                         {...register(`normalGrades.${index}.grade`, { valueAsNumber: true })}
                                     />
                                     <p className="PB-range-slidervalue">{gradesValue[index]?.grade}</p>
@@ -150,7 +150,7 @@ const SubmissionGradingClient = ({ eventCriteria, submission, user, userGrading 
                     })}
 
                 <div className="w-full flex justify-center items-center font-bold">
-                    Final grade: {handleCalculateFinalPoints()}/100
+                    Total points: {handleCalculateFinalPoints()}/100
                 </div>
 
                 {specificCriteria
@@ -190,7 +190,7 @@ const SubmissionGradingClient = ({ eventCriteria, submission, user, userGrading 
                     type="submit"
                     className="mt-4 w-full bg-black text-white py-2 rounded-lg hover:bg-black/80 duration-300 cursor-pointer"
                 >
-                    Give your grade
+                    Submit your points
                 </button>
             </form>
         </div>

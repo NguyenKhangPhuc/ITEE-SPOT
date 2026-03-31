@@ -21,7 +21,8 @@ const EventSubmissionGrade = ({ eventCriteria, user, eventId }: { eventCriteria:
     const specificCriteria = eventCriteria.filter((ele) => ele.type == CRITERIA_TYPE.SPECIFIC)
     const [chosenSubmissionGrade, setChosenSubmissionGrade] = useState<string | null>(null)
     const [chosenSubmissionFilter, setChosenSubmissionFilter] = useState<'all' | 'top3' | 'star' | null>(null)
-    const [submissionsGroup, setSubmissionGroups] = useState<SubmissionFinalScoreRating | SubmissionFinalScore | null>(null)
+    const [normalSubmissionsGroup, setNormalSubmissionGroups] = useState<SubmissionFinalScoreRating | SubmissionFinalScore | null>(null)
+    const [specifiSubmissionGroup, setSpecificSubmissionGroups] = useState<SubmissionFinalScoreRating | SubmissionFinalScore | null>(null)
     const { showNotification } = useNotification()
     const { setIsOpenLoader } = useLoader()
     const { register, control, handleSubmit, reset } = useForm<GradeValue>({
@@ -89,7 +90,8 @@ const EventSubmissionGrade = ({ eventCriteria, user, eventId }: { eventCriteria:
             setIsOpenLoader(false)
             showNotification("Choose successfully")
             setChosenSubmissionFilter('all')
-            setSubmissionGroups(data)
+            setNormalSubmissionGroups(data)
+            setSpecificSubmissionGroups(data)
         } catch (error) {
             setIsOpenLoader(false)
             if (error instanceof Error) {
@@ -110,7 +112,8 @@ const EventSubmissionGrade = ({ eventCriteria, user, eventId }: { eventCriteria:
             setIsOpenLoader(false)
             showNotification("Choose successfully")
             setChosenSubmissionFilter('top3')
-            setSubmissionGroups(data)
+            setNormalSubmissionGroups(data)
+            setSpecificSubmissionGroups(data)
         } catch (error) {
             setIsOpenLoader(false)
             if (error instanceof Error) {
@@ -132,7 +135,8 @@ const EventSubmissionGrade = ({ eventCriteria, user, eventId }: { eventCriteria:
             setIsOpenLoader(false)
             showNotification("Choose successfully")
             setChosenSubmissionFilter('star')
-            setSubmissionGroups(data)
+            setNormalSubmissionGroups(data)
+            setSpecificSubmissionGroups(data)
         } catch (error) {
             setIsOpenLoader(false)
             if (error instanceof Error) {
@@ -142,6 +146,7 @@ const EventSubmissionGrade = ({ eventCriteria, user, eventId }: { eventCriteria:
     }
 
     const handleChoosingSubmissionGrade = (items: Array<UserSubmissionGradeWithPercentage>, submissionId: string | null) => {
+        console.log(items)
         if (!submissionId) {
             showNotification("Select unsuccessfully")
             return
@@ -203,7 +208,7 @@ const EventSubmissionGrade = ({ eventCriteria, user, eventId }: { eventCriteria:
             }
             setIsOpenLoader(false)
             showNotification("Update successfully")
-            const updatedSubmissionGroup = submissionsGroup?.map((ele) => {
+            const updatedSubmissionGroup = normalSubmissionsGroup?.map((ele) => {
                 console.log(`ele.submission_id ${ele.submission_id} == ${chosenSubmissionGrade} + `)
                 if (ele.submission_id == chosenSubmissionGrade && ele.submissions) {
                     ele.final_average_score = newFinalScore?.final_average_score ?? 0
@@ -215,7 +220,8 @@ const EventSubmissionGrade = ({ eventCriteria, user, eventId }: { eventCriteria:
             if (!updatedSubmissionGroup) {
                 throw new Error("Fail to fetch updated grade")
             }
-            setSubmissionGroups(updatedSubmissionGroup)
+            setNormalSubmissionGroups(updatedSubmissionGroup)
+            setSpecificSubmissionGroups(updatedSubmissionGroup)
         } catch (error) {
             setIsOpenLoader(false)
             if (error instanceof Error) {
@@ -233,14 +239,14 @@ const EventSubmissionGrade = ({ eventCriteria, user, eventId }: { eventCriteria:
                      hover:scale-105 rounded-[10px] flex items-center justify-center `}
                     onClick={() => getALlSubmission()}
                 >
-                    All Submission Grade
+                    All Evaluation Result
                 </button>
                 <button className={`duration-300 cursor-pointer ${chosenSubmissionFilter == 'top3' ? 'text-white' : 'text-black'} 
                      p-5 text-center w-1/2 h-13 border-4 border-black ${chosenSubmissionFilter == 'top3' ? 'bg-black' : 'bg-white'} 
                      hover:scale-105 rounded-[10px] flex items-center justify-center `}
                     onClick={() => getTop5Submission()}
                 >
-                    Top 5 Submission Grade
+                    Top 5 Evaluation Result
                 </button>
             </div>
             <select
@@ -285,8 +291,8 @@ const EventSubmissionGrade = ({ eventCriteria, user, eventId }: { eventCriteria:
                                     </p>
 
 
-                                    <div className="PB-range-slider-div w-full">
-                                        <input type="range" min="0" max="100" className="PB-range-slider" id="myRange"
+                                    <div className="PB-range-slider-div w-full border">
+                                        <input type="range" min="1" max="100" className="PB-range-slider" id="myRange"
                                             {...register(`normalGrades.${index}.grade`, { valueAsNumber: true })}
                                         />
                                         <p className="PB-range-slidervalue">{gradesValue[index]?.grade}</p>
@@ -297,7 +303,7 @@ const EventSubmissionGrade = ({ eventCriteria, user, eventId }: { eventCriteria:
                         })}
 
                     <div className="w-full flex justify-center items-center font-bold">
-                        Final grade: {handleCalculateFinalPoints()}/100
+                        Total points: {handleCalculateFinalPoints()}/100
                     </div>
 
                     {specificCriteria
@@ -323,7 +329,7 @@ const EventSubmissionGrade = ({ eventCriteria, user, eventId }: { eventCriteria:
                                     </p>
 
 
-                                    <div className="PB-range-slider-div w-full">
+                                    <div className="PB-range-slider-div w-full border">
                                         <input type="range" min="0" max="100" className="PB-range-slider" id="myRange"
                                             {...register(`specificGrades.${index}.grade`, { valueAsNumber: true })}
                                         />
@@ -337,60 +343,127 @@ const EventSubmissionGrade = ({ eventCriteria, user, eventId }: { eventCriteria:
                         type="submit"
                         className="mt-4 w-full bg-black text-white py-2 rounded-lg hover:bg-black/80 duration-300 cursor-pointer"
                     >
-                        Give your grade
+                        Submit your points
                     </button>
                 </form>
             }
 
-            {chosenSubmissionFilter && <div className="w-full overflow-x-auto border-4 border-black rounded-[10px] text-sm">
-                <table className="w-full min-w-max border-collapse">
-                    <thead>
-                        <tr className="bg-black text-white">
-                            <th className="p-4 border-r border-white border-b-4 border-b-black text-left">Title</th>
-                            <th className="p-4 border-r border-white border-b-4 border-b-black text-left">Group Name</th>
+            {chosenSubmissionFilter &&
+                <div className="w-full flex flex-col gap-10 mt-5">
+                    <div className="w-full overflow-x-auto border-4 border-black rounded-[10px] text-sm">
+                        <div className="text-lg  text-black p-2">Normal Criteria</div>
+                        <table className="w-full min-w-max border-collapse">
+                            <thead>
+                                <tr className="bg-black text-white">
+                                    <th className="w-60  p-4 border-r border-white border-b-4 border-b-black text-left">Title</th>
+                                    <th className="w-60  p-4 border-r border-white border-b-4 border-b-black text-left">Group Name</th>
+                                    <th className="w-20 p-1 border-r border-white border-b-4 border-b-black text-center">Total Grader</th>
+                                    {eventCriteria.map((criteria) => {
+                                        if (criteria.type == CRITERIA_TYPE.NORMAL) {
+                                            return (
+                                                <th key={criteria.id} className="p-4 border-r border-white border-b-4 border-b-black text-center">
+                                                    <div className="flex flex-col">
+                                                        <span>{criteria.criteria_name}  <span className="text-xs font-normal opacity-70">({criteria.percentage}%)</span></span>
 
-                            {eventCriteria.map((criteria) => (
-                                <th key={criteria.id} className="p-4 border-r border-white border-b-4 border-b-black text-center">
-                                    <div className="flex flex-col">
-                                        <span>{criteria.criteria_name}  <span className="text-xs font-normal opacity-70">({criteria.percentage}%)</span></span>
+                                                    </div>
+                                                </th>
+                                            )
+                                        }
+                                    })}
 
-                                    </div>
-                                </th>
-                            ))}
+                                    <th className="p-4 border-b-4 border-b-black text-center">Total points (average)</th>
+                                </tr>
+                            </thead>
 
-                            <th className="p-4 border-b-4 border-b-black text-center">Final Grade</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        {submissionsGroup?.map((item, index) => (
-                            <tr key={item.submission_id || index} className="hover:bg-black/50 cursor-pointer duration-300 border-b-2 border-black last:border-b-0"
-                                onClick={() => handleChoosingSubmissionGrade(item.submissions?.submission_grading ?? [], item.submission_id)}>
-                                <td className="p-4 border-r-2 border-black  font-semibold text-sm">
-                                    {item.submissions?.title || "No Title"}
-                                </td>
-                                <td className="p-4 border-r-2 border-black  font-semibold text-sm">
-                                    {item.submissions?.groups?.group_name || "No group name"}
-                                </td>
-                                {item.submissions?.submission_grading?.map((criteria) => {
-
-
-                                    return (
-                                        <td key={criteria.id} className="p-4 border-r-2 border-black text-center font-semibold">
-                                            {criteria.grade == null ? 'Not graded' : criteria.grade}
+                            <tbody>
+                                {normalSubmissionsGroup?.map((item, index) => (
+                                    <tr key={item.submission_id || index} className={`hover:bg-black/50 cursor-pointer duration-300 border-b-2 border-black last:border-b-0 ${chosenSubmissionGrade == item.submission_id && 'bg-black/40'}`}
+                                        onClick={() => handleChoosingSubmissionGrade(item.submissions?.submission_grading ?? [], item.submission_id)}>
+                                        <td className="p-4 border-r-2 border-black  font-semibold text-sm">
+                                            {item.submissions?.title || "No Title"}
                                         </td>
-                                    );
-                                })}
+                                        <td className="p-4 border-r-2 border-black  font-semibold text-sm">
+                                            {item.submissions?.groups?.group_name || "No group name"}
+                                        </td>
+                                        <td className="p-1 border-r-2 border-black  font-semibold text-sm text-center">
+                                            {item.total_graders}
+                                        </td>
+                                        {item.submissions?.submission_grading?.map((criteria) => {
+                                            if (criteria.event_grading_criteria?.type == CRITERIA_TYPE.NORMAL) {
+                                                return (
+                                                    <td key={criteria.id} className="p-4 border-r-2 border-black text-center font-semibold">
+                                                        {criteria.grade == null ? 'Not graded' : criteria.grade}
+                                                    </td>
+                                                );
+                                            }
+                                        })}
 
 
-                                <td className="p-4 text-center font-bold ">
-                                    {item.final_average_score?.toFixed(2) ?? "N/A"}
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>}
+                                        <td className="p-4 text-center font-bold ">
+                                            {item.final_average_score?.toFixed(2) ?? "N/A"}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div className="w-full overflow-x-auto border-4 border-black rounded-[10px] text-sm">
+                        <div className="text-lg text-black p-2">Specific Criteria</div>
+                        <table className="w-full min-w-max border-collapse">
+                            <thead>
+                                <tr className="bg-black text-white">
+                                    <th className="w-60 p-4 border-r border-white border-b-4 border-b-black text-left">Title</th>
+                                    <th className="w-60 p-4 border-r border-white border-b-4 border-b-black text-left">Group Name</th>
+                                    <th className="w-20 border-r border-white border-b-4 border-b-black text-center">Total Grader</th>
+                                    {eventCriteria.map((criteria) => {
+                                        if (criteria.type == CRITERIA_TYPE.SPECIFIC) {
+                                            return (
+                                                <th key={criteria.id} className="p-4 border-r border-white border-b-4 border-b-black text-center">
+                                                    <div className="flex flex-col">
+                                                        <span>{criteria.criteria_name}  <span className="text-xs font-normal opacity-70">({criteria.percentage}%)</span></span>
+
+                                                    </div>
+                                                </th>
+                                            )
+                                        }
+                                    })}
+
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {specifiSubmissionGroup?.map((item, index) => (
+                                    <tr key={item.submission_id || index} className={`hover:bg-black/50  cursor-pointer duration-300 border-b-2 border-black last:border-b-0 ${chosenSubmissionGrade == item.submission_id ? 'bg-black/40' : 'bg-gray-200'}`}
+                                        onClick={() => handleChoosingSubmissionGrade(item.submissions?.submission_grading ?? [], item.submission_id)}>
+                                        <td className="p-4 border-r-2 border-black  font-semibold text-sm">
+                                            {item.submissions?.title || "No Title"}
+                                        </td>
+                                        <td className="p-4 border-r-2 border-black  font-semibold text-sm">
+                                            {item.submissions?.groups?.group_name || "No group name"}
+                                        </td>
+                                        <td className="p-1 border-r-2 border-black  font-semibold text-sm text-center">
+                                            {item.total_graders}
+                                        </td>
+                                        {item.submissions?.submission_grading?.map((criteria) => {
+                                            if (criteria.event_grading_criteria?.type == CRITERIA_TYPE.SPECIFIC) {
+                                                return (
+                                                    <td key={criteria.id} className="p-4 border-r-2 border-black text-center font-semibold">
+                                                        {criteria.grade == null ? 'Not graded' : criteria.grade}
+                                                    </td>
+                                                );
+                                            }
+                                        })}
+
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+
+
+            }
         </div>
     )
 }

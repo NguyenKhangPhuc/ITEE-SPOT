@@ -88,14 +88,14 @@ const ReadOnlySubmission = ({ groupSubmissions, user }: { groupSubmissions: Grou
 
 
     return (
-        <div className="flex flex-col mt-5 content-main-color p-5 rounded-xl gap-5 items-start" >
-            <div className="flex flex-col gap-4 w-full mt-4">
+        <div className="flex flex-col mt-5 content-main-color p-5 rounded-xl gap-5 items-start relative" >
+            <div className="flex flex-col gap-4 w-full mt-4 sticky top-10 z-10 ">
                 <div className="text-lg font-bold uppercase tracking-tight">Select Challenges</div>
                 {groupSubmissions == null ? <div>
                     No submission yet
-                </div> : <div className="grid md:grid-cols-2 grid-cols-1 gap-4">
+                </div> : <div className=" w-full grid md:grid-cols-2 grid-cols-1 gap-4 ">
                     {groupSubmissions?.map((submission, index) => (
-                        <div key={submission.id} className={`rounded-xl group relative cursor-pointer duration-300 ${chosenGroupChallenges == index ? 'shadow-xl/30 translate-y-2' : ''}`
+                        <div key={submission.id} className={`rounded-xl content-main-color group relative cursor-pointer duration-300 ${chosenGroupChallenges == index ? 'shadow-xl/30 translate-y-2' : ''}`
                         } onClick={() => handleChooseChallengeSubmission(index)}>
 
                             <div className="relative w-full p-5 border rounded-xl peer-checked:border-black peer-checked:bg-gray-50 transition-all">
