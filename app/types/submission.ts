@@ -89,6 +89,7 @@ export type SubmissionFinalScoreRating = {
             user_id: string | null;
             event_grading_criteria: {
                 percentage: number | null
+                type: 'specific' | 'normal' | null
             } | null
         }[];
         submission_ratings: {
@@ -126,6 +127,8 @@ export type SubmissionFinalScore = {
             user_id: string | null;
             event_grading_criteria: {
                 percentage: number | null
+                type: 'specific' | 'normal' | null
+
             } | null
         }[];
     } | null;

@@ -53,7 +53,6 @@ const EventCriteriaEdit = ({ receivedCriteria, eventId }: { receivedCriteria: Ar
                 throw new Error(error)
             }
             const index = criteria.findIndex(ele => ele.id = existedCriteria.id)
-            console.log(index)
             if (index == -1) {
                 throw new Error("Fail to fetch the updated criteria, please reload")
             }

@@ -8,7 +8,6 @@ import { userGroupRoute } from "./app/middleware/user_group"
 import { submissionReadOnlyRoute } from "./app/middleware/submission_read_only"
 import { editEventRoute } from "./app/middleware/edit_event_proxy"
 import { submissionGradingRoute } from "./app/middleware/submission_grading"
-import { createClient } from "./app/utils/supabase/server"
 import { Database } from "./app/types/database.types"
 import { createServerClient } from "@supabase/ssr"
 

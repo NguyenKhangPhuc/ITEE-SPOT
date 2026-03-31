@@ -120,52 +120,57 @@ export async function getSubmissionById(submissionId: string) {
 }
 
 
-export async function getSubmissionWithGrade(eventId: string) {
+export async function getSubmissionWithGrade({ eventId, userId }: { eventId: string, userId: string }) {
     const supabase = await createClient()
 
     const { data, error } = await supabase
         .from('submission_final_scores')
-        .select('*, submissions(*, groups!inner (id,group_name, event_id), submission_grading (*, event_grading_criteria (percentage)))')
+        .select('*, submissions!inner (*, groups!inner (id,group_name, event_id), submission_grading (*, event_grading_criteria (percentage, type)))')
+        .order('type', { referencedTable: 'submissions.submission_grading.event_grading_criteria', ascending: true })
         .order('event_criteria_id', { referencedTable: 'submissions.submission_grading', ascending: false })
         .order('final_average_score', { ascending: false })
         .eq('submissions.groups.event_id', eventId)
+        .eq('submissions.submission_grading.user_id', userId)
     if (error) {
         console.log(error)
         return { error: "Fail to fetch all submission grade" }
     }
+    console.log(data)
     return { data, error }
 }
 
-export async function getTop5SubmissionGrade(eventId: string) {
+export async function getTop5SubmissionGrade({ eventId, userId }: { eventId: string, userId: string }) {
     const supabase = await createClient()
 
     const { data, error } = await supabase
         .from('submission_final_scores')
-        .select('*, submissions(*, groups!inner (id,group_name, event_id), submission_grading (*, event_grading_criteria (percentage)))')
+        .select('*, submissions!inner (*, groups!inner (id,group_name, event_id), submission_grading (*, event_grading_criteria (percentage, type)))')
+        .order('type', { referencedTable: 'submissions.submission_grading.event_grading_criteria', ascending: true })
         .order('event_criteria_id', { referencedTable: 'submissions.submission_grading', ascending: false })
         .order('final_average_score', { ascending: false })
         .limit(3)
         .eq('submissions.groups.event_id', eventId)
+        .eq('submissions.submission_grading.user_id', userId)
     if (error) {
-        console.log(error)
         return { error: "Fail to fetch top 3 submission grade" }
     }
     return { data, error }
 }
 
-export async function getSubmissionGradeBasedOnStar({ eventId, rating }: { eventId: string, rating: number }) {
+export async function getSubmissionGradeBasedOnStar({ eventId, rating, userId }: { eventId: string, rating: number, userId: string }) {
     const supabase = await createClient()
 
     const { data, error } = await supabase
         .from('submission_final_scores')
-        .select('*, submissions!inner (*, groups!inner (id,group_name, event_id), submission_grading (*, event_grading_criteria (percentage)), submission_ratings!inner (id, rating))')
+        .select('*, submissions!inner (*, groups!inner (id,group_name, event_id), submission_grading (*, event_grading_criteria (percentage, type)), submission_ratings!inner (id, rating))')
+        .order('type', { referencedTable: 'submissions.submission_grading.event_grading_criteria', ascending: true })
         .order('event_criteria_id', { referencedTable: 'submissions.submission_grading', ascending: false })
         .order('final_average_score', { ascending: false })
         .eq('submissions.submission_ratings.rating', rating)
+        .eq('submissions.submission_ratings.user_id', userId)
         .eq('submissions.groups.event_id', eventId)
-    console.log(data)
+        .eq('submissions.submission_grading.user_id', userId)
     if (error) {
-        console.log(error)
         return { error: "Fail to fetch 5 stare submission grade" }
     }
 

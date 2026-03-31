@@ -6,6 +6,7 @@ export type UserSubmissionGradeInsert = Database["public"]["Tables"]["submission
 
 export interface UserSubmissionGradeWithPercentage extends UserSubmissionGradeInsert {
     event_grading_criteria: {
-        percentage: number | null
+        percentage: number | null,
+        type: 'normal' | 'specific' | null
     } | null
 }

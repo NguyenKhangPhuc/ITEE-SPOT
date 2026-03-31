@@ -3,17 +3,22 @@ import { EventCriteriaInsert } from "@/app/types/event_criteria"
 import { SetStateAction } from "react"
 import { useForm } from "react-hook-form"
 import ClearIcon from '@mui/icons-material/Clear';
+import { CRITERIA_TYPE } from "@/app/types/enum";
 const CriteriaCreation = ({ criteria, setCriteria }: { criteria: Array<EventCriteriaInsert>, setCriteria: React.Dispatch<SetStateAction<Array<EventCriteriaInsert>>> }) => {
     const {
         register,
         handleSubmit,
         formState: { errors },
-        reset
+        reset: resetCriteria
     } = useForm<EventCriteriaInsert>()
 
     const handleAddingCriteria = (newCriteria: EventCriteriaInsert) => {
         setCriteria([...criteria, newCriteria])
-        reset()
+        resetCriteria({
+            criteria_description: '',
+            criteria_name: '',
+            percentage: 0
+        })
     }
 
     const handleDeleteCriteria = (receivedIndex: number) => {
@@ -65,11 +70,27 @@ const CriteriaCreation = ({ criteria, setCriteria }: { criteria: Array<EventCrit
                     />
                     {errors.criteria_description && <p className="text-red-500 text-sm mt-1">{errors.criteria_description.message}</p>}
                 </div>
+                <div className="input-group w-full">
+                    <label className="event_input_label">Criteria Type</label>
+                    <select
+                        {...register('type', { required: "Type is required" })}
+                        className="event_input outline-none w-full placeholder:font-bold h-[40px] py-2"
+                    >
+                        <option value="" disabled>
+                            Choose an option
+                        </option>
+
+                        <option value={CRITERIA_TYPE.NORMAL}>Normal</option>
+                        <option value={CRITERIA_TYPE.SPECIFIC}>Specific</option>
+
+                    </select>
+                </div>
+
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-5 mb-5">
                 {criteria.map((item, index) => (
                     <div
-                        key={item.id}
+                        key={`criteria ${index}`}
                         className="relative p-5 rounded-xl bg-white border border-gray-100 shadow-xl/30 transition-all duration-300 hover:-translate-y-2 h-70"
                     >
 
@@ -82,7 +103,9 @@ const CriteriaCreation = ({ criteria, setCriteria }: { criteria: Array<EventCrit
                         </button>
 
                         <div className="flex justify-between items-center mb-1 pr-6">
-                            <h4 className="font-bold text-lg truncate">{item.criteria_name}</h4>
+                            <h4 className="font-bold text-lg truncate">{item.criteria_name} <div className="text-sm opacity-50">
+                                Type: {item.type}
+                            </div></h4>
                             <span className="text-green-500 font-bold shrink-0">
                                 {item.percentage}%
                             </span>

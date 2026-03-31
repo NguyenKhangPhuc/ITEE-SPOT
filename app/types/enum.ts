@@ -46,3 +46,8 @@ export enum AUTH_ERROR_CODE {
     EMAIL_NOT_CONFIRMED = 'email_not_confirmed',
     EXISTED_USER = 'user_already_exists',
 }
+
+export enum CRITERIA_TYPE {
+    NORMAL = 'normal',
+    SPECIFIC = 'specific',
+}

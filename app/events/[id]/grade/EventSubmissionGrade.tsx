@@ -3,6 +3,7 @@ import { getSubmissionGradeBasedOnStar, getSubmissionWithGrade, getTop5Submissio
 import { updateUserGrading } from "@/app/actions/user_grading";
 import { useLoader } from "@/app/context/LoaderContext";
 import { useNotification } from "@/app/context/NotificationContext";
+import { CRITERIA_TYPE } from "@/app/types/enum";
 import { EventCriteriaInsert } from "@/app/types/event_criteria";
 import { SubmissionFinalScore, SubmissionFinalScoreRating } from "@/app/types/submission";
 import { UserSubmissionGradeInsert, UserSubmissionGradeWithPercentage } from "@/app/types/user_submission_grade"
@@ -10,37 +11,75 @@ import { User } from "@supabase/supabase-js";
 import { useState } from "react"
 import { useForm, useWatch } from "react-hook-form";
 
+interface GradeValue {
+    normalGrades: Array<UserSubmissionGradeWithPercentage>,
+    specificGrades: Array<UserSubmissionGradeWithPercentage>
+}
+
 const EventSubmissionGrade = ({ eventCriteria, user, eventId }: { eventCriteria: Array<EventCriteriaInsert>, user: User, eventId: string }) => {
+    const normalCriteria = eventCriteria.filter((ele) => ele.type == CRITERIA_TYPE.NORMAL)
+    const specificCriteria = eventCriteria.filter((ele) => ele.type == CRITERIA_TYPE.SPECIFIC)
     const [chosenSubmissionGrade, setChosenSubmissionGrade] = useState<string | null>(null)
     const [chosenSubmissionFilter, setChosenSubmissionFilter] = useState<'all' | 'top3' | 'star' | null>(null)
     const [submissionsGroup, setSubmissionGroups] = useState<SubmissionFinalScoreRating | SubmissionFinalScore | null>(null)
     const { showNotification } = useNotification()
     const { setIsOpenLoader } = useLoader()
-    const { register, control, handleSubmit, reset } = useForm<{ grades: Array<UserSubmissionGradeWithPercentage> }>({
+    const { register, control, handleSubmit, reset } = useForm<GradeValue>({
         defaultValues: {
-            grades: eventCriteria.map((ele) => {
-                return {
-                    event_criteria_id: ele.id,
-                    user_id: user.id,
-                    submission_id: null,
-                    grade: 50,
-                    event_grading_criteria: {
-                        percentage: ele.percentage
+            normalGrades:
+                normalCriteria.map((ele) => {
+                    return {
+                        event_criteria_id: ele.id,
+                        user_id: user.id,
+                        submission_id: null,
+                        grade: 50,
+                        event_grading_criteria: {
+                            percentage: ele.percentage
+                        }
                     }
-                }
-            }),
+
+                }),
+            specificGrades:
+                specificCriteria.map((ele) => {
+                    return {
+                        event_criteria_id: ele.id,
+                        user_id: user.id,
+                        submission_id: null,
+                        grade: 50,
+                        event_grading_criteria: {
+                            percentage: ele.percentage
+                        }
+                    }
+
+                }),
         },
     });
-    const gradeValues = useWatch(
-        {
-            control: control,
-            name: 'grades'
-        }
-    )
+    const gradesValue = useWatch({
+        name: 'normalGrades',
+        control: control
+    })
+    const specificGrades = useWatch({
+        name: 'specificGrades',
+        control: control
+    })
+    const handleCalculateFinalPoints = () => {
+        if (!gradesValue || gradesValue.length === 0) return 0;
+        const sumOfGrades = gradesValue.reduce((acc, cur) => {
+            if (cur.event_grading_criteria?.type == CRITERIA_TYPE.NORMAL) {
+                const val = Number(cur.grade) || 0;
+                const percentage = cur.event_grading_criteria?.percentage || 0
+
+                return (acc + (val * percentage / 100));
+            }
+            return acc + 0
+        }, 0);
+
+        return sumOfGrades.toFixed(2)
+    }
     const getALlSubmission = async () => {
         setIsOpenLoader(true)
         try {
-            const { data, error } = await getSubmissionWithGrade(eventId)
+            const { data, error } = await getSubmissionWithGrade({ eventId, userId: user.id })
             if (error) {
                 throw new Error(error)
             }
@@ -61,7 +100,7 @@ const EventSubmissionGrade = ({ eventCriteria, user, eventId }: { eventCriteria:
     const getTop5Submission = async () => {
         setIsOpenLoader(true)
         try {
-            const { data, error } = await getTop5SubmissionGrade(eventId)
+            const { data, error } = await getTop5SubmissionGrade({ eventId, userId: user.id })
             if (error) {
                 throw new Error(error)
             }
@@ -83,7 +122,7 @@ const EventSubmissionGrade = ({ eventCriteria, user, eventId }: { eventCriteria:
     const getSubmissionBaseOnStar = async (star: number) => {
         setIsOpenLoader(true)
         try {
-            const { data, error } = await getSubmissionGradeBasedOnStar({ eventId, rating: star })
+            const { data, error } = await getSubmissionGradeBasedOnStar({ eventId, rating: star, userId: user.id })
             if (error) {
                 throw new Error(error)
             }
@@ -102,51 +141,55 @@ const EventSubmissionGrade = ({ eventCriteria, user, eventId }: { eventCriteria:
         }
     }
 
-    const handleChoosingSubmissionGrade = (items: Array<UserSubmissionGradeInsert>, submissionId: string | null) => {
+    const handleChoosingSubmissionGrade = (items: Array<UserSubmissionGradeWithPercentage>, submissionId: string | null) => {
         if (!submissionId) {
             showNotification("Select unsuccessfully")
             return
         }
         if (items.length != 0) {
             setChosenSubmissionGrade(submissionId)
-            reset({ grades: items })
+            const normalGradeCriteria = items.filter((ele) => ele.event_grading_criteria?.type == CRITERIA_TYPE.NORMAL)
+            const specificGradeCriteria = items.filter((ele) => ele.event_grading_criteria?.type == CRITERIA_TYPE.SPECIFIC)
+            reset({ normalGrades: normalGradeCriteria, specificGrades: specificGradeCriteria })
         } else {
             reset({
-                grades: eventCriteria.map((ele) => {
-                    return {
-                        event_criteria_id: ele.id,
-                        user_id: user.id,
-                        submission_id: submissionId,
-                        grade: 50,
-                        event_grading_criteria: {
-                            percentage: ele.percentage
+                normalGrades:
+                    normalCriteria.map((ele) => {
+                        return {
+                            event_criteria_id: ele.id,
+                            user_id: user.id,
+                            submission_id: submissionId,
+                            grade: 50,
+                            event_grading_criteria: {
+                                percentage: ele.percentage
+                            }
                         }
-                    }
-                }),
+
+                    }),
+                specificGrades:
+                    specificCriteria.map((ele) => {
+                        return {
+                            event_criteria_id: ele.id,
+                            user_id: user.id,
+                            submission_id: submissionId,
+                            grade: 50,
+                            event_grading_criteria: {
+                                percentage: ele.percentage
+                            }
+                        }
+
+                    }),
             })
         }
     }
-
-    const handleCalculateFinalPoints = () => {
-        if (!gradeValues || gradeValues.length === 0) return 0;
-
-        const sumOfGrades = gradeValues.reduce((acc, cur) => {
-            console.log(cur.grade, "This is grade value + ", cur.event_grading_criteria?.percentage)
-            const val = Number(cur.grade) || 0;
-            const percentage = cur.event_grading_criteria?.percentage || 0
-            return (acc + (val * percentage / 100));
-        }, 0);
-
-        return sumOfGrades.toFixed(2)
-    }
-
-    const handleSavingSubmissionGrade = async (gradeInfo: { grades: Array<UserSubmissionGradeWithPercentage> }) => {
+    const handleSavingSubmissionGrade = async (gradeInfo: GradeValue) => {
         setIsOpenLoader(true)
         try {
             if (!chosenSubmissionGrade) {
                 throw new Error("Fail to choose the submission grade")
             }
-            const removedPercentageGrades: Array<UserSubmissionGradeInsert> = gradeInfo.grades.map((ele, index) => {
+            const combinedGrade = [...gradeInfo.normalGrades, ...gradeInfo.specificGrades]
+            const removedPercentageGrades: Array<UserSubmissionGradeInsert> = combinedGrade.map((ele, index) => {
                 return {
                     event_criteria_id: ele.event_criteria_id,
                     user_id: ele.user_id,
@@ -219,37 +262,77 @@ const EventSubmissionGrade = ({ eventCriteria, user, eventId }: { eventCriteria:
 
             {chosenSubmissionGrade && chosenSubmissionFilter &&
                 <form className="w-full flex flex-col gap-5" onSubmit={handleSubmit(handleSavingSubmissionGrade)}>
-                    {eventCriteria.map((field, index) => {
+                    {normalCriteria
+                        .map((field, index) => {
 
-                        return (
-                            <div key={field.id} className="w-full flex flex-col items-start gap-2">
-                                <div className="w-full flex justify-between items-center">
-                                    <h3 className="font-semibold text-lg text-gray-800">
-                                        {field.criteria_name}
-                                    </h3>
-                                    <span className="text-sm font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded">
-                                        {field.percentage}%
-                                    </span>
+
+                            return (
+                                <div key={field.id} className="w-full flex flex-col items-start gap-2">
+                                    <div className="w-full flex justify-between items-center">
+                                        <h3 className="font-semibold text-lg text-gray-800">
+                                            {field.criteria_name}
+                                            <div className="text-sm opacity-70">
+                                                Type: {field.type}
+                                            </div>
+                                        </h3>
+                                        <span className="text-sm font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded">
+                                            {field.percentage}%
+                                        </span>
+                                    </div>
+
+                                    <p className="text-sm text-gray-600 opacity-70 flex flex-wrap break-all">
+                                        {field.criteria_description}
+                                    </p>
+
+
+                                    <div className="PB-range-slider-div w-full">
+                                        <input type="range" min="0" max="100" className="PB-range-slider" id="myRange"
+                                            {...register(`normalGrades.${index}.grade`, { valueAsNumber: true })}
+                                        />
+                                        <p className="PB-range-slidervalue">{gradesValue[index]?.grade}</p>
+                                    </div>
                                 </div>
+                            );
 
-                                <p className="text-sm text-gray-600 opacity-70 flex flex-wrap break-all">
-                                    {field.criteria_description}
-                                </p>
+                        })}
 
-
-                                <div className="PB-range-slider-div w-full">
-                                    <input type="range" min="0" max="100" className="PB-range-slider" id="myRange"
-                                        {...register(`grades.${index}.grade`, { valueAsNumber: true })}
-                                    />
-                                    <p className="PB-range-slidervalue">{gradeValues[index]?.grade}</p>
-                                </div>
-                            </div>
-                        );
-                    })}
                     <div className="w-full flex justify-center items-center font-bold">
                         Final grade: {handleCalculateFinalPoints()}/100
                     </div>
 
+                    {specificCriteria
+                        .map((field, index) => {
+
+
+                            return (
+                                <div key={field.id} className="w-full flex flex-col items-start gap-2">
+                                    <div className="w-full flex justify-between items-center">
+                                        <h3 className="font-semibold text-lg text-gray-800">
+                                            {field.criteria_name}
+                                            <div className="text-sm opacity-70">
+                                                Type: {field.type}
+                                            </div>
+                                        </h3>
+                                        <span className="text-sm font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded">
+                                            {field.percentage}%
+                                        </span>
+                                    </div>
+
+                                    <p className="text-sm text-gray-600 opacity-70 flex flex-wrap break-all">
+                                        {field.criteria_description}
+                                    </p>
+
+
+                                    <div className="PB-range-slider-div w-full">
+                                        <input type="range" min="0" max="100" className="PB-range-slider" id="myRange"
+                                            {...register(`specificGrades.${index}.grade`, { valueAsNumber: true })}
+                                        />
+                                        <p className="PB-range-slidervalue">{specificGrades[index]?.grade}</p>
+                                    </div>
+                                </div>
+                            );
+
+                        })}
                     <button
                         type="submit"
                         className="mt-4 w-full bg-black text-white py-2 rounded-lg hover:bg-black/80 duration-300 cursor-pointer"

@@ -74,6 +74,7 @@ export type Database = {
           event_id: string | null
           id: string
           percentage: number | null
+          type: Database["public"]["Enums"]["CRITERIA_TYPE"] | null
         }
         Insert: {
           created_at?: string
@@ -82,6 +83,7 @@ export type Database = {
           event_id?: string | null
           id?: string
           percentage?: number | null
+          type?: Database["public"]["Enums"]["CRITERIA_TYPE"] | null
         }
         Update: {
           created_at?: string
@@ -90,6 +92,7 @@ export type Database = {
           event_id?: string | null
           id?: string
           percentage?: number | null
+          type?: Database["public"]["Enums"]["CRITERIA_TYPE"] | null
         }
         Relationships: [
           {
@@ -658,6 +661,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      CRITERIA_TYPE: "normal" | "specific"
       DEGREE: "Bachelor" | "Master" | "Ph.D"
       EVENT_STATUS: "ongoing" | "finished"
       INVITATION_STATUS: "pending" | "rejected" | "accepted"
@@ -799,6 +803,7 @@ export const Constants = {
   },
   public: {
     Enums: {
+      CRITERIA_TYPE: ["normal", "specific"],
       DEGREE: ["Bachelor", "Master", "Ph.D"],
       EVENT_STATUS: ["ongoing", "finished"],
       INVITATION_STATUS: ["pending", "rejected", "accepted"],
