@@ -256,7 +256,7 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
                             <p className="text-gray-600">
                                 <span className="font-semibold">Paste or drop a file here</span> or click to upload
                             </p>
-                            <p className="text-xs text-gray-400">PDF, WORD, PPTX (max. 10MB)</p>
+                            <p className="text-xs text-gray-400">PDF, WORD, PPTX (max. 5MB)</p>
                         </div>
 
                         <input
