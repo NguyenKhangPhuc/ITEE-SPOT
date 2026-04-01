@@ -210,9 +210,7 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
                         <label className="event_input_label">Youtube Link</label>
                         <input autoComplete="off" placeholder="Demo video link" id="Title" className="event_input outline-none w-full  h-[40px] placeholder:font-bold " type="text"
 
-                            {...register('youtube_link', {
-                                required: "Youtube link is required",
-                            })} />
+                            {...register('youtube_link')} />
                         {errors.youtube_link && (
                             <p className="text-red-500 text-sm mt-1">
                                 {errors.youtube_link.message}
