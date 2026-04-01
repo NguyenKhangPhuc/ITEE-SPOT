@@ -71,7 +71,7 @@ const SingleEventClient = ({ event, user }: { event: Event, user: Profile }) => 
                             <span>{new Date(event.organized_date!).toLocaleDateString()}</span>
                         </div>
                         <div className=" flex gap-1">
-                            <span className="text-gray-500">Organized Date:</span>
+                            <span className="text-gray-500">Organized Time:</span>
                             <span>{new Date(event.organized_date!).toLocaleTimeString()}</span>
                         </div>
                     </div>
