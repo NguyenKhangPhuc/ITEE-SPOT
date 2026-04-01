@@ -27,17 +27,16 @@ export async function getSubmissionByGroupId({ groupId }: { groupId: string }) {
         .from('submissions')
         .select('*, group_challenge (id, event_challenges (company_name, title)), submission_files (*), submission_reactions (*), submission_ratings (*)')
         .eq('group_id', groupId)
-
     return { data, error }
 }
 
 
 export async function saveGroupChallengeSubmission({ submission, submittedFiles }: { submission: SubmissionInsert, submittedFiles: Array<SubmissionFileExtended> }) {
     const supabase = await createClient()
-
     const { data: subData, error: subError } = await supabase
         .from('submissions')
         .upsert({
+            title: submission.title,
             github_link: submission.github_link,
             youtube_link: submission.youtube_link,
             short_description: submission.short_description,

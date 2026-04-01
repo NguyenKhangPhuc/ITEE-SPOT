@@ -96,6 +96,7 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
             if (data.group_challenge_id == null || data.group_challenge_id == "") {
                 throw new Error('Fail to save because unknown error')
             }
+
             const { error } = await saveGroupChallengeSubmission({ submission: data, submittedFiles })
             if (error) {
                 throw new Error(error)
@@ -181,8 +182,8 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
             {chosenGroupChallenges != null &&
                 <>
                     <div className="input-group w-full">
-                        <label className="event_input_label">Submission title</label>
-                        <input autoComplete="off" placeholder="Github source code link" id="Title" className="event_input outline-none w-full  h-[40px] placeholder:font-bold " type="text"
+                        <label className="event_input_label">Project title</label>
+                        <input autoComplete="off" placeholder="Project Title" id="Title" className="event_input outline-none w-full  h-[40px] placeholder:font-bold " type="text"
 
                             {...register('title', {
                                 required: "Project title is required",
