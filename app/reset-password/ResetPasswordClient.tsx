@@ -37,8 +37,9 @@ export const ResetPasswordClient = ({ email }: { email: string }) => {
             if (error) {
                 throw new Error(error)
             }
+            setIsOpenLoader(false)
             showNotification('Update successfully')
-            router.push('/')
+            router.push('/login')
         } catch (error) {
             if (error instanceof Error && error.message !== 'NEXT_REDIRECT') {
                 showNotification(error.message)
