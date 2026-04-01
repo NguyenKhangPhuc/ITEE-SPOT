@@ -16,6 +16,7 @@ import { createClient } from "@/app/utils/supabase/client"
 import { createEventChallenge } from "@/app/actions/event_challenges"
 import ChallengeCreationForm from "./EventChallengeClient"
 import { useLoader } from "@/app/context/LoaderContext"
+import EventCriteriaEdit from "./EventCriteriaEdit"
 
 
 const EditEventClient = ({ event }: { event: EventWithChallenges }) => {
@@ -94,7 +95,7 @@ const EditEventClient = ({ event }: { event: EventWithChallenges }) => {
     }
     return (
         <div className="w-full min-h-screen screen-bg font-roboto-mono">
-            <div className="max-w-4xl mx-auto px-6 pt-5 pb-5">
+            <div className="max-w-6xl mx-auto px-6 pt-5 pb-5">
                 <form className="flex flex-col content-main-color mt-5 p-5 rounded-xl gap-5 items-start" onSubmit={handleSubmit(handleCreateNewEvent)}>
                     <div className="w-full flex flex-col items-center gap-3">
                         <div className="relative w-40 h-40 group">
@@ -259,11 +260,12 @@ const EditEventClient = ({ event }: { event: EventWithChallenges }) => {
                     </div>
                     <button
                         type="submit"
-                        className="cursor-pointer w-full py-2 rounded-md bg-black hover:bg-black/80 transition-colors duration-300 text-white"
+                        className="cursor-pointer w-full py-2 rounded-md  hover:scale-102 border-4 border-black transition-colors duration-300 text-black"
                     >
                         Save
                     </button>
                     <ChallengeCreationForm challenges={challenges} setChallenges={setChallenges} event={event} />
+                    <EventCriteriaEdit receivedCriteria={event.event_grading_criteria ?? []} eventId={event.id} />
                 </form>
             </div>
         </div>

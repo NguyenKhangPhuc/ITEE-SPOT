@@ -44,7 +44,7 @@ const SubmissionFiles = ({ submittedFiles }: SubmissionFilesProps) => {
                         <div
                             key={index}
                             onClick={() => handleDownloadFile(fileItem)}
-                            className="cursor-pointer relative h-30 min-w-full flex flex-col items-center justify-center p-2 bg-white rounded-md border border-gray-100 shadow-xl shadow-black/30 hover:scale-105 group duration-300 cursor"
+                            className="cursor-pointer relative h-30 min-w-full flex flex-col items-center justify-center p-2 bg-white rounded-md border border-gray-100 shadow-xl shadow-black/30 hover:scale-102 group duration-300 cursor"
                         >
                             <button
 

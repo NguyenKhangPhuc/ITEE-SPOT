@@ -1,4 +1,4 @@
-import { type NextRequest } from "next/server"
+import { NextResponse, type NextRequest } from "next/server"
 import { updateSession } from "./app/utils/supabase/proxy"
 import { registerRoute } from "./app/middleware/register_proxy"
 import { submissionRoute } from "./app/middleware/submission_proxy"
@@ -7,25 +7,55 @@ import { viewAllGroups } from "./app/middleware/view_all_groups"
 import { userGroupRoute } from "./app/middleware/user_group"
 import { submissionReadOnlyRoute } from "./app/middleware/submission_read_only"
 import { editEventRoute } from "./app/middleware/edit_event_proxy"
+import { submissionGradingRoute } from "./app/middleware/submission_grading"
+import { Database } from "./app/types/database.types"
+import { createServerClient } from "@supabase/ssr"
+import { eventSubmissionGradingRoute } from "./app/middleware/submission_evaluation_all"
 
 
 export async function proxy(request: NextRequest) {
-    const supabaseResponse = await updateSession(request)
-    if (supabaseResponse.status !== 200) return supabaseResponse
-    const registerRouteCheck = await registerRoute(request)
+    const updateSessionResponse = await updateSession(request)
+    if (updateSessionResponse.status !== 200) return updateSessionResponse
+    let supabaseResponse = NextResponse.next({
+        request,
+    })
+    const supabase = createServerClient<Database>(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+        {
+            cookies: {
+                getAll() {
+                    return request.cookies.getAll()
+                },
+                setAll(cookiesToSet) {
+                    cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
+                    supabaseResponse = NextResponse.next({
+                        request,
+                    })
+                    cookiesToSet.forEach(({ name, value, options }) => supabaseResponse.cookies.set(name, value, options))
+                },
+            },
+        }
+    )
+    const { data: user } = await supabase.auth.getUser()
+    const registerRouteCheck = await registerRoute({ request, user: user.user })
     if (registerRouteCheck.status !== 200) return registerRouteCheck
-    const submissionRouteCheck = await submissionRoute(request)
+    const submissionRouteCheck = await submissionRoute({ request, user: user.user })
     if (submissionRouteCheck.status !== 200) return submissionRouteCheck
-    // const createEventRouteCheck = await createEventRoute(request)
-    // if (createEventRouteCheck.status !== 200) return createEventRouteCheck
-    const viewAllGroupsEventCheck = await viewAllGroups(request)
+    const createEventRouteCheck = await createEventRoute({ request, user: user.user })
+    if (createEventRouteCheck.status !== 200) return createEventRouteCheck
+    const viewAllGroupsEventCheck = await viewAllGroups({ request, user: user.user })
     if (viewAllGroupsEventCheck.status !== 200) return viewAllGroupsEventCheck
-    const checkUserInGroup = await userGroupRoute(request)
+    const checkUserInGroup = await userGroupRoute({ request, user: user.user })
     if (checkUserInGroup.status !== 200) return checkUserInGroup
-    const submissionReadOnlyRouteCheck = await submissionReadOnlyRoute(request)
+    const submissionReadOnlyRouteCheck = await submissionReadOnlyRoute({ request, user: user.user })
     if (submissionReadOnlyRouteCheck.status !== 200) return submissionReadOnlyRouteCheck
-    const editEventRouteCheck = await editEventRoute(request)
+    const editEventRouteCheck = await editEventRoute({ request, user: user.user })
     if (editEventRouteCheck.status !== 200) return editEventRouteCheck
+    const submissionGradingRouteCheck = await submissionGradingRoute({ request, user: user.user })
+    if (submissionGradingRouteCheck.status !== 200) return submissionGradingRouteCheck
+    const eventSubmissionGrading = await eventSubmissionGradingRoute({ request, user: user.user })
+    if (eventSubmissionGrading.status !== 200) return eventSubmissionGrading
 }
 
 export const config = {

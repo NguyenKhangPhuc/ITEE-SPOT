@@ -181,6 +181,19 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
             {chosenGroupChallenges != null &&
                 <>
                     <div className="input-group w-full">
+                        <label className="event_input_label">Submission title</label>
+                        <input autoComplete="off" placeholder="Github source code link" id="Title" className="event_input outline-none w-full  h-[40px] placeholder:font-bold " type="text"
+
+                            {...register('title', {
+                                required: "Project title is required",
+                            })} />
+                        {errors.title && (
+                            <p className="text-red-500 text-sm mt-1">
+                                {errors.title.message}
+                            </p>
+                        )}
+                    </div>
+                    <div className="input-group w-full">
                         <label className="event_input_label">Github Link</label>
                         <input autoComplete="off" placeholder="Github source code link" id="Title" className="event_input outline-none w-full  h-[40px] placeholder:font-bold " type="text"
 
@@ -243,7 +256,7 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
                             <p className="text-gray-600">
                                 <span className="font-semibold">Paste or drop a file here</span> or click to upload
                             </p>
-                            <p className="text-xs text-gray-400">PDF, WORD, PPTX (max. 10MB)</p>
+                            <p className="text-xs text-gray-400">PDF, WORD, PPTX (max. 5MB)</p>
                         </div>
 
                         <input
@@ -266,7 +279,7 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
                                 <div
                                     key={index}
                                     onClick={() => handleDownloadFile(fileItem)}
-                                    className="cursor-pointer relative h-30 min-w-full flex flex-col items-center justify-center p-2 bg-white rounded-md border border-gray-100 shadow-xl shadow-black/30 hover:scale-105 group duration-300 cursor"
+                                    className="cursor-pointer relative h-30 min-w-full flex flex-col items-center justify-center p-2 bg-white rounded-md border border-gray-100 shadow-xl shadow-black/30 hover:scale-102 group duration-300 cursor"
                                 >
                                     <button
                                         onClick={(e) => {
@@ -302,13 +315,13 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
                     <div className="w-full flex gap-5">
                         <button
                             type="submit"
-                            className="cursor-pointer w-1/2 h-13 rounded-[10px] bg-black hover:bg-black/80 transition-colors duration-300 text-white hover:scale-105"
+                            className="cursor-pointer w-1/2 h-13 rounded-[10px] bg-black hover:bg-black/80 transition-colors duration-300 text-white hover:scale-102"
                         >
                             Save your submission
                         </button>
                         <Link href={`/submission/${group_id}/read-only`} className="duration-300 cursor-pointer text-black
                      p-5 text-center w-1/2 h-13 border-4 border-black bg-white 
-                     hover:scale-105 rounded-[10px] flex items-center justify-center ">
+                     hover:scale-102 rounded-[10px] flex items-center justify-center ">
                             See your submission
                         </Link>
                     </div>

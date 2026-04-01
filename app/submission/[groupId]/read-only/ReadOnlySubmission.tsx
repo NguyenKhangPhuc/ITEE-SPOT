@@ -8,12 +8,6 @@ import React, { useState } from "react"
 import { useForm, useWatch } from "react-hook-form"
 import { SubmissionFileExtended } from "@/app/types/submission_files"
 import { SubmissionReaction } from "@/app/types/submission_reactions"
-import { User } from "@supabase/supabase-js"
-import { createReaction, deleteReaction } from "@/app/actions/submission_reaction"
-import SendIcon from '@mui/icons-material/Send';
-import PersonIcon from '@mui/icons-material/Person';
-import { SubmissionCommentInsert, SubmissionCommentPagination } from "@/app/types/submission_comments"
-import { createSubmissionComment, getSubmissionComments } from "@/app/actions/submission_comment"
 import { createSubmissionRating, getSubmissionRatingById } from "@/app/actions/submission_ratings"
 import { SubmissionRatingInsert } from "@/app/types/submission_rating"
 import SubmissionInfo from "./SubmissionInfo"
@@ -23,6 +17,7 @@ import SubmissionReactions from "./SubmissionReactions"
 import SubmissionComment from "./SubmissionComment"
 import { Profile, ProfileInsert } from "@/app/types/profile"
 import { PROFILE_ROLE } from "@/app/types/enum"
+import Link from "next/link"
 const ReadOnlySubmission = ({ groupSubmissions, user }: { groupSubmissions: GroupSubmissions, user: ProfileInsert }) => {
     const {
         register,
@@ -87,14 +82,14 @@ const ReadOnlySubmission = ({ groupSubmissions, user }: { groupSubmissions: Grou
 
 
     return (
-        <div className="flex flex-col mt-5 content-main-color p-5 rounded-xl gap-5 items-start" >
-            <div className="flex flex-col gap-4 w-full mt-4">
+        <div className="flex flex-col mt-5 content-main-color p-5 rounded-xl gap-5 items-start relative" >
+            <div className="flex flex-col gap-4 w-full mt-4 sticky top-10 z-10 ">
                 <div className="text-lg font-bold uppercase tracking-tight">Select Challenges</div>
                 {groupSubmissions == null ? <div>
                     No submission yet
-                </div> : <div className="grid md:grid-cols-2 grid-cols-1 gap-4">
+                </div> : <div className=" w-full grid md:grid-cols-2 grid-cols-1 gap-4 ">
                     {groupSubmissions?.map((submission, index) => (
-                        <div key={submission.id} className={`rounded-xl group relative cursor-pointer duration-300 ${chosenGroupChallenges == index ? 'shadow-xl/30 translate-y-2' : ''}`
+                        <div key={submission.id} className={`rounded-xl content-main-color group relative cursor-pointer duration-300 ${chosenGroupChallenges == index ? 'shadow-xl/30 translate-y-2' : ''}`
                         } onClick={() => handleChooseChallengeSubmission(index)}>
 
                             <div className="relative w-full p-5 border rounded-xl peer-checked:border-black peer-checked:bg-gray-50 transition-all">
@@ -106,7 +101,7 @@ const ReadOnlySubmission = ({ groupSubmissions, user }: { groupSubmissions: Grou
                     ))}
                 </div>}
             </div>
-            {chosenGroupChallenges != null &&
+            {chosenGroupChallenges != null && groupSubmissions != null &&
                 <>
                     <SubmissionInfo
                         initialContent={initialEditorContent ?? ""}
@@ -118,11 +113,20 @@ const ReadOnlySubmission = ({ groupSubmissions, user }: { groupSubmissions: Grou
 
                     <SubmissionFiles submittedFiles={submittedFiles} />
 
-                    {user.role == PROFILE_ROLE.ADMIN || user.role == PROFILE_ROLE.JUDGES && <SubmissionRating user={user} userRating={userRating} setUserRating={setUserRating} getValues={getValues} />}
+                    {(user.role == PROFILE_ROLE.ADMIN || user.role == PROFILE_ROLE.JUDGES) && <SubmissionRating user={user} userRating={userRating} setUserRating={setUserRating} getValues={getValues} />}
 
                     <SubmissionReactions getValues={getValues} submissionReaction={submissionReaction} setSubmissionReaction={setSubmissionReaction} user={user} />
 
                     <SubmissionComment getValues={getValues} user={user} />
+                    {(user.role == PROFILE_ROLE.ADMIN || user.role == PROFILE_ROLE.JUDGES) && <div className="w-full flex gap-5">
+
+                        <Link href={`/submission/grading/${groupSubmissions[chosenGroupChallenges].id}`} className="duration-300 cursor-pointer text-black
+                     p-5 text-center w-full h-13 border-4 border-black bg-white 
+                     hover:scale-102 rounded-[10px] flex items-center justify-center ">
+                            Grade this project
+                        </Link>
+                    </div>}
+
                 </>
             }
 

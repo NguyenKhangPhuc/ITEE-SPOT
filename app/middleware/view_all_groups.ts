@@ -2,8 +2,9 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 import { Database } from '../types/database.types'
 import { EVENT_STATUS, PROFILE_ROLE } from '../types/enum'
+import { User } from '@supabase/supabase-js'
 
-export async function viewAllGroups(request: NextRequest) {
+export async function viewAllGroups({ request, user }: { request: NextRequest, user: User | null }) {
     let supabaseResponse = NextResponse.next({
         request,
     })
@@ -28,19 +29,20 @@ export async function viewAllGroups(request: NextRequest) {
             },
         }
     )
+
     const pathname = request.nextUrl.pathname;
     const pathnameSplitted = pathname.split('/')
     if (
         pathname.startsWith('/events/') && pathnameSplitted.length == 4 && pathnameSplitted[3] == 'groups'
     ) {
-        const eventId = pathnameSplitted[2]
-        const { data: user, error: userError } = await supabase.auth.getUser()
-        if (userError || user == null) {
+        if (user == null) {
             const url = request.nextUrl.clone()
             url.pathname = '/login'
             return NextResponse.redirect(url)
         }
-        const { data: userRole, error: userRoleError } = await supabase.from('profiles').select('role').eq('id', user.user.id).maybeSingle()
+        const eventId = pathnameSplitted[2]
+
+        const { data: userRole, error: userRoleError } = await supabase.from('profiles').select('role').eq('id', user.id).maybeSingle()
 
         if (userRoleError) {
             const url = request.nextUrl.clone()

@@ -9,8 +9,10 @@ import { EVENT_STATUS } from '../types/enum'
 import { PostgrestError } from '@supabase/supabase-js'
 import { v4 as uuidv4 } from 'uuid';
 import { EventChallengeInsert } from '../types/event_challenges'
+import { EventCriteriaInsert } from '../types/event_criteria'
 
-export async function createEvent({ event, challenges, avatarFile }: { event: EventInsert, challenges: Array<EventInsert>, avatarFile: File | null }) {
+export async function createEvent({ event, challenges, avatarFile, criteria }:
+    { event: EventInsert, challenges: Array<EventInsert>, avatarFile: File | null, criteria: Array<EventCriteriaInsert> }) {
     const supabase = await createClient();
 
     const { data: user } = await supabase.auth.getUser()
@@ -58,6 +60,12 @@ export async function createEvent({ event, challenges, avatarFile }: { event: Ev
         return { error: "Fail to create the event challenges, please contact staffs" }
     }
 
+    const updatedCriteria = criteria.map(cri => ({ ...cri, event_id: data?.id }))
+
+    const { error: criteriaError } = await supabase.from('event_grading_criteria').insert(updatedCriteria)
+    if (criteriaError) {
+        return { error: "Fail to create the event criteria, please contact staffs" }
+    }
     revalidatePath('/events');
     return { data, error: null }
 }
@@ -73,7 +81,7 @@ export async function getAllEvents() {
 export async function getSingleEvent(id: string) {
     const supabase = await createClient();
 
-    const { data, error } = await supabase.from("events").select("*, event_challenges (*)").eq("id", id).single();
+    const { data, error } = await supabase.from("events").select("*, event_challenges (*), event_grading_criteria (*)").eq("id", id).single();
 
     return { data, error }
 }

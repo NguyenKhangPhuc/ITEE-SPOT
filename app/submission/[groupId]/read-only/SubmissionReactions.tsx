@@ -76,20 +76,14 @@ const SubmissionReactions = ({ submissionReaction, setSubmissionReaction, user, 
     return (
         <div className="w-full flex h-10 border border-gray-400 rounded-lg">
             <div
-                className="w-1/2 flex justify-center h-full items-center cursor-pointer hover:bg-gray-100 border-r border-gray-300 gap-2 transition-colors duration-300"
+                className="w-full flex justify-center h-full items-center cursor-pointer hover:bg-gray-100 border-r border-gray-300 gap-2 transition-colors duration-300"
                 onClick={() => handleReaction()}
             >
                 <ThumbUpAltIcon fontSize="small" sx={{ color: `${handleCheckReaction() ? 'blue' : 'black'}` }} />
                 <span className="font-medium">{submissionReaction.length}</span>
             </div>
 
-            <a
-                href="#comments"
-                className="w-1/2 flex justify-center h-full items-center cursor-pointer hover:bg-gray-100 gap-2 duration-300"
-            >
-                <CommentIcon fontSize="small" />
-                <span className="font-medium">Comments 0</span>
-            </a>
+
         </div>
     )
 }

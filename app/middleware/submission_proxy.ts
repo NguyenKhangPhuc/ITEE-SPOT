@@ -1,8 +1,9 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 import { Database } from '../types/database.types'
+import { User } from '@supabase/supabase-js'
 
-export async function submissionRoute(request: NextRequest) {
+export async function submissionRoute({ request, user }: { request: NextRequest, user: User | null }) {
     let supabaseResponse = NextResponse.next({
         request,
     })
@@ -31,16 +32,14 @@ export async function submissionRoute(request: NextRequest) {
     if (
         pathname.startsWith('/submission/') && pathname.split('/').length === 3
     ) {
-        const groupId = pathname.split('/')[2]
-
-        const { data: user, error: userError } = await supabase.auth.getUser()
-        if (userError || user == null) {
+        if (user == null) {
             const url = request.nextUrl.clone()
             url.pathname = '/login'
             return NextResponse.redirect(url)
         }
+        const groupId = pathname.split('/')[2]
 
-        const { data, error } = await supabase.from('group_members').select('group_id, member_id').eq('group_id', groupId).eq('member_id', user.user.id).maybeSingle()
+        const { data, error } = await supabase.from('group_members').select('group_id, member_id').eq('group_id', groupId).eq('member_id', user.id).maybeSingle()
 
         if (error || data == null) {
             const url = request.nextUrl.clone()

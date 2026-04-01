@@ -2,8 +2,9 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 import { Database } from '../types/database.types'
 import { PROFILE_ROLE } from '../types/enum'
+import { User } from '@supabase/supabase-js'
 
-export async function editEventRoute(request: NextRequest) {
+export async function editEventRoute({ request, user }: { request: NextRequest, user: User | null }) {
     let supabaseResponse = NextResponse.next({
         request,
     })
@@ -28,18 +29,18 @@ export async function editEventRoute(request: NextRequest) {
             },
         }
     )
+
     const pathname = request.nextUrl.pathname;
     const pathNameSplitted = pathname.split('/')
     if (
         pathname.startsWith('/events/') && pathNameSplitted.length == 4 && pathNameSplitted[3] == 'edit'
     ) {
-        const { data: user, error: userError } = await supabase.auth.getUser()
-        if (userError || user == null) {
+        if (user == null) {
             const url = request.nextUrl.clone()
             url.pathname = '/login'
             return NextResponse.redirect(url)
         }
-        const { data: userRole, error: userRoleError } = await supabase.from('profiles').select('role').eq('id', user.user.id).maybeSingle()
+        const { data: userRole, error: userRoleError } = await supabase.from('profiles').select('role').eq('id', user.id).maybeSingle()
 
         if (userRoleError || userRole?.role != PROFILE_ROLE.ADMIN) {
             const url = request.nextUrl.clone()

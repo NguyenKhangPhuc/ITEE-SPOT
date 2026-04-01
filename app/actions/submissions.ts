@@ -77,7 +77,6 @@ export async function saveGroupChallengeSubmission({ submission, submittedFiles 
             .remove(deleteFilesStorage);
     }
 
-    // 4. Upload file mới
 
     if (newFiles.length > 0) {
         const uploadPromises = newFiles.map(async (item) => {
@@ -108,4 +107,70 @@ export async function saveGroupChallengeSubmission({ submission, submittedFiles 
     }
 
     return { data: subData, error: null };
+}
+
+export async function getSubmissionById(submissionId: string) {
+    const supabase = await createClient()
+    const { data, error } = await supabase
+        .from('submissions')
+        .select('*, groups (event_id)').eq('id', submissionId).maybeSingle()
+
+    return { data, error }
+
+}
+
+
+export async function getSubmissionWithGrade({ eventId, userId }: { eventId: string, userId: string }) {
+    const supabase = await createClient()
+
+    const { data, error } = await supabase
+        .from('submission_final_scores')
+        .select('*, submissions!inner (*, groups!inner (id,group_name, event_id), submission_grading (*, event_grading_criteria (percentage, type)))')
+        .order('type', { referencedTable: 'submissions.submission_grading.event_grading_criteria', ascending: true })
+        .order('event_criteria_id', { referencedTable: 'submissions.submission_grading', ascending: false })
+        .order('final_average_score', { ascending: false })
+        .eq('submissions.groups.event_id', eventId)
+        .eq('submissions.submission_grading.user_id', userId)
+    if (error) {
+        return { error: "Fail to fetch all submission grade" }
+    }
+    return { data, error }
+}
+
+export async function getTop5SubmissionGrade({ eventId, userId }: { eventId: string, userId: string }) {
+    const supabase = await createClient()
+
+    const { data, error } = await supabase
+        .from('submission_final_scores')
+        .select('*, submissions!inner (*, groups!inner (id,group_name, event_id), submission_grading (*, event_grading_criteria (percentage, type)))')
+        .order('type', { referencedTable: 'submissions.submission_grading.event_grading_criteria', ascending: true })
+        .order('event_criteria_id', { referencedTable: 'submissions.submission_grading', ascending: false })
+        .order('final_average_score', { ascending: false })
+        .limit(3)
+        .eq('submissions.groups.event_id', eventId)
+        .eq('submissions.submission_grading.user_id', userId)
+    if (error) {
+        return { error: "Fail to fetch top 3 submission grade" }
+    }
+    return { data, error }
+}
+
+export async function getSubmissionGradeBasedOnStar({ eventId, rating, userId }: { eventId: string, rating: number, userId: string }) {
+    const supabase = await createClient()
+
+    const { data, error } = await supabase
+        .from('submission_final_scores')
+        .select('*, submissions!inner (*, groups!inner (id,group_name, event_id), submission_grading (*, event_grading_criteria (percentage, type)), submission_ratings!inner (id, rating))')
+        .order('type', { referencedTable: 'submissions.submission_grading.event_grading_criteria', ascending: true })
+        .order('event_criteria_id', { referencedTable: 'submissions.submission_grading', ascending: false })
+        .order('final_average_score', { ascending: false })
+        .eq('submissions.submission_ratings.rating', rating)
+        .eq('submissions.submission_ratings.user_id', userId)
+        .eq('submissions.groups.event_id', eventId)
+        .eq('submissions.submission_grading.user_id', userId)
+    if (error) {
+        return { error: "Fail to fetch 5 stare submission grade" }
+    }
+
+    return { data, error }
 }

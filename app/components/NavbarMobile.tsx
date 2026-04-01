@@ -26,7 +26,7 @@ const NavbarMobile = ({ initialUser }: { initialUser: User | null }) => {
     }
     return (
         <div className="fixed top-0 left-0 w-full bg-black text-white z-50 font-roboto-mono">
-            <div className="max-w-4xl mx-auto px-6 flex">
+            <div className="max-w-6xl mx-auto px-6 flex">
                 <div className="w-full flex items-center justify-between h-18">
                     <Link href={`/`} className="text-xl font-bold z-100">
                         ITEE SPOT
@@ -70,7 +70,7 @@ const NavbarMobile = ({ initialUser }: { initialUser: User | null }) => {
         fixed inset-0 bg-black z-[80] pt-24 gap-2 duration-300
         ${isChecked ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}
     `}>
-                    <div className=" max-w-4xl mx-auto px-6  flex flex-col">
+                    <div className=" max-w-6xl mx-auto px-6  flex flex-col">
                         <Link
                             href="/events"
                             onClick={() => setIsChecked(false)}

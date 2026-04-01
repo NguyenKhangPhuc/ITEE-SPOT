@@ -118,14 +118,14 @@ const SingleInvitation = ({ invite, user }: { invite: InvitationWithGroupsEvent,
             {inviationStatus === INVITATION_STATUS.PENDING && (
                 <div className="flex flex-wrap items-center gap-4 mt-auto">
                     <button
-                        className="transition duration-300 ease-in-out cursor-pointer w-full h-13 bg-black hover:bg-black/80 hover:scale-105 border rounded-[10px] flex items-center justify-center text-white font-bold text-sm"
+                        className="transition duration-300 ease-in-out cursor-pointer w-full h-13 bg-black hover:bg-black/80 hover:scale-102 border rounded-[10px] flex items-center justify-center text-white font-bold text-sm"
                         onClick={() => handleAcceptInvitation()}
                     >
                         Accept Invitation
                     </button>
 
                     <button
-                        className="duration-300 cursor-pointer text-black p-5 text-center w-full h-13 border-4 border-black bg-white hover:scale-105 rounded-[10px] flex items-center justify-center font-bold text-sm"
+                        className="duration-300 cursor-pointer text-black p-5 text-center w-full h-13 border-4 border-black bg-white hover:scale-102 rounded-[10px] flex items-center justify-center font-bold text-sm"
                         onClick={() => handleRejectinvitation()}
                     >
                         Reject

@@ -2,8 +2,9 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 import { Database } from '../types/database.types'
 import { PROFILE_ROLE } from '../types/enum'
+import { User } from '@supabase/supabase-js'
 
-export async function submissionReadOnlyRoute(request: NextRequest) {
+export async function submissionReadOnlyRoute({ request, user }: { request: NextRequest, user: User | null }) {
     let supabaseResponse = NextResponse.next({
         request,
     })
@@ -33,14 +34,13 @@ export async function submissionReadOnlyRoute(request: NextRequest) {
     if (
         pathname.startsWith('/submission/') && pathnameSplitted.length === 4 && pathnameSplitted[3] == 'read-only'
     ) {
-        const groupId = pathname.split('/')[2]
-        const { data: user, error: userError } = await supabase.auth.getUser()
-        if (userError || user == null) {
+        if (user == null) {
             const url = request.nextUrl.clone()
             url.pathname = '/login'
             return NextResponse.redirect(url)
         }
-        const { data: userRole, error: userRoleError } = await supabase.from('profiles').select('role').eq('id', user.user.id).maybeSingle()
+        const groupId = pathname.split('/')[2]
+        const { data: userRole, error: userRoleError } = await supabase.from('profiles').select('role').eq('id', user.id).maybeSingle()
 
         if (userRoleError) {
             const url = request.nextUrl.clone()
@@ -51,7 +51,7 @@ export async function submissionReadOnlyRoute(request: NextRequest) {
         const { data, error } = await supabase
             .from('groups')
             .select('id, group_members!inner (member_id)')
-            .eq('group_members.member_id', user.user.id)
+            .eq('group_members.member_id', user.id)
             .eq('id', groupId)
             .maybeSingle()
         if (error) {
