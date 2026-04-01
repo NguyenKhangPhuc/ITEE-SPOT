@@ -39,7 +39,10 @@ const Home = () => {
         event.content = editorValue?.getHTML()
         setIsOpenLoader(true)
         try {
-            const { data, error } = await createEvent({ event, challenges, avatarFile, criteria })
+            const localDate = new Date(event.organized_date!);
+            const formattedDate = localDate.toISOString();
+            const updatedLocalDateEvent = { ...event, organized_date: formattedDate }
+            const { data, error } = await createEvent({ event: updatedLocalDateEvent, challenges, avatarFile, criteria })
             if (error) {
                 throw new Error(error)
             }

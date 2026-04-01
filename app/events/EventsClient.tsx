@@ -61,7 +61,7 @@ const EventsClient = ({ events }: { events: Array<Event> }) => {
                         <div className="w-full lg:grid grid-cols-2 gap-x-4 flex sm:flex-row text-sm font-bold mb-2 flex-col items-center justify-center">
                             <div className="flex gap-1">
                                 <span className="text-gray-500">Dates:</span>
-                                <span className="">{new Date(event.start_date!).toLocaleDateString()} - {new Date(event.end_date!).toLocaleDateString()}</span>
+                                <span className="">{new Date(event.start_date!).toLocaleDateString('fi-FI')} - {new Date(event.end_date!).toLocaleDateString('fi-FI')}</span>
                             </div>
                             <div className="flex gap-1">
                                 <span className="text-gray-500">Max/Group:</span>
@@ -73,11 +73,11 @@ const EventsClient = ({ events }: { events: Array<Event> }) => {
                         <div className="w-full lg:grid grid-cols-2 gap-x-4 flex sm:flex-row text-sm font-bold mb-2 flex-col items-center justify-center">
                             <div className="flex gap-1">
                                 <span className="text-gray-500">Organized Date:</span>
-                                <span>{new Date(event.organized_date!).toLocaleDateString()}</span>
+                                <span>{new Date(event.organized_date!).toLocaleDateString('fi-FI')}</span>
                             </div>
                             <div className=" flex gap-1">
-                                <span className="text-gray-500">Organized Date:</span>
-                                <span>{new Date(event.organized_date!).toLocaleTimeString()}</span>
+                                <span className="text-gray-500">Organized Time:</span>
+                                <span>{new Date(event.organized_date!).toTimeString()}</span>
                             </div>
                         </div>
 

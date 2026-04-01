@@ -28,7 +28,7 @@ const Home = () => {
             if (error) {
                 throw new Error(error)
             }
-            setIsOpenLoader(false)
+
         } catch (error) {
             if (error instanceof Error && error.message !== 'NEXT_REDIRECT') {
                 if (error.message == AUTH_ERROR_CODE.EXISTED_USER) {
@@ -36,6 +36,9 @@ const Home = () => {
                 } else {
                     showNotification('Fail to sign up')
                 }
+            }
+            else if (error instanceof Error && error.message == 'NEXT_REDIRECT') {
+                showNotification('Sign up successfully, please verify your email')
             }
             setIsOpenLoader(false)
         }

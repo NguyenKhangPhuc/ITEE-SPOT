@@ -41,7 +41,7 @@ const Home = () => {
             if (error) {
                 throw new Error(error)
             }
-            setIsOpenLoader(false)
+
         } catch (error) {
 
             if (error instanceof Error && error.message !== 'NEXT_REDIRECT') {
@@ -57,6 +57,8 @@ const Home = () => {
                 } else {
                     showNotification('Failed to login')
                 }
+            } else if (error instanceof Error && error.message == 'NEXT_REDIRECT') {
+                showNotification('Login successfully')
             }
             setIsOpenLoader(false)
 
