@@ -186,7 +186,7 @@ const SubmissionComment = ({ getValues, user }: SubmissionCommentProps) => {
                                             }) : 'Vừa xong'}
                                         </span>
                                     </div>
-                                    <div className="flex flex-wrap text-gray-700 text-sm mt-1 bg-gray-100 p-2 rounded-lg break-all">
+                                    <div className="max-w-full overflow-x-auto flex flex-wrap text-gray-700 text-sm mt-1 bg-gray-100 p-2 rounded-lg break-words">
                                         {comment.content}
                                     </div>
                                 </div>

@@ -21,3 +21,9 @@ export async function getSubmissionFeedBackByUserIdAndSubmissionId({ userId, sub
     return { data, error }
 }
 
+export async function getSubmissionFeedBackBySubmissionId({ submissionId }: { submissionId: string }) {
+    const supabase = await createClient()
+    const { data, error } = await supabase.from('submission_feedbacks').select('*').eq('submission_id', submissionId)
+    return { data, error }
+}
+

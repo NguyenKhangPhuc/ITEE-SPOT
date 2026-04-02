@@ -219,8 +219,8 @@ const SubmissionGradingClient = ({ eventCriteria, submission, user, userGrading,
                     Submit your points
                 </button>
             </form>
-            <form className="w-full flex flex-col mt-5 gap-5" onSubmit={handleSubmitFeedbackInfo(handleUpdateYourFeedback)}>
-
+            <form className="w-full flex flex-col mt-10 gap-5" onSubmit={handleSubmitFeedbackInfo(handleUpdateYourFeedback)}>
+                <div className="text-black text-lg font-bold ">Leave a feedback</div>
 
                 <div className="flex flex-col">
                     <label className="event_input_label">Post as</label>

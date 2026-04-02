@@ -126,6 +126,11 @@ const ReadOnlySubmission = ({ groupSubmissions, user }: { groupSubmissions: Grou
                             Grade this project
                         </Link>
                     </div>}
+                    <Link href={`/submission/feedback/${groupSubmissions[chosenGroupChallenges].id}`} className="duration-300 cursor-pointer text-black
+                     p-5 text-center w-full h-13 border-4 border-black bg-white 
+                     hover:scale-102 rounded-[10px] flex items-center justify-center ">
+                        View feedbacks
+                    </Link>
 
                 </>
             }
