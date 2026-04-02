@@ -91,7 +91,7 @@ const RegisterClient = ({ event, user, challenges }: { event: Event, user: User,
                                 className="event_input outline-none w-full h-[38px] placeholder:font-normal"
                                 type="email"
                                 {...register(`member_emails.${index + 1}`, {
-                                    setValueAs: (v: string) => (v.trim() === "" ? null : v.trim()),
+                                    setValueAs: (v: string) => (v.trim() === "" ? null : v.toLowerCase().trim()),
                                     validate: (value, formValues) => {
                                         const isDuplicate = formValues.member_emails.find(
 

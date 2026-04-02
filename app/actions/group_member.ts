@@ -69,7 +69,7 @@ export async function insertGroupMembers(registerGroupMemberData: RegisterGroupM
     }
 
     const invitations: Array<InvitationInsert> = filteredOutEmails.map((value) => {
-        return { group_id: createdGroup.id, member_email: value, invitation_status: INVITATION_STATUS.PENDING }
+        return { group_id: createdGroup.id, member_email: value.toLowerCase().trim(), invitation_status: INVITATION_STATUS.PENDING }
     })
 
     const { data: createdInvitation, error: invitationError } = await supabase.from('invitation').insert(invitations)

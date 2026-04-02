@@ -13,6 +13,7 @@ const GroupsClient = ({ groupsWithEvents }: { groupsWithEvents: UserGroupsWithEv
         return data.publicUrl;
     }
 
+
     return (
         <div className="w-full flex flex-col gap-8 mt-5  min-h-screen">
             {groupsWithEvents?.map((item, index) => (
@@ -22,6 +23,7 @@ const GroupsClient = ({ groupsWithEvents }: { groupsWithEvents: UserGroupsWithEv
                     className="cursor-pointer w-full md:p-8 p-2 rounded-[20px] bg-white 
                                hover:shadow-[0px_0px_20px_#bebebe,-0px_-0px_20px_#ffffff]
                                flex flex-col shadow-xl/10 duration-300 "
+
                 >
                     <div className="w-full flex justify-center items-center">
                         <div className=" relative z-10 w-40 h-40 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-800 flex justify-center items-center">
@@ -64,7 +66,7 @@ const GroupsClient = ({ groupsWithEvents }: { groupsWithEvents: UserGroupsWithEv
                             </div>
                             <div className="flex gap-1">
                                 <span className="text-gray-500">Members:</span>
-                                <span>{item.group_members.length} members</span>
+                                <span>{item.all_members.length} members</span>
                             </div>
                         </div>
                         <div className="mt-5 ">

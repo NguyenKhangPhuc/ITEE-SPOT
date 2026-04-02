@@ -89,7 +89,8 @@ const SingleGroupClient = ({ groupInfo, currentUser }: { groupInfo: GroupInfo, c
             showNotification(`Reach maximum ${groupInfo?.events?.max_group_members} members per group`)
         } else {
             try {
-                const { data, error } = await sendInvitations(invitationInfo)
+                const updatedInvitation = { ...invitationInfo, member_email: invitationInfo.member_email?.toLowerCase().trim() }
+                const { data, error } = await sendInvitations(updatedInvitation)
                 if (error) {
                     throw new Error(error)
                 }
@@ -268,6 +269,7 @@ const SingleGroupClient = ({ groupInfo, currentUser }: { groupInfo: GroupInfo, c
 
                             {...registerMemberInvitation('member_email', {
                                 required: "Member email is required",
+                                setValueAs: (v: string) => (v.trim() === "" ? null : v.toLowerCase().trim())
                             })} />
                         <button className={`bg-black px-10 py-1 rounded-lg cursor-pointer h-full text-white hover:bg-black/80 duration-300`}
                             type="submit"
