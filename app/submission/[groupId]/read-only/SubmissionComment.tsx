@@ -10,6 +10,7 @@ import SendIcon from '@mui/icons-material/Send';
 import PersonIcon from '@mui/icons-material/Person';
 import { ProfileInsert } from "@/app/types/profile";
 import { PROFILE_ROLE } from "@/app/types/enum";
+import { useLoader } from "@/app/context/LoaderContext";
 interface SubmissionCommentProps {
     getValues: UseFormGetValues<{
         created_at?: string;
@@ -31,10 +32,13 @@ const SubmissionComment = ({ getValues, user }: SubmissionCommentProps) => {
         reset: resetComment,
     } = useForm<SubmissionCommentInsert>()
     const { showNotification } = useNotification()
+
     const [submissionComments, setSubmissionComments] = useState<SubmissionCommentPagination | null>()
     const [showComment, setShowComment] = useState(false)
     const [chosenPage, setChosenPage] = useState(1)
+    const { setIsOpenLoader } = useLoader()
     const handleShowComment = async () => {
+        setIsOpenLoader(true)
         try {
             const submissionId = getValues('id')
             if (!submissionId) {
@@ -44,12 +48,14 @@ const SubmissionComment = ({ getValues, user }: SubmissionCommentProps) => {
             if (error) {
                 throw new Error(error)
             }
-
+            setIsOpenLoader(false)
+            showNotification("Fetch the comments successfully")
             setShowComment(true)
             setSubmissionComments({ submissionComments: data ?? [], totalPages: totalPages ?? 0 })
 
 
         } catch (error) {
+            setIsOpenLoader(false)
             if (error instanceof Error) {
                 showNotification(error.message)
             }
@@ -57,6 +63,7 @@ const SubmissionComment = ({ getValues, user }: SubmissionCommentProps) => {
     }
 
     const handleCreateComment = async (data: SubmissionCommentInsert) => {
+        setIsOpenLoader(true)
         try {
             // const foundComment = submissionComments?.submissionComments.findIndex((ele) => ele.user_id == user.id)
             // if (foundComment != -1) {
@@ -72,10 +79,13 @@ const SubmissionComment = ({ getValues, user }: SubmissionCommentProps) => {
             if (error) {
                 throw new Error(error)
             }
+            setIsOpenLoader(false)
             if (newComment) {
+                showNotification("Create the comment successfully")
                 setSubmissionComments({ submissionComments: [...submissionComments?.submissionComments ?? [], newComment], totalPages: submissionComments?.totalPages ?? 0 });
             }
         } catch (error) {
+            setIsOpenLoader(false)
             if (error instanceof Error) {
                 showNotification(error.message)
             }
@@ -83,6 +93,7 @@ const SubmissionComment = ({ getValues, user }: SubmissionCommentProps) => {
     }
 
     const handleChoosePage = async (page: number) => {
+        setIsOpenLoader(true)
         try {
             const submissionId = getValues('id')
             if (!submissionId) {
@@ -92,10 +103,13 @@ const SubmissionComment = ({ getValues, user }: SubmissionCommentProps) => {
             if (error) {
                 throw new Error(error)
             }
+            setIsOpenLoader(false)
+            showNotification("Fetch comments successfully")
             setChosenPage(page)
             setSubmissionComments({ submissionComments: data ?? [], totalPages: totalPages ?? 0 })
 
         } catch (error) {
+            setIsOpenLoader(false)
             if (error instanceof Error) {
                 showNotification(error.message)
             }

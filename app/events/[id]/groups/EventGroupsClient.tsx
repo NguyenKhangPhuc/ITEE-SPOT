@@ -72,7 +72,7 @@ const EventGroupsClient = ({ event, eventGroups }: { event: EventWithChallenges,
                 <FilterAltIcon />
             </button>
             {isOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm max-h-[600px]">
                     <form
                         onSubmit={handleSubmit(onSubmit)}
                         className="bg-white w-[100%] max-w-2xl p-6 rounded-xl shadow-2xl relative animate-in fade-in zoom-in duration-300"
