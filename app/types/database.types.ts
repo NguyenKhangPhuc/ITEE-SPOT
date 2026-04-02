@@ -415,6 +415,48 @@ export type Database = {
           },
         ]
       }
+      submission_feedbacks: {
+        Row: {
+          content: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          submission_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          submission_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          content?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          submission_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "submission_feedbacks_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "submissions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "submission_feedbacks_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       submission_files: {
         Row: {
           created_at: string

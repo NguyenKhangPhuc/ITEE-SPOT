@@ -3,6 +3,8 @@ import { getEventCriteriaById } from "@/app/actions/event_criteria";
 import { getSubmissionById } from "@/app/actions/submissions";
 import SubmissionGradingClient from "./SubmissionGradingClient";
 import { getUserGradingForSubmissionById } from "@/app/actions/user_grading";
+import { getSubmissionFeedBackByUserIdAndSubmissionId } from "@/app/actions/submission_feedback";
+import { getUserProfile } from "@/app/actions/profiles";
 
 
 interface PageProps {
@@ -34,11 +36,22 @@ export default async function Home({ params }: PageProps) {
         return <div className="w-full flex items-center justify-center text-red-500">Something went wrong:  {userGradeError?.message}</div>;
     }
 
+    const { data: submissionFeedback, error: submissionFeedbackError } = await getSubmissionFeedBackByUserIdAndSubmissionId({ userId: user.user.id, submissionId })
+
+    if (submissionFeedbackError) {
+        return <div className="w-full flex items-center justify-center text-red-500">Something went wrong:  {submissionFeedbackError?.message}</div>;
+    }
+
+    const { data: userProfile, error: profileError } = await getUserProfile(user.user.id)
+    if (profileError) {
+        return <div className="w-full flex items-center justify-center text-red-500">Something went wrong:  {profileError?.message}</div>;
+    }
+
     return (
         <div className="w-full min-h-screen screen-bg font-roboto-mono">
             <div className="max-w-6xl mx-auto px-6 flex flex-col p-5 ">
                 <div className="text-2xl font-bold text-color">Grading for submission {data?.title}</div>
-                <SubmissionGradingClient eventCriteria={eventCriteria ?? []} submission={data} user={user.user!} userGrading={userGrade ?? []} />
+                <SubmissionGradingClient eventCriteria={eventCriteria ?? []} submission={data} user={userProfile!} userGrading={userGrade ?? []} userSubmissionFeedback={submissionFeedback} />
             </div>
         </div>
     );
