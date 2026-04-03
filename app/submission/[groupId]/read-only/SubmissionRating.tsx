@@ -25,6 +25,9 @@ interface SubmissionRatingProps {
 }
 const SubmissionRating = ({ getValues, user, userRating, setUserRating }: SubmissionRatingProps) => {
     const { showNotification } = useNotification()
+    const [chosenStar, setChosenStar] = useState<
+        null | 'I definitely want to evaluate this project' | 'I can review this project' | 'I can review this project if needed' | "I would rather not review this project because it’s not my specialty area"
+    >(null)
     const handleRating = async (value: string) => {
         try {
             const submissionId = getValues('id')
@@ -49,6 +52,22 @@ const SubmissionRating = ({ getValues, user, userRating, setUserRating }: Submis
             }
         }
     }
+    const handleGettingRatingLevel = (star: number) => {
+        switch (star) {
+            case 1:
+                return 'I would rather not review this project because it’s not my specialty area'
+            case 2:
+                return 'I would rather not review this project because it’s not my specialty area'
+            case 3:
+                return 'I can review this project if needed'
+            case 4:
+                return 'I can review this project'
+            case 5:
+                return 'I definitely want to evaluate this project'
+            default:
+                return null
+        }
+    }
     return (
         <div className="w-full flex flex-col items-start">
             <div className="text-lg font-bold uppercase tracking-tight">Rate the project</div>
@@ -58,10 +77,12 @@ const SubmissionRating = ({ getValues, user, userRating, setUserRating }: Submis
                         <input value={num} name="rate" id={`start${num}`} type="radio" onChange={(e) => handleRating(e.target.value)}
                             checked={userRating?.rating == num}
                         />
-                        <label title="text" htmlFor={`start${num}`} ></label>
+                        <label title="text" htmlFor={`start${num}`} onMouseOver={() => setChosenStar(handleGettingRatingLevel(num))}></label>
                     </React.Fragment>
                 })}
+
             </div>
+            <div className="text-sm opacity-70">{chosenStar}</div>
         </div>
     )
 }

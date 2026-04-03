@@ -68,7 +68,7 @@ export async function eventSubmissionGradingRoute({ request, user }: { request: 
         //     url.pathname = '/groups'
         //     return NextResponse.redirect(url)
         // }
-        if ((userRole?.role != PROFILE_ROLE.ADMIN && userRole?.role != PROFILE_ROLE.JUDGES)) {
+        if (userRole?.role == PROFILE_ROLE.STUDENT) {
 
             const url = request.nextUrl.clone()
             url.pathname = '/events'

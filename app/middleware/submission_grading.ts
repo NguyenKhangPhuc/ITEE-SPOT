@@ -62,7 +62,9 @@ export async function submissionGradingRoute({ request, user }: { request: NextR
         // }
 
         // if (data == null) {
-        if (userRole?.role != PROFILE_ROLE.ADMIN && user.role != PROFILE_ROLE.JUDGES) {
+
+        if (userRole?.role == PROFILE_ROLE.STUDENT) {
+
             const url = request.nextUrl.clone()
             url.pathname = '/groups'
             return NextResponse.redirect(url)

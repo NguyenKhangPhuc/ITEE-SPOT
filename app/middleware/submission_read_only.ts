@@ -62,11 +62,13 @@ export async function submissionReadOnlyRoute({ request, user }: { request: Next
         }
 
 
-        if (data == null && (userRole?.role != PROFILE_ROLE.ADMIN || userRole?.role != PROFILE_ROLE.ADMIN)) {
+        if (data == null) {
+            if (userRole?.role == PROFILE_ROLE.STUDENT) {
+                const url = request.nextUrl.clone()
+                url.pathname = '/groups'
+                return NextResponse.redirect(url)
+            }
 
-            const url = request.nextUrl.clone()
-            url.pathname = '/groups'
-            return NextResponse.redirect(url)
         }
 
 

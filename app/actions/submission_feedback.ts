@@ -9,7 +9,6 @@ export async function updateSubmissionFeedback({ submissionFeedback }: { submiss
     const { data, error } = await supabase.from('submission_feedbacks').upsert(submissionFeedback, { onConflict: 'user_id, submission_id' })
 
     if (error) {
-        console.log(error)
         return { error: "Cannot create or update the submission feedback" }
     }
     return { data, error }
