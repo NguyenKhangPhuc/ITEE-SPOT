@@ -28,6 +28,7 @@ const SubmissionRating = ({ getValues, user, userRating, setUserRating }: Submis
     const [chosenStar, setChosenStar] = useState<
         null | 'I definitely want to evaluate this project' | 'I can review this project' | 'I can review this project if needed' | "I would rather not review this project because it’s not my specialty area"
     >(null)
+
     const handleRating = async (value: string) => {
         try {
             const submissionId = getValues('id')
