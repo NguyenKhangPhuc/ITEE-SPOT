@@ -41,7 +41,7 @@ export async function signup(formData: SignupForm, origin: string) {
         return { error: error.code }
     }
 
-    redirect('/login')
+    redirect(`/sign-up/verify-account?email=${formData.email}`)
 }
 
 export async function signout() {

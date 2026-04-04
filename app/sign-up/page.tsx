@@ -11,6 +11,7 @@ import { useNotification } from '../context/NotificationContext';
 import Link from 'next/link';
 import { AUTH_ERROR_CODE } from '../types/enum';
 import { useLoader } from '../context/LoaderContext';
+import { useRouter } from 'next/navigation';
 const Home = () => {
     const { showNotification } = useNotification();
     const supabase = createClient();
@@ -21,6 +22,7 @@ const Home = () => {
         getValues
     } = useForm<SignupForm>()
     const { setIsOpenLoader } = useLoader()
+
     const onSubmit = async (signupInfo: SignupForm) => {
         setIsOpenLoader(true)
         try {
@@ -28,7 +30,6 @@ const Home = () => {
             if (error) {
                 throw new Error(error)
             }
-
         } catch (error) {
             if (error instanceof Error && error.message !== 'NEXT_REDIRECT') {
                 if (error.message == AUTH_ERROR_CODE.EXISTED_USER) {

@@ -10,6 +10,7 @@ import { login, resendVerificationCode } from '../actions/authentication';
 import { useNotification } from '../context/NotificationContext';
 import { AUTH_ERROR_CODE } from '../types/enum';
 import { useLoader } from '../context/LoaderContext';
+import { useRouter } from 'next/navigation';
 const Home = () => {
     const { showNotification } = useNotification();
     const supabase = createClient();
@@ -20,6 +21,7 @@ const Home = () => {
         getValues
     } = useForm<LoginForm>()
     const { setIsOpenLoader } = useLoader()
+    const router = useRouter()
     const handleLoginWithGithub = async () => {
         const isAcceptedTerm = getValues('isTermAccepted');
         if (isAcceptedTerm) {
@@ -49,6 +51,7 @@ const Home = () => {
                     try {
                         await resendVerificationCode(userInfo.email, window.location.origin)
                         showNotification('Please verify your email')
+                        router.push(`/sign-up/verify-account?email=${userInfo.email}`)
                     } catch (error) {
                         showNotification('Failed to send verification code')
                     }

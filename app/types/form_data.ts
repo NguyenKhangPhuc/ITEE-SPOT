@@ -17,3 +17,8 @@ export interface ResetPasswordForm {
     newPassword: string,
     confirmedNewPassword: string,
 }
+
+export interface VerifyAccountForm {
+    email: string,
+    otp: string,
+}

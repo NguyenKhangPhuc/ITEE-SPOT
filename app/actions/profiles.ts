@@ -1,6 +1,6 @@
 'use server'
 
-import { ResetPasswordForm } from "../types/form_data";
+import { ResetPasswordForm, VerifyAccountForm } from "../types/form_data";
 import { ProfileInsert } from "../types/profile";
 import { createClient } from "../utils/supabase/server";
 
@@ -43,4 +43,22 @@ export async function resetPassword(resetPasswordData: ResetPasswordForm) {
     await supabase.auth.signOut({ scope: 'global' });
 
     return { error: null }
+}
+
+export async function verifySignUpAccount(verifyAccount: VerifyAccountForm) {
+    const supabase = await createClient()
+    const { data, error } = await supabase.auth.verifyOtp(
+        {
+            email: verifyAccount.email,
+            token: verifyAccount.otp,
+            type: 'signup'
+        }
+    )
+    if (error) {
+        return { error: 'Fail to verify the OTP' }
+    }
+    if (data.session == null) {
+        return { error: 'Fail to verify the OTP' }
+    }
+    return { data, error }
 }
