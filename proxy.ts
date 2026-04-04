@@ -11,9 +11,12 @@ import { submissionGradingRoute } from "./app/middleware/submission_grading"
 import { Database } from "./app/types/database.types"
 import { createServerClient } from "@supabase/ssr"
 import { eventSubmissionGradingRoute } from "./app/middleware/submission_evaluation_all"
+import { maintenanceModeCheck } from "./app/middleware/maintenance"
 
 
 export async function proxy(request: NextRequest) {
+    const maintenanceResponse = maintenanceModeCheck(request)
+    if (maintenanceResponse.status !== 200) return maintenanceResponse
     const updateSessionResponse = await updateSession(request)
     if (updateSessionResponse.status !== 200) return updateSessionResponse
     let supabaseResponse = NextResponse.next({
