@@ -107,24 +107,23 @@ const SubmissionInfo = (
                     /{SHORT_DESCRIPTION_LENGTH} Characters
                 </div>
             </div>
-            <div className="w-full flex flex-col">
+            {funfacts.length > 0 && <div className="w-full flex flex-col">
                 <label className="event_input_label">Fun Facts </label>
                 <div className="w-full flex flex-wrap">
-                    {funfacts.length > 0 && (
-                        <div className="flex gap-3 flex-wrap">
-                            {funfacts.map((funfact, index) => (
-                                <div
-                                    key={index}
-                                    className="flex items-center gap-2 px-3 py-1 bg-gray-200 rounded-md"
-                                >
-                                    <span className="font-semibold">{funfact.fact}</span>
+                    <div className="flex gap-3 flex-wrap">
+                        {funfacts.map((funfact, index) => (
+                            <div
+                                key={index}
+                                className="flex items-center gap-2 px-3 py-1 bg-gray-200 rounded-md"
+                            >
+                                <span className="font-semibold">{funfact.fact}</span>
 
-                                </div>
-                            ))}
-                        </div>
-                    )}
+                            </div>
+                        ))}
+                    </div>
+
                 </div>
-            </div>
+            </div>}
             <div className="flex flex-col gap-4 h-[800px] shadow-xl p-5 w-full">
                 <ReadOnlyEditor content={initialContent} />
             </div>
