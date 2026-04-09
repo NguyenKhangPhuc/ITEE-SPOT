@@ -43,6 +43,12 @@ export type GroupSubmissions = {
         submission_id: string | null;
         user_id: string | null;
     }[];
+    fun_facts: {
+        created_at: string;
+        fact: string | null;
+        id: string;
+        submission_id: string | null;
+    }[];
 }[] | null
 
 export type SubmissionWithEventId = {

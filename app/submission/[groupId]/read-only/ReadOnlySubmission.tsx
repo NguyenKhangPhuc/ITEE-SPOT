@@ -18,6 +18,7 @@ import SubmissionComment from "./SubmissionComment"
 import { Profile, ProfileInsert } from "@/app/types/profile"
 import { PROFILE_ROLE } from "@/app/types/enum"
 import Link from "next/link"
+import { FunFactsInsert } from "@/app/types/funfacts"
 const ReadOnlySubmission = ({ groupSubmissions, user }: { groupSubmissions: GroupSubmissions, user: ProfileInsert }) => {
     const {
         register,
@@ -35,6 +36,7 @@ const ReadOnlySubmission = ({ groupSubmissions, user }: { groupSubmissions: Grou
     const [initialEditorContent, setInitialEditorContent] = useState<string | null>(null)
     const [submittedFiles, setSubmittedFiles] = useState<Array<SubmissionFileExtended>>([])
     const [submissionReaction, setSubmissionReaction] = useState<Array<SubmissionReaction>>([])
+    const [funfacts, setFunFacts] = useState<Array<FunFactsInsert>>([])
 
     const [userRating, setUserRating] = useState<SubmissionRatingInsert | null>(null)
     const { showNotification } = useNotification()
@@ -53,6 +55,7 @@ const ReadOnlySubmission = ({ groupSubmissions, user }: { groupSubmissions: Grou
             setSubmissionReaction(groupSubmissions![index].submission_reactions)
             setSubmittedFiles(groupSubmissions![index].submission_files)
             setInitialEditorContent(groupSubmissions![index].description)
+            setFunFacts(groupSubmissions![index].fun_facts)
         } catch (error) {
             if (error instanceof Error) {
                 showNotification(error.message)
@@ -109,6 +112,7 @@ const ReadOnlySubmission = ({ groupSubmissions, user }: { groupSubmissions: Grou
                         errors={errors}
                         handleGetEmbeddedUrl={handleGetEmbeddedUrl}
                         descriptionValue={descriptionValue ?? ""}
+                        funfacts={funfacts}
                     />
 
                     <SubmissionFiles submittedFiles={submittedFiles} />

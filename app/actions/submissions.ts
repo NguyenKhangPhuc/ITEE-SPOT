@@ -1,4 +1,6 @@
 'use server'
+import { randomUUID } from "crypto";
+import { FunFactsInsert } from "../types/funfacts";
 import { SubmissionInsert } from "../types/submission";
 import { SubmissionFileExtended, SubmissionFileInsert } from "../types/submission_files";
 import { createClient } from "../utils/supabase/server";
@@ -8,7 +10,7 @@ export async function getGoupChallengeSubmission({ groupId, groupChallengeId }: 
 
     const { data, error } = await supabase
         .from('submissions')
-        .select('*, submission_files (*), submission_reactions (*), submission_ratings (*)')
+        .select('*, submission_files (*), submission_reactions (*), submission_ratings (*), fun_facts (*)')
         .eq('group_id', groupId)
         .eq('group_challenge_id', groupChallengeId)
         .maybeSingle()
@@ -25,13 +27,14 @@ export async function getSubmissionByGroupId({ groupId }: { groupId: string }) {
 
     const { data, error } = await supabase
         .from('submissions')
-        .select('*, group_challenge (id, event_challenges (company_name, title)), submission_files (*), submission_reactions (*), submission_ratings (*)')
+        .select('*, group_challenge (id, event_challenges (company_name, title)), submission_files (*), submission_reactions (*), submission_ratings (*), fun_facts (*)')
         .eq('group_id', groupId)
     return { data, error }
 }
 
 
-export async function saveGroupChallengeSubmission({ submission, submittedFiles }: { submission: SubmissionInsert, submittedFiles: Array<SubmissionFileExtended> }) {
+export async function saveGroupChallengeSubmission({ submission, submittedFiles, funfacts }:
+    { submission: SubmissionInsert, submittedFiles: Array<SubmissionFileExtended>, funfacts: Array<FunFactsInsert> }) {
     const supabase = await createClient()
     const { data: subData, error: subError } = await supabase
         .from('submissions')
@@ -44,7 +47,7 @@ export async function saveGroupChallengeSubmission({ submission, submittedFiles 
             group_id: submission.group_id,
             group_challenge_id: submission.group_challenge_id,
         }, { onConflict: 'group_id,group_challenge_id' })
-        .select()
+        .select('id')
         .maybeSingle()
 
     if (subError) {
@@ -54,6 +57,19 @@ export async function saveGroupChallengeSubmission({ submission, submittedFiles 
         return { error: "Fail to update the submission" }
     };
 
+    const { data: deletedFunFacts, error: funfactsError } = await supabase.from('fun_facts').delete().eq('submission_id', subData.id)
+    if (funfactsError) {
+        return { error: "Fail to update the fun_facts" }
+    }
+    const updatedFunFacts = funfacts.map(funfact => ({
+        submission_id: subData.id,
+        fact: funfact.fact
+    }));
+    const { data: insertedFunFacts, error: insertedError } = await supabase.from('fun_facts').upsert(updatedFunFacts)
+    if (insertedError) {
+        console.log(insertedError, updatedFunFacts)
+        return { error: "Error inserting new funfacts" }
+    }
     const newFiles = submittedFiles.filter(f => !f.id);
     const existingFileIds = submittedFiles.filter(f => f.id).map(f => f.id);
 
