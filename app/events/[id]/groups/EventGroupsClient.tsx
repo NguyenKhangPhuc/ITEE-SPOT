@@ -72,16 +72,16 @@ const EventGroupsClient = ({ event, eventGroups }: { event: EventWithChallenges,
                 <FilterAltIcon />
             </button>
             {isOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm max-h-[600px]">
+                <div className="fixed min-h-screen inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm max-h-[600px]">
                     <form
                         onSubmit={handleSubmit(onSubmit)}
-                        className="bg-white w-[100%] max-w-2xl p-6 rounded-xl shadow-2xl relative animate-in fade-in zoom-in duration-300"
+                        className="bg-white overflow-x-auto min-h-[400px] max-h-[600px] w-[100%] max-w-2xl p-6 rounded-xl shadow-2xl relative animate-in fade-in zoom-in duration-300"
                     >
 
                         <button
                             type="button"
                             onClick={() => setIsOpen(false)}
-                            className="absolute top-4 right-4 p-1 rounded-full hover:bg-gray-100 transition-colors"
+                            className="cursor-pointer absolute top-4 right-4 p-1 rounded-full hover:bg-gray-100 transition-colors"
                         >
                             <ClearIcon />
                         </button>
@@ -134,7 +134,6 @@ const EventGroupsClient = ({ event, eventGroups }: { event: EventWithChallenges,
                                 </div>
                             </div>
 
-                            {/* Degree Section */}
                             <div>
                                 <label className="block font-semibold mb-3 text-gray-700">Degree</label>
                                 <div className="space-y-2">
