@@ -18,6 +18,8 @@ import { EXAMPLE_PROJECT_SUMMANRY, SHORT_DESCRIPTION_LENGTH, STUDENT_SUBMISSION_
 import ReadOnlyEditor from "@/components/tiptap-templates/simple/ReadOnlyEditor"
 import Link from "next/link"
 import { useLoader } from "@/app/context/LoaderContext"
+import FunFactsCreationForm from "./FunFactsCreationForm"
+import { FunFactsInsert } from "@/app/types/funfacts"
 const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { groupChallenges: Array<GroupChallengeRelation>, eventChallenges: Array<EventChallenge>, group_id: string }) => {
     const {
         register,
@@ -37,6 +39,7 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
     const [initialEditorContent, setInitialEditorContent] = useState<string | null>(null)
     const [editorValue, setEditorValue] = useState<Editor | null>(null)
     const [submittedFiles, setSubmittedFiles] = useState<Array<SubmissionFileExtended>>([])
+    const [funfacts, setFunFacts] = useState<Array<FunFactsInsert>>([])
     const { showNotification } = useNotification()
     const { setIsOpenLoader } = useLoader()
     const handleCatchFiles = (file: File) => {
@@ -97,7 +100,7 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
                 throw new Error('Fail to save because unknown error')
             }
 
-            const { error } = await saveGroupChallengeSubmission({ submission: data, submittedFiles })
+            const { error } = await saveGroupChallengeSubmission({ submission: data, submittedFiles, funfacts })
             if (error) {
                 throw new Error(error)
             }
@@ -114,7 +117,10 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
 
     const handleChooseChallengeSubmission = async (index: number) => {
         try {
-            const { data, error } = await getGoupChallengeSubmission({ groupChallengeId: groupChallenges[index].id, groupId: groupChallenges[index].group_id! })
+            const { data, error } = await getGoupChallengeSubmission({
+                groupChallengeId: groupChallenges[index].id,
+                groupId: groupChallenges[index].group_id!,
+            })
             if (error) {
                 throw new Error(error)
             }
@@ -123,6 +129,7 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
                 reset(data)
                 setInitialEditorContent(data.description)
                 setSubmittedFiles(data.submission_files!)
+                setFunFacts(data.fun_facts)
             } else {
                 reset({
                     id: undefined,
@@ -135,6 +142,7 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
                 })
                 setInitialEditorContent(null)
                 setSubmittedFiles([])
+                setFunFacts([])
             }
 
         } catch (error) {
@@ -242,6 +250,8 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
                             /{SHORT_DESCRIPTION_LENGTH} Characters
                         </div>
                     </div>
+                    <FunFactsCreationForm funfacts={funfacts} setFunFacts={setFunFacts} />
+
                     <div className="flex flex-col gap-4 h-[600px] shadow-xl p-5">
                         <label className="event_input_label">Example Submission Description</label>
                         <ReadOnlyEditor content={EXAMPLE_PROJECT_SUMMANRY} />

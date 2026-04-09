@@ -2,6 +2,7 @@
 
 import YoutubeVideo from "@/app/components/YoutubeVideo";
 import { SHORT_DESCRIPTION_LENGTH } from "@/app/constants";
+import { FunFactsInsert } from "@/app/types/funfacts";
 import ReadOnlyEditor from "@/components/tiptap-templates/simple/ReadOnlyEditor";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 
@@ -30,10 +31,13 @@ interface SubmissionInfoProps {
     }>
     handleGetEmbeddedUrl: () => string | null
     initialContent: string
-    descriptionValue: string
+    descriptionValue: string,
+    funfacts: Array<FunFactsInsert>
 }
 
-const SubmissionInfo = ({ register, errors, handleGetEmbeddedUrl, initialContent, descriptionValue }: SubmissionInfoProps) => {
+const SubmissionInfo = (
+    { register, errors, handleGetEmbeddedUrl, initialContent, descriptionValue, funfacts }:
+        SubmissionInfoProps) => {
 
     return (
         <>
@@ -101,6 +105,24 @@ const SubmissionInfo = ({ register, errors, handleGetEmbeddedUrl, initialContent
                         {descriptionValue.length}
                     </span>
                     /{SHORT_DESCRIPTION_LENGTH} Characters
+                </div>
+            </div>
+            <div className="w-full flex flex-col">
+                <label className="event_input_label">Fun Facts </label>
+                <div className="w-full flex flex-wrap">
+                    {funfacts.length > 0 && (
+                        <div className="flex gap-3 flex-wrap">
+                            {funfacts.map((funfact, index) => (
+                                <div
+                                    key={index}
+                                    className="flex items-center gap-2 px-3 py-1 bg-gray-200 rounded-md"
+                                >
+                                    <span className="font-semibold">{funfact.fact}</span>
+
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
             <div className="flex flex-col gap-4 h-[800px] shadow-xl p-5 w-full">

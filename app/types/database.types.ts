@@ -160,6 +160,35 @@ export type Database = {
           },
         ]
       }
+      fun_facts: {
+        Row: {
+          created_at: string
+          fact: string | null
+          id: string
+          submission_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          fact?: string | null
+          id?: string
+          submission_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          fact?: string | null
+          id?: string
+          submission_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fun_facts_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       group_challenge: {
         Row: {
           challenge_id: string | null
