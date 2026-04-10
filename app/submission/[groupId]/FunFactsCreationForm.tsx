@@ -35,7 +35,7 @@ const FunFactsCreationForm = ({ funfacts, setFunFacts }: { funfacts: Array<FunFa
             <div className="w-full flex gap-5">
                 <div className="input-group w-full">
                     <label className="event_input_label">Fun Facts (Optional)</label>
-                    <input autoComplete="off" placeholder="Challenge title" id="Title" className="event_input outline-none w-full  h-[40px] placeholder:font-bold " type="text"
+                    <input autoComplete="off" placeholder="Adding some fun fact about your project?" id="Title" className="event_input outline-none w-full  h-[40px] placeholder:font-bold " type="text"
 
                         {...register('fact')} />
                     {errors.fact && (
