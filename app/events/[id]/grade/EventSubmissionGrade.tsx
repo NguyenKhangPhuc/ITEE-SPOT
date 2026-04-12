@@ -372,7 +372,7 @@ const EventSubmissionGrade = ({ eventCriteria, user, eventId }: { eventCriteria:
             {chosenSubmissionFilter &&
                 <div className="w-full flex flex-col gap-10 mt-5">
                     <div className="w-full overflow-x-auto border-4 border-black rounded-[10px] text-sm">
-                        <div className="text-lg  text-black p-2">Normal Criteria</div>
+                        <div className="text-lg  text-black p-2">Normal Criteria <span className="text-xs font-normal opacity-70">(Total points average)</span></div>
                         <table className="w-full min-w-max border-collapse">
                             <thead>
                                 <tr className="bg-black text-white">
@@ -438,7 +438,7 @@ const EventSubmissionGrade = ({ eventCriteria, user, eventId }: { eventCriteria:
                         </table>
                     </div>
                     <div className="w-full overflow-x-auto border-4 border-black rounded-[10px] text-sm">
-                        <div className="text-lg text-black p-2">Specific Criteria</div>
+                        <div className="text-lg text-black p-2">Specific Criteria <span className="text-xs font-normal opacity-70">(Not average)</span></div>
                         <table className="w-full min-w-max border-collapse">
                             <thead>
                                 <tr className="bg-black text-white">
