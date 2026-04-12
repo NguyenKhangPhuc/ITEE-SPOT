@@ -257,14 +257,14 @@ const EventSubmissionGrade = ({ eventCriteria, user, eventId }: { eventCriteria:
             <div className="w-full flex gap-5">
                 <button className={`duration-300 cursor-pointer ${chosenSubmissionFilter == 'all' ? 'text-white' : 'text-black'} 
                      p-5 text-center w-1/2 h-13 border-4 border-black ${chosenSubmissionFilter == 'all' ? 'bg-black' : 'bg-white'} 
-                     hover:scale-102 rounded-[10px] flex items-center justify-center `}
+                     hover:scale-102 rounded-[10px] flex items-center justify-center  sm:text-[13px] text-[8px]`}
                     onClick={() => getALlSubmission()}
                 >
                     All Evaluation Result
                 </button>
                 <button className={`duration-300 cursor-pointer ${chosenSubmissionFilter == 'top3' ? 'text-white' : 'text-black'} 
                      p-5 text-center w-1/2 h-13 border-4 border-black ${chosenSubmissionFilter == 'top3' ? 'bg-black' : 'bg-white'} 
-                     hover:scale-102 rounded-[10px] flex items-center justify-center `}
+                     hover:scale-102 rounded-[10px] flex items-center justify-center  sm:text-[13px] text-[8px]`}
                     onClick={() => getTop5Submission()}
                 >
                     Top 5 Evaluation Result
@@ -274,7 +274,7 @@ const EventSubmissionGrade = ({ eventCriteria, user, eventId }: { eventCriteria:
                 defaultValue={""}
                 onChange={(e) => getSubmissionBaseOnStar(parseInt(e.target.value))}
                 className={`duration-300 cursor-pointer ${chosenSubmissionFilter === 'star' ? 'text-white bg-black' : 'text-black bg-white'
-                    } text-center border-4 border-black rounded-[10px] p-3 `}
+                    } text-center border-4 border-black rounded-[10px] p-3  sm:text-[13px] text-[10px]`}
             >
                 <option value="" disabled>
                     Choose an option
@@ -419,11 +419,13 @@ const EventSubmissionGrade = ({ eventCriteria, user, eventId }: { eventCriteria:
                                                     );
                                                 }
                                             }) : eventCriteria.map((criteria) => {
-                                                return (
-                                                    <td key={`no grading - ${criteria.id}`} className="p-4 border-r-2 border-black text-center font-semibold">
-                                                        Not graded
-                                                    </td>
-                                                );
+                                                if (criteria.type == CRITERIA_TYPE.NORMAL) {
+                                                    return (
+                                                        <td key={`no grading - ${criteria.id}`} className="p-4 border-r-2 border-black text-center font-semibold">
+                                                            Not graded
+                                                        </td>
+                                                    );
+                                                }
                                             })}
 
 
@@ -472,15 +474,24 @@ const EventSubmissionGrade = ({ eventCriteria, user, eventId }: { eventCriteria:
                                         <td className="p-1 border-r-2 border-black  font-semibold text-sm text-center">
                                             {item.total_graders}
                                         </td>
-                                        {item.submissions?.submission_grading?.map((criteria) => {
-                                            if (criteria.event_grading_criteria?.type == CRITERIA_TYPE.SPECIFIC) {
-                                                return (
-                                                    <td key={criteria.id} className="p-4 border-r-2 border-black text-center font-semibold">
-                                                        {criteria.grade == null ? 'Not graded' : criteria.grade}
-                                                    </td>
-                                                );
-                                            }
-                                        })}
+                                        {(item.submissions?.submission_grading && item.submissions?.submission_grading.length > 0) ?
+                                            item.submissions?.submission_grading.map((criteria) => {
+                                                if (criteria.event_grading_criteria?.type == CRITERIA_TYPE.SPECIFIC) {
+                                                    return (
+                                                        <td key={criteria.id} className="p-4 border-r-2 border-black text-center font-semibold">
+                                                            {criteria.grade}
+                                                        </td>
+                                                    );
+                                                }
+                                            }) : eventCriteria.map((criteria) => {
+                                                if (criteria.type == CRITERIA_TYPE.SPECIFIC) {
+                                                    return (
+                                                        <td key={`no grading - ${criteria.id}`} className="p-4 border-r-2 border-black text-center font-semibold">
+                                                            Not graded
+                                                        </td>
+                                                    );
+                                                }
+                                            })}
 
                                     </tr>
                                 ))}
