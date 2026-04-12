@@ -35,8 +35,10 @@ const EventSubmissionGrade = ({ eventCriteria, user, eventId }: { eventCriteria:
                         submission_id: null,
                         grade: 50,
                         event_grading_criteria: {
-                            percentage: ele.percentage
+                            percentage: ele.percentage,
+                            type: CRITERIA_TYPE.NORMAL
                         }
+
                     }
 
                 }),
@@ -48,7 +50,8 @@ const EventSubmissionGrade = ({ eventCriteria, user, eventId }: { eventCriteria:
                         submission_id: null,
                         grade: 50,
                         event_grading_criteria: {
-                            percentage: ele.percentage
+                            percentage: ele.percentage,
+                            type: CRITERIA_TYPE.SPECIFIC
                         }
                     }
 
@@ -59,12 +62,14 @@ const EventSubmissionGrade = ({ eventCriteria, user, eventId }: { eventCriteria:
         name: 'normalGrades',
         control: control
     })
+
     const specificGrades = useWatch({
         name: 'specificGrades',
         control: control
     })
     const handleCalculateFinalPoints = () => {
         if (!gradesValue || gradesValue.length === 0) return 0;
+
         const sumOfGrades = gradesValue.reduce((acc, cur) => {
             if (cur.event_grading_criteria?.type == CRITERIA_TYPE.NORMAL) {
                 const val = Number(cur.grade) || 0;
@@ -146,6 +151,7 @@ const EventSubmissionGrade = ({ eventCriteria, user, eventId }: { eventCriteria:
     }
 
     const handleChoosingSubmissionGrade = (items: Array<UserSubmissionGradeWithPercentage>, submissionId: string | null) => {
+        console.log(items)
         if (!submissionId) {
             showNotification("Select unsuccessfully")
             return
@@ -156,6 +162,20 @@ const EventSubmissionGrade = ({ eventCriteria, user, eventId }: { eventCriteria:
             const specificGradeCriteria = items.filter((ele) => ele.event_grading_criteria?.type == CRITERIA_TYPE.SPECIFIC)
             reset({ normalGrades: normalGradeCriteria, specificGrades: specificGradeCriteria })
         } else {
+            setChosenSubmissionGrade(submissionId)
+            console.log(specificCriteria.map((ele) => {
+                return {
+                    event_criteria_id: ele.id,
+                    user_id: user.id,
+                    submission_id: submissionId,
+                    grade: 50,
+                    event_grading_criteria: {
+                        percentage: ele.percentage,
+                        type: CRITERIA_TYPE.SPECIFIC
+                    }
+                }
+
+            }),)
             reset({
                 normalGrades:
                     normalCriteria.map((ele) => {
@@ -165,7 +185,8 @@ const EventSubmissionGrade = ({ eventCriteria, user, eventId }: { eventCriteria:
                             submission_id: submissionId,
                             grade: 50,
                             event_grading_criteria: {
-                                percentage: ele.percentage
+                                percentage: ele.percentage,
+                                type: CRITERIA_TYPE.NORMAL
                             }
                         }
 
@@ -178,7 +199,8 @@ const EventSubmissionGrade = ({ eventCriteria, user, eventId }: { eventCriteria:
                             submission_id: submissionId,
                             grade: 50,
                             event_grading_criteria: {
-                                percentage: ele.percentage
+                                percentage: ele.percentage,
+                                type: CRITERIA_TYPE.SPECIFIC
                             }
                         }
 
@@ -387,15 +409,22 @@ const EventSubmissionGrade = ({ eventCriteria, user, eventId }: { eventCriteria:
                                         <td className="p-1 border-r-2 border-black  font-semibold text-sm text-center">
                                             {item.total_graders}
                                         </td>
-                                        {item.submissions?.submission_grading?.map((criteria) => {
-                                            if (criteria.event_grading_criteria?.type == CRITERIA_TYPE.NORMAL) {
+                                        {(item.submissions?.submission_grading && item.submissions?.submission_grading.length > 0) ?
+                                            item.submissions?.submission_grading.map((criteria) => {
+                                                if (criteria.event_grading_criteria?.type == CRITERIA_TYPE.NORMAL) {
+                                                    return (
+                                                        <td key={criteria.id} className="p-4 border-r-2 border-black text-center font-semibold">
+                                                            {criteria.grade}
+                                                        </td>
+                                                    );
+                                                }
+                                            }) : eventCriteria.map((criteria) => {
                                                 return (
-                                                    <td key={criteria.id} className="p-4 border-r-2 border-black text-center font-semibold">
-                                                        {criteria.grade == null ? 'Not graded' : criteria.grade}
+                                                    <td key={`no grading - ${criteria.id}`} className="p-4 border-r-2 border-black text-center font-semibold">
+                                                        Not graded
                                                     </td>
                                                 );
-                                            }
-                                        })}
+                                            })}
 
 
                                         <td className="p-4 text-center font-bold ">
