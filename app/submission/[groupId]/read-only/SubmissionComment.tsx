@@ -158,7 +158,7 @@ const SubmissionComment = ({ getValues, user }: SubmissionCommentProps) => {
                                     className="h-[40px] border border-gray-300 rounded px-2 outline-none bg-white cursor-pointer"
                                 >
                                     {(user.role == PROFILE_ROLE.ADMIN || user.role == PROFILE_ROLE.JUDGES) && <option value="Anonymous Company Representatives">Anonymous Company Representatives</option>}
-                                    <option value={user?.full_name ?? ""}>{user?.full_name && user.full_name.length != 0 ? user?.full_name : "Empty, please edit your profile"}</option>
+                                    <option value={user?.company_name ?? ""}>{user?.company_name && user.company_name.length != 0 ? user?.company_name : "Empty, please edit your profile"}</option>
                                 </select>
                                 {commentErrors.display_name && (
                                     <p className="text-red-500 text-sm mt-1">
