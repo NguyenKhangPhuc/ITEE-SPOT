@@ -69,7 +69,7 @@ export type UserGroupsWithEvent = {
         member_id: string | null;
         profiles: Profile | null;
     }[];
-}[] | null
+}
 
 
 export type GroupEvents = {
