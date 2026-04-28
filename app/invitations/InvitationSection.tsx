@@ -80,7 +80,6 @@ const InvitationSection = ({ invite, user }: { invite: InvitationWithGroupsEvent
                 </p>
             </div>
 
-            {/* Action Buttons: Only show if Pending */}
             {inviationStatus === INVITATION_STATUS.PENDING && (
                 <div className="flex flex-wrap items-center gap-4 mt-auto">
                     <button
