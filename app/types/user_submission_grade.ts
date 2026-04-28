@@ -10,3 +10,8 @@ export interface UserSubmissionGradeWithPercentage extends UserSubmissionGradeIn
         type: 'normal' | 'specific' | null
     } | null
 }
+
+export interface GradeValue {
+    normalGrades: Array<UserSubmissionGradeWithPercentage>,
+    specificGrades: Array<UserSubmissionGradeWithPercentage>
+}

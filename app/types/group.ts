@@ -45,7 +45,7 @@ export type EventGroups = {
             title: string | null;
         } | null;
     }[];
-}[] | null
+}
 
 export type UserGroupsWithEvent = {
     created_at: string;
@@ -100,3 +100,15 @@ export type GroupEvents = {
         } | null;
     } | null;
 }[] | null
+
+
+export interface Filter {
+    challenges: Array<string>
+    programmes: Array<string>,
+    degrees: Array<string>
+}
+
+export interface EditGroupInfo {
+    groupName: string,
+    short_description: string
+}

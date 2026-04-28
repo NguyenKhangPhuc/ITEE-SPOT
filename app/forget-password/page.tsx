@@ -32,7 +32,10 @@ const Home = () => {
     const onSubmit = async (userInfo: LoginForm) => {
         setIsOpenLoader(true)
         try {
-            await supabase.auth.resetPasswordForEmail(userInfo.email)
+            const { data, error } = await supabase.auth.resetPasswordForEmail(userInfo.email)
+            if (error) {
+                throw new Error('Failed to send the verification code')
+            }
             showNotification('Send OTP code successfully')
             setIsOpenLoader(false)
             router.push(`/reset-password?email=${userInfo.email}`)

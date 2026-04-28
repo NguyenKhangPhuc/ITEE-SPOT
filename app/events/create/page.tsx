@@ -4,20 +4,18 @@ import { useNotification } from "@/app/context/NotificationContext"
 import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor"
 import { Editor } from "@tiptap/core"
 import { useRouter } from "next/navigation"
-import React, { ChangeEvent, SetStateAction, useState } from "react"
-import { CriteriaMode, useForm } from "react-hook-form"
+import { useState } from "react"
+import { useForm } from "react-hook-form"
 import ClearIcon from '@mui/icons-material/Clear';
-import { Event, EventInsert } from "@/app/types/event"
+import { EventInsert } from "@/app/types/event"
 import { EventChallengeInsert } from "@/app/types/event_challenges"
 import Image from "next/image"
-import { SubmissionFileExtended } from "@/app/types/submission_files"
 import { EVENT_CREATED_DESCRIPTION } from "@/app/constants"
 import { useLoader } from "@/app/context/LoaderContext"
 import ChallengeCreationForm from "./ChallengeCreationForm"
 import EventCreationInfo from "./EventCreationInfo"
-import { EventCriteria, EventCriteriaInsert } from "@/app/types/event_criteria"
+import { EventCriteriaInsert } from "@/app/types/event_criteria"
 import CriteriaCreation from "./EventCriteria"
-
 
 const Home = () => {
     const {
