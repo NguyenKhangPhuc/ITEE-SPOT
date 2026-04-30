@@ -5,6 +5,7 @@ import { signout } from "../actions/authentication"
 import { useNotification } from "../context/NotificationContext"
 import { useEffect, useState } from "react"
 import Image from "next/image"
+import { NAVIGATION_BAR } from "../constants"
 
 const NavBar = ({ initialUser }: { initialUser: User | null }) => {
     const { showNotification } = useNotification()
@@ -27,7 +28,7 @@ const NavBar = ({ initialUser }: { initialUser: User | null }) => {
 
     return (
         <nav className="fixed top-0 left-0 w-full bg-black text-white z-50 font-roboto-mono">
-            <div className="max-w-6xl mx-auto px-6">
+            <div className="max-w-7xl mx-auto px-6">
                 <div className="flex items-center justify-between h-20">
 
                     <Link href={`/`} className="text-2xl font-bold flex items-center gap-5">
@@ -61,8 +62,8 @@ const NavBar = ({ initialUser }: { initialUser: User | null }) => {
                             </div>
                         </div>
                     </Link>
-                    <div className="flex gap-6 items-center">
-                        <Link
+                    <div className="flex items-center">
+                        {/* <Link
                             href="/events"
                             className="px-3 py-1.5 rounded-md hover:bg-white/10 transition-colors duration-200"
                         >
@@ -85,7 +86,24 @@ const NavBar = ({ initialUser }: { initialUser: User | null }) => {
                             className="px-3 py-1.5 rounded-md hover:bg-white/10 transition-colors duration-200"
                         >
                             Profile
-                        </Link>
+                        </Link> */}
+                        {NAVIGATION_BAR.map((nav) => {
+                            return (
+                                <div key={`category ${nav.category}`} className="dropdown text-center min-w-[160px]">
+                                    <div className="dropbtn text-center" >{nav.category}</div>
+                                    <div className="dropdown-content bg-white text-black w-[160px]">
+                                        {nav.items.map((dropdown) => {
+                                            return (
+                                                <Link key={`Link ${dropdown.title}`} href={dropdown.link} className="dropdown-link">
+                                                    {dropdown.title}
+                                                </Link>
+
+                                            )
+                                        })}
+                                    </div>
+                                </div>
+                            )
+                        })}
                         <div className="absolute right-6 top-1/2 -translate-y-1/2">
                             {user ? (
                                 <button

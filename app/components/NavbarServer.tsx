@@ -7,8 +7,8 @@ const NavbarServer = async () => {
     const { data: { user } } = await getUser()
 
     return <>
-        <div className="xl:block hidden"><NavBar initialUser={user} /></div>
-        <div className="xl:hidden block"><NavbarMobile initialUser={user} /></div>
+        <div className="2xl:block hidden"><NavBar initialUser={user} /></div>
+        <div className="2xl:hidden block"><NavbarMobile initialUser={user} /></div>
     </>;
 }
 
