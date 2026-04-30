@@ -34,6 +34,38 @@ export type Database = {
   }
   public: {
     Tables: {
+      event_awards: {
+        Row: {
+          award_priority: number | null
+          award_title: string | null
+          award_type: Database["public"]["Enums"]["AWARD_TYPE"] | null
+          event_id: string | null
+          id: string
+        }
+        Insert: {
+          award_priority?: number | null
+          award_title?: string | null
+          award_type?: Database["public"]["Enums"]["AWARD_TYPE"] | null
+          event_id?: string | null
+          id?: string
+        }
+        Update: {
+          award_priority?: number | null
+          award_title?: string | null
+          award_type?: Database["public"]["Enums"]["AWARD_TYPE"] | null
+          event_id?: string | null
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_awards_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       event_challenges: {
         Row: {
           company_name: string | null
@@ -402,6 +434,60 @@ export type Database = {
         }
         Relationships: []
       }
+      projects: {
+        Row: {
+          award_id: string | null
+          created_at: string
+          description: string | null
+          github_link: string | null
+          group_id: string | null
+          id: string
+          project_status: Database["public"]["Enums"]["PROJECTS_STATUS"] | null
+          project_title: string | null
+          short_description: string | null
+          youtube_link: string | null
+        }
+        Insert: {
+          award_id?: string | null
+          created_at?: string
+          description?: string | null
+          github_link?: string | null
+          group_id?: string | null
+          id?: string
+          project_status?: Database["public"]["Enums"]["PROJECTS_STATUS"] | null
+          project_title?: string | null
+          short_description?: string | null
+          youtube_link?: string | null
+        }
+        Update: {
+          award_id?: string | null
+          created_at?: string
+          description?: string | null
+          github_link?: string | null
+          group_id?: string | null
+          id?: string
+          project_status?: Database["public"]["Enums"]["PROJECTS_STATUS"] | null
+          project_title?: string | null
+          short_description?: string | null
+          youtube_link?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "projects_award_id_fkey"
+            columns: ["award_id"]
+            isOneToOne: false
+            referencedRelation: "event_awards"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projects_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       submission_comments: {
         Row: {
           content: string | null
@@ -732,6 +818,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      AWARD_TYPE: "general" | "specific" | "participant"
       CRITERIA_TYPE: "normal" | "specific"
       DEGREE: "Bachelor" | "Master" | "Ph.D"
       EVENT_STATUS: "ongoing" | "finished"
@@ -742,6 +829,7 @@ export type Database = {
         | "Electronics and Communications Engineering"
         | "Computer Science and Engineering"
         | "Biomedical Engineering"
+      PROJECTS_STATUS: "pending" | "accepted" | "rejected"
       UNIVERSITY: "University of Oulu" | "Oulu University of Applied Science"
       YEAR: "First Year" | "Second Year" | "Third Year" | "Fourth Year"
     }
@@ -874,6 +962,7 @@ export const Constants = {
   },
   public: {
     Enums: {
+      AWARD_TYPE: ["general", "specific", "participant"],
       CRITERIA_TYPE: ["normal", "specific"],
       DEGREE: ["Bachelor", "Master", "Ph.D"],
       EVENT_STATUS: ["ongoing", "finished"],
@@ -885,6 +974,7 @@ export const Constants = {
         "Computer Science and Engineering",
         "Biomedical Engineering",
       ],
+      PROJECTS_STATUS: ["pending", "accepted", "rejected"],
       UNIVERSITY: ["University of Oulu", "Oulu University of Applied Science"],
       YEAR: ["First Year", "Second Year", "Third Year", "Fourth Year"],
     },

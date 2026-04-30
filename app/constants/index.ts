@@ -1,5 +1,7 @@
 export const PAGE_SIZE = 5
 
+export const PAGE_SIZE_PROJECT = 4
+
 export const SHORT_DESCRIPTION_LENGTH = 200
 
 export const STUDENT_SUBMISSION_DESCRIPTION = 1500
