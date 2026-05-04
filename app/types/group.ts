@@ -1,6 +1,6 @@
 import { Database } from "./database.types";
 import { UNIVERSITY, YEAR } from "./enum";
-import { Event, EventInsert } from "./event";
+import { Event, EventInsert, EventWithAwards } from "./event";
 import { Profile } from "./profile";
 
 export type Group = Database["public"]["Tables"]["groups"]["Row"]
@@ -64,12 +64,13 @@ export type UserGroupsWithEvent = {
             title: string | null;
         } | null;
     }[];
-    events: EventInsert | null;
+    events: EventWithAwards | null;
     all_members: {
         member_id: string | null;
         profiles: Profile | null;
     }[];
 }
+
 
 
 export type GroupEvents = {

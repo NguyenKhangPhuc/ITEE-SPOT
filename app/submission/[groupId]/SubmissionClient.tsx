@@ -14,7 +14,7 @@ import DownloadIcon from '@mui/icons-material/Download';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import { SubmissionFileExtended } from "@/app/types/submission_files"
 import { getPublicFileURL, getSignedUrl } from "@/app/actions/file_url"
-import { EXAMPLE_PROJECT_SUMMANRY, SHORT_DESCRIPTION_LENGTH, STUDENT_SUBMISSION_DESCRIPTION } from "@/app/constants"
+import { EXAMPLE_PROJECT_SUMMANRY, MAX_TOTAL_SIZE, SHORT_DESCRIPTION_LENGTH, STUDENT_SUBMISSION_DESCRIPTION } from "@/app/constants"
 import ReadOnlyEditor from "@/components/tiptap-templates/simple/ReadOnlyEditor"
 import Link from "next/link"
 import { useLoader } from "@/app/context/LoaderContext"
@@ -36,8 +36,7 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
         control: control,
         name: "short_description",
         defaultValue: "",
-    });
-    const MAX_TOTAL_SIZE = 5 * 1024 * 1024;
+    })
     const [chosenGroupChallenges, setChosenGroupChallenges] = useState<number | null>(null)
     const [initialEditorContent, setInitialEditorContent] = useState<string | null>(null)
     const [editorValue, setEditorValue] = useState<Editor | null>(null)

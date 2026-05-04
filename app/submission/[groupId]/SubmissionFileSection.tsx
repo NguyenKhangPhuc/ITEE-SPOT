@@ -1,3 +1,4 @@
+import { ProjectFileExtended } from '@/app/types/project_files';
 import { SubmissionFileExtended } from '@/app/types/submission_files';
 import ClearIcon from '@mui/icons-material/Clear';
 import DownloadIcon from '@mui/icons-material/Download';
@@ -5,9 +6,9 @@ import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 
 interface SubmissionFileSectionProps {
     handleCatchFiles: (file: File) => void,
-    submittedFiles: SubmissionFileExtended[],
+    submittedFiles: SubmissionFileExtended[] | ProjectFileExtended[],
     handleDeleteFiles: (fileIndex: number) => void,
-    handleDownloadFile: (file: SubmissionFileExtended) => Promise<void>
+    handleDownloadFile: (file: SubmissionFileExtended | ProjectFileExtended) => Promise<void>
 }
 const SubmissionFileSection = ({
     handleCatchFiles, submittedFiles, handleDeleteFiles, handleDownloadFile

@@ -1,4 +1,5 @@
 import { Database } from "./database.types";
+import { EventAwards, EventAwardsInsert } from "./event_awards";
 import { EventCriteria } from "./event_criteria";
 
 export type Event = Database["public"]["Tables"]["events"]["Row"]
@@ -14,4 +15,8 @@ export interface EventWithChallenges extends Event {
         title: string | null;
     }[];
     event_grading_criteria: Array<EventCriteria> | null
+}
+
+export interface EventWithAwards extends EventInsert {
+    event_awards: Array<EventAwardsInsert> | null
 }

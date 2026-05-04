@@ -67,7 +67,7 @@ export async function saveGroupChallengeSubmission({ submission, submittedFiles,
     }));
     const { data: insertedFunFacts, error: insertedError } = await supabase.from('fun_facts').upsert(updatedFunFacts)
     if (insertedError) {
-        console.log(insertedError, updatedFunFacts)
+
         return { error: "Error inserting new funfacts" }
     }
     const newFiles = submittedFiles.filter(f => !f.id);
@@ -161,7 +161,7 @@ export async function getTop5SubmissionGrade({ eventId, userId }: { eventId: str
         .order('type', { referencedTable: 'submissions.submission_grading.event_grading_criteria', ascending: true })
         .order('event_criteria_id', { referencedTable: 'submissions.submission_grading', ascending: false })
         .order('final_average_score', { ascending: false })
-        .limit(3)
+        .limit(5)
         .eq('submissions.groups.event_id', eventId)
         .eq('submissions.submission_grading.user_id', userId)
     if (error) {
@@ -189,3 +189,4 @@ export async function getSubmissionGradeBasedOnStar({ eventId, rating, userId }:
 
     return { data, error }
 }
+

@@ -12,7 +12,7 @@ export async function getUserGroups() {
     }
 
     const { data, error } = await supabase.from('groups')
-        .select('*, group_members!inner (member_id), group_challenge(challenge_id, event_challenges (company_name, title)), events(*), all_members:group_members (member_id, profiles (*))')
+        .select('*, group_members!inner (member_id), group_challenge(challenge_id, event_challenges (company_name, title)), events(*, event_awards(*)), all_members:group_members (member_id, profiles (*))')
         .eq('group_members.member_id', user.user.id)
 
     return { data, error }

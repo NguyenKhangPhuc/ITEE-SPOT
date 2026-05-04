@@ -434,12 +434,96 @@ export type Database = {
         }
         Relationships: []
       }
-      projects: {
+      project_awards: {
         Row: {
           award_id: string | null
           created_at: string
+          id: number
+          project_id: string | null
+        }
+        Insert: {
+          award_id?: string | null
+          created_at?: string
+          id?: number
+          project_id?: string | null
+        }
+        Update: {
+          award_id?: string | null
+          created_at?: string
+          id?: number
+          project_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_awards_award_id_fkey"
+            columns: ["award_id"]
+            isOneToOne: false
+            referencedRelation: "event_awards"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_awards_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_files: {
+        Row: {
+          created_at: string
+          group_id: string | null
+          id: string
+          mime_type: string | null
+          original_file_name: string | null
+          project_id: string | null
+          size: number | null
+          storage_path: string | null
+        }
+        Insert: {
+          created_at?: string
+          group_id?: string | null
+          id?: string
+          mime_type?: string | null
+          original_file_name?: string | null
+          project_id?: string | null
+          size?: number | null
+          storage_path?: string | null
+        }
+        Update: {
+          created_at?: string
+          group_id?: string | null
+          id?: string
+          mime_type?: string | null
+          original_file_name?: string | null
+          project_id?: string | null
+          size?: number | null
+          storage_path?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_files_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_files_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      projects: {
+        Row: {
+          created_at: string
           description: string | null
           github_link: string | null
+          group_challenge_id: string | null
           group_id: string | null
           id: string
           project_status: Database["public"]["Enums"]["PROJECTS_STATUS"] | null
@@ -448,10 +532,10 @@ export type Database = {
           youtube_link: string | null
         }
         Insert: {
-          award_id?: string | null
           created_at?: string
           description?: string | null
           github_link?: string | null
+          group_challenge_id?: string | null
           group_id?: string | null
           id?: string
           project_status?: Database["public"]["Enums"]["PROJECTS_STATUS"] | null
@@ -460,10 +544,10 @@ export type Database = {
           youtube_link?: string | null
         }
         Update: {
-          award_id?: string | null
           created_at?: string
           description?: string | null
           github_link?: string | null
+          group_challenge_id?: string | null
           group_id?: string | null
           id?: string
           project_status?: Database["public"]["Enums"]["PROJECTS_STATUS"] | null
@@ -473,10 +557,10 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "projects_award_id_fkey"
-            columns: ["award_id"]
+            foreignKeyName: "projects_group_challenge_id_fkey"
+            columns: ["group_challenge_id"]
             isOneToOne: false
-            referencedRelation: "event_awards"
+            referencedRelation: "group_challenge"
             referencedColumns: ["id"]
           },
           {
@@ -484,6 +568,13 @@ export type Database = {
             columns: ["group_id"]
             isOneToOne: false
             referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projects_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "group_challenge"
             referencedColumns: ["id"]
           },
         ]

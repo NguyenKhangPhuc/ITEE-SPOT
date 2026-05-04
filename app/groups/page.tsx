@@ -16,7 +16,7 @@ export default async function Home() {
         <div className="w-full min-h-screen screen-bg font-roboto-mono">
             <div className="max-w-6xl mx-auto px-6 flex flex-col p-5 ">
                 <div className="text-2xl font-bold text-color">Your registed groups</div>
-                <GroupsClient groupsWithEvents={data} />
+                <GroupsClient groupsWithEvents={data ?? []} />
             </div>
         </div>
     );
