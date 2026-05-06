@@ -1,6 +1,7 @@
 'use client'
 import { getPublicFileURL } from "@/app/actions/file_url"
-import { saveStudentGroupProject } from "@/app/actions/projects"
+import { getSingleProjectByGroupAndChallenge, saveStudentGroupProject } from "@/app/actions/projects"
+import WordCounter from "@/app/components/WordCounter"
 import YoutubeVideo from "@/app/components/YoutubeVideo"
 import { MAX_TOTAL_SIZE } from "@/app/constants"
 import { useLoader } from "@/app/context/LoaderContext"
@@ -37,13 +38,7 @@ const StudentManagementClient = ({ groupsWithEvents }: { groupsWithEvents: Array
         control
     } = useForm<ProjectsInsert>()
 
-    const youtubeLink = useWatch({ name: "youtube_link", control })
-    const descriptionValue = useWatch({ name: "short_description", control })
-    const handleGetEmbeddedUrl = () => {
-        if (!youtubeLink) return ""
-        const match = youtubeLink.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/)
-        return match ? `https://www.youtube.com/embed/${match[1]}` : ""
-    }
+
 
     const handleGroupSelect = (groupId: string) => {
         if (!groupId) {
@@ -58,13 +53,46 @@ const StudentManagementClient = ({ groupsWithEvents }: { groupsWithEvents: Array
         reset()
     }
 
-    const handleChallengeSelect = (challengeId: string) => {
-        setSelectedChallenge(challengeId || null)
+    const handleChallengeSelect = async (groupChallengeId: string) => {
+        setSelectedChallenge(groupChallengeId || null)
 
-        if (challengeId && selectedGroup) {
-            setValue("group_id", selectedGroup.id)
-            setValue("short_description", selectedGroup.short_description ?? "")
-            setInitialEditorContent("")
+        if (groupChallengeId && selectedGroup) {
+
+            setIsOpenLoader(true)
+            try {
+                const { data, error } = await getSingleProjectByGroupAndChallenge({ group_id: selectedGroup.id, group_challenge_id: groupChallengeId })
+                if (error) {
+                    throw new Error(error)
+                }
+                setIsOpenLoader(false)
+                console.log(data)
+                if (data) {
+                    reset(data)
+                    setSubmittedFiles(data.project_files)
+                    setSelectedAward(data.project_awards)
+                    setInitialEditorContent(data.description ?? "")
+                } else {
+                    reset({
+                        id: undefined,
+                        github_link: "",
+                        youtube_link: "",
+                        short_description: "",
+                        group_challenge_id: groupChallengeId,
+                        group_id: selectedGroup.id,
+                        created_at: undefined
+                    })
+                    setInitialEditorContent("")
+                    setSelectedAward([])
+                    setSubmittedFiles([])
+                }
+                showNotification("Select successfully")
+            } catch (error) {
+                setIsOpenLoader(false)
+                if (error instanceof Error) {
+                    showNotification(error.message)
+                }
+            }
+
         }
     }
     const handleCatchFiles = (file: File) => {
@@ -114,7 +142,6 @@ const StudentManagementClient = ({ groupsWithEvents }: { groupsWithEvents: Array
 
     const handleCheckIsSelected = (awardId: string) => {
         if (selectedAward.find((ele) => ele.award_id == awardId)) {
-
             return true
         }
         console.log(false)
@@ -139,6 +166,9 @@ const StudentManagementClient = ({ groupsWithEvents }: { groupsWithEvents: Array
     const handleSaveProject = async (project: ProjectsInsert) => {
         setIsOpenLoader(true)
         try {
+            console.log("Project before saving " + project)
+            console.log("Selected Award ", selectedAward)
+            project.description = editorValue?.getHTML()
             const { data, error } = await saveStudentGroupProject({ project, submittedFiles, projectAwards: selectedAward })
             if (error) {
                 throw new Error(error)
@@ -152,7 +182,6 @@ const StudentManagementClient = ({ groupsWithEvents }: { groupsWithEvents: Array
             }
         }
     }
-    console.log(selectedAward)
     return (
         <div className="w-full bg-white rounded-xl p-5 mt-5">
 
@@ -184,7 +213,7 @@ const StudentManagementClient = ({ groupsWithEvents }: { groupsWithEvents: Array
                     >
                         <option value="">Pick an option</option>
                         {selectedGroup?.group_challenge.map((gc) => (
-                            <option key={gc.challenge_id ?? ""} value={gc.challenge_id ?? ""}>
+                            <option key={gc.id ?? ""} value={gc.id ?? ""}>
                                 {gc.event_challenges?.title ?? "Unnamed Challenge"}
                             </option>
                         ))}
@@ -253,9 +282,9 @@ const StudentManagementClient = ({ groupsWithEvents }: { groupsWithEvents: Array
                     </div>
 
 
-                    {youtubeLink && (
-                        <YoutubeVideo embeddedUrl={handleGetEmbeddedUrl() ?? ""} />
-                    )}
+
+                    <YoutubeVideo control={control} />
+
 
 
                     <div className="input-group w-full">
@@ -272,19 +301,7 @@ const StudentManagementClient = ({ groupsWithEvents }: { groupsWithEvents: Array
                         {errors.short_description && (
                             <p className="text-red-500 text-sm mt-1">{errors.short_description.message}</p>
                         )}
-                        <div style={{ textAlign: "right", marginTop: "5px", fontSize: "14px" }}>
-                            <span
-                                style={{
-                                    color:
-                                        (descriptionValue?.length ?? 0) >= SHORT_DESCRIPTION_LENGTH
-                                            ? "red"
-                                            : "gray",
-                                }}
-                            >
-                                {descriptionValue?.length ?? 0}
-                            </span>
-                            /{SHORT_DESCRIPTION_LENGTH} Characters
-                        </div>
+                        <WordCounter control={control} />
                     </div>
                     <div className="flex flex-col w-full">
                         <label className="event_input_label">Choose your award</label>

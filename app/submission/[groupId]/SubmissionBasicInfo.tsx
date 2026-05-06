@@ -2,15 +2,15 @@ import YoutubeVideo from "@/app/components/YoutubeVideo"
 import { SHORT_DESCRIPTION_LENGTH } from "@/app/constants"
 import { SubmissionInsert } from "@/app/types/submission"
 import { register } from "module"
-import { UseFormRegister, FieldErrors } from "react-hook-form"
+import { UseFormRegister, FieldErrors, Control } from "react-hook-form"
 
 interface SubmissionBasicInfo {
     register: UseFormRegister<SubmissionInsert>
     errors: FieldErrors<SubmissionInsert>,
-    handleGetEmbeddedUrl: () => string | null,
     descriptionValue: string | null | undefined,
+    control: Control
 }
-const SubmissionBasicInfo = ({ register, errors, handleGetEmbeddedUrl, descriptionValue }: SubmissionBasicInfo) => {
+const SubmissionBasicInfo = ({ register, errors, control, descriptionValue }: SubmissionBasicInfo) => {
     return (
         <>
             <div className="input-group w-full">
@@ -50,7 +50,7 @@ const SubmissionBasicInfo = ({ register, errors, handleGetEmbeddedUrl, descripti
                     </p>
                 )}
             </div>
-            <YoutubeVideo embeddedUrl={handleGetEmbeddedUrl() ?? ""} />
+            <YoutubeVideo control={control} />
             <div className="input-group w-full ">
                 <label className="event_input_label">Short Description</label>
                 <textarea

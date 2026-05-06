@@ -4,7 +4,7 @@ import YoutubeVideo from "@/app/components/YoutubeVideo";
 import { SHORT_DESCRIPTION_LENGTH } from "@/app/constants";
 import { FunFactsInsert } from "@/app/types/funfacts";
 import ReadOnlyEditor from "@/components/tiptap-templates/simple/ReadOnlyEditor";
-import { FieldErrors, UseFormRegister } from "react-hook-form";
+import { Control, FieldErrors, UseFormRegister } from "react-hook-form";
 
 interface SubmissionInfoProps {
     register: UseFormRegister<{
@@ -29,14 +29,14 @@ interface SubmissionInfoProps {
         youtube_link?: string | null;
         title?: string | null;
     }>
-    handleGetEmbeddedUrl: () => string | null
+    control: Control
     initialContent: string
     descriptionValue: string,
     funfacts: Array<FunFactsInsert>
 }
 
 const SubmissionInfo = (
-    { register, errors, handleGetEmbeddedUrl, initialContent, descriptionValue, funfacts }:
+    { register, errors, control, initialContent, descriptionValue, funfacts }:
         SubmissionInfoProps) => {
 
     return (
@@ -83,7 +83,7 @@ const SubmissionInfo = (
                     </p>
                 )}
             </div>
-            <YoutubeVideo embeddedUrl={handleGetEmbeddedUrl() ?? ""} />
+            <YoutubeVideo control={control} />
             <div className="input-group w-full ">
                 <label className="event_input_label">Short Description</label>
                 <textarea

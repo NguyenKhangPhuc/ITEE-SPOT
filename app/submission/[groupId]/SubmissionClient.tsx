@@ -179,7 +179,7 @@ const SubmissionClient = ({ groupChallenges, eventChallenges, group_id }: { grou
                 chosenGroupChallenges={chosenGroupChallenges} />
             {chosenGroupChallenges != null &&
                 <>
-                    <SubmissionBasicInfo register={register} errors={errors} handleGetEmbeddedUrl={handleGetEmbeddedUrl} descriptionValue={descriptionValue} />
+                    <SubmissionBasicInfo register={register} errors={errors} control={control} descriptionValue={descriptionValue} />
                     <FunFactsCreationForm funfacts={funfacts} setFunFacts={setFunFacts} />
 
                     <div className="flex flex-col gap-4 h-[600px] shadow-xl p-5">

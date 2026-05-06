@@ -10,6 +10,7 @@ import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import YoutubeVideo from "@/app/components/YoutubeVideo";
+import FixedYoutubeVideo from "@/app/components/FixedYoutubeVideo";
 const SingleProjectClient = ({ project }: { project: SingleProject }) => {
     const supabase = createClient();
 
@@ -146,7 +147,7 @@ const SingleProjectClient = ({ project }: { project: SingleProject }) => {
                 <p className="text-sm text-gray-700 font-medium max-w-5xl">
                     {project.short_description}
                 </p>
-                <YoutubeVideo embeddedUrl={handleGetEmbeddedUrl() ?? ""} />
+                <FixedYoutubeVideo embeddedUrl={handleGetEmbeddedUrl() ?? ""} />
                 <div className="flex flex-col gap-4 min-h-[600px] shadow-2xl p-8 w-full bg-white rounded-xl border border-gray-100">
                     <div className="prose prose-lg max-w-none">
 

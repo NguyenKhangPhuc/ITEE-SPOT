@@ -58,6 +58,7 @@ export type UserGroupsWithEvent = {
         member_id: string | null;
     }[];
     group_challenge: {
+        id: string | null;
         challenge_id: string | null;
         event_challenges: {
             company_name: string | null;

@@ -110,7 +110,7 @@ const ReadOnlySubmission = ({ groupSubmissions, user }: { groupSubmissions: Grou
                         initialContent={initialEditorContent ?? ""}
                         register={register}
                         errors={errors}
-                        handleGetEmbeddedUrl={handleGetEmbeddedUrl}
+                        control={control}
                         descriptionValue={descriptionValue ?? ""}
                         funfacts={funfacts}
                     />

@@ -93,11 +93,12 @@ export async function saveStudentGroupProject({ project, submittedFiles, project
     const newFiles = submittedFiles.filter(f => !f.id);
     const existingFileIds = submittedFiles.filter(f => f.id).map(f => f.id);
 
-    const { data: oldFiles } = await supabase.from('submission_files').select('*').eq('submission_id', subData.id);
+    const { data: oldFiles } = await supabase.from('project_files').select('*').eq('project_id', subData.id);
 
     const deletedFiles = oldFiles?.filter(old => !existingFileIds.includes(old.id)) ?? [];
     const deletedFilesId = deletedFiles.map((ele) => ele.id)
     const deleteFilesStorage = deletedFiles.map((ele) => ele.storage_path ?? "")
+
     if (deletedFiles.length > 0) {
         const { error: dbError } = await supabase
             .from('project_files')
@@ -144,13 +145,19 @@ export async function saveStudentGroupProject({ project, submittedFiles, project
     return { data: subData, error: null };
 }
 
-export async function handleGetSingleProject({ group_id, award_id }: { group_id: string, award_id: string }) {
-    const supabase = await createClient()
 
-    const { data, error } = await supabase.from('projects').select('*').eq('group_id', group_id).eq('award_id', award_id)
+
+export async function getSingleProjectByGroupAndChallenge({ group_id, group_challenge_id }: { group_id: string, group_challenge_id: string }) {
+    const supabase = await createClient()
+    const { data, error } = await supabase.from('projects')
+        .select('*, project_awards(*), project_files(*)')
+        .eq('group_id', group_id)
+        .eq('group_challenge_id', group_challenge_id)
+        .maybeSingle()
 
     if (error) {
-        return { error: 'No project submission found, create new one' }
+        console.log(error)
+        return { error: "Failed to fetch the information" }
     }
 
     return { data, error }
