@@ -9,24 +9,53 @@ import { ProjectsInsert } from "../types/projects";
 import { SubmissionFileExtended } from "../types/submission_files";
 import { createClient } from "../utils/supabase/server";
 
-export async function getAllProject({ page = 1 }: { page: number }) {
+export async function getAllProjectsBasedOnStatus({ status, ascending }: { status: PROJECT_STATUS | null, ascending: boolean }) {
     const supabase = await createClient()
-    const from = (page - 1) * PAGE_SIZE_PROJECT
-    const to = from + PAGE_SIZE_PROJECT - 1
-
-    const { data, error, count } = await supabase
-        .from('projects')
-        .select('id, group_id, project_awards(*, event_awards(*)), groups (group_name, short_description, event_id, events (*))', { count: 'exact' })
-        .order('created_at', { ascending: false })
-        .range(from, to)
-        .eq('project_status', PROJECT_STATUS.ACCEPTED)
+    let query = supabase
+        .from('projects_with_priority')
+        .select(`
+            id, 
+            group_id, 
+            project_title, 
+            project_status, 
+            top_priority,
+            project_awards!inner (
+                *, 
+                event_awards!inner (*)
+            ), 
+            groups (
+                group_name, 
+                short_description, 
+                event_id, 
+                events (*)
+            )
+        `)
+        .order('top_priority', { ascending: true, nullsFirst: false })
+        .order('created_at', { ascending: ascending })
+    if (status) {
+        query = query.eq('project_status', status);
+    }
+    const { data, error } = await query;
 
     if (error) {
         return { error: "Fail to load the projects" }
     }
 
-    const totalPages = Math.ceil((count ?? 0) / PAGE_SIZE_PROJECT)
-    return { data, totalPages, error: null }
+    return { data, error: null }
+}
+
+export async function getAllProjects() {
+    const supabase = await createClient()
+
+    const { data, error } = await supabase
+        .from('projects')
+        .select('id, group_id,project_title,project_status, groups (group_name, short_description, event_id, events (*))')
+        .order('created_at', { ascending: false })
+
+    if (error) {
+        return { error: "Fail to load the projects" }
+    }
+    return { data, error: null }
 }
 
 export async function getSingleProject({ projectId }: { projectId: string }) {
@@ -46,6 +75,7 @@ export async function getSingleProject({ projectId }: { projectId: string }) {
 
 export async function saveStudentGroupProject({ project, submittedFiles, projectAwards }:
     { project: ProjectsInsert, submittedFiles: Array<SubmissionFileExtended>, projectAwards: Array<ProjectAwardsInsert> }) {
+    console.log(project.group_challenge_id)
     const supabase = await createClient()
     const { data: subData, error: subError } = await supabase
         .from('projects')
@@ -160,5 +190,16 @@ export async function getSingleProjectByGroupAndChallenge({ group_id, group_chal
         return { error: "Failed to fetch the information" }
     }
 
+    return { data, error }
+}
+
+export async function updateProjectStatus({ projectId, status }: { projectId: string, status: PROJECT_STATUS }) {
+    const supabase = await createClient()
+    const { data, error } = await supabase.from('projects').update({ project_status: status }).eq('id', projectId)
+        .select('id, group_id,project_title,project_status, groups (group_name, short_description, event_id, events (*))')
+        .maybeSingle()
+    if (error) {
+        return { error: 'Failed to update the project status' }
+    }
     return { data, error }
 }

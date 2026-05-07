@@ -1,9 +1,10 @@
 import Link from "next/link"
 import { getAllEvents } from "../actions/events"
-import { getAllProject } from "../actions/projects";
+import { getAllProjectsBasedOnStatus } from "../actions/projects";
 import ProjectsClient from "./ProjectsClient";
+import { PROJECT_STATUS } from "../types/enum";
 const Home = async () => {
-    const { data: projects, error, totalPages } = await getAllProject({ page: 1 });
+    const { data: projects, error, totalPages } = await getAllProjectsBasedOnStatus({ page: 1, status: PROJECT_STATUS.ACCEPTED, ascending: false });
 
     if (error) {
         return <div className="w-full flex items-center justify-center text-red-500">Something went wrong:  {error}</div>;

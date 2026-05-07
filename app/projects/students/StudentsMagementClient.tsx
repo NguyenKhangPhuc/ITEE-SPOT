@@ -185,7 +185,7 @@ const StudentManagementClient = ({ groupsWithEvents }: { groupsWithEvents: Array
     return (
         <div className="w-full bg-white rounded-xl p-5 mt-5">
 
-            <div className="flex gap-5 w-full mb-6">
+            <div className="flex gap-5 w-full mb-2">
 
                 <div className="input-group w-1/2">
                     <label className="event_input_label block mb-1">Your Participated Groups</label>
@@ -222,8 +222,7 @@ const StudentManagementClient = ({ groupsWithEvents }: { groupsWithEvents: Array
             </div>
             {selectedGroup && selectedChallenge && (
                 <form className="flex flex-col gap-5 w-full" onSubmit={handleSubmit(handleSaveProject)}>
-
-                    <div className="flex gap-5 w-full">
+                    <div className="flex gap-5 w-full mb-6">
                         <div className="input-group w-1/2">
                             <label className="event_input_label">Event Name</label>
                             <input
@@ -248,7 +247,25 @@ const StudentManagementClient = ({ groupsWithEvents }: { groupsWithEvents: Array
                             />
                         </div>
                     </div>
+                    <div className="flex gap-5 w-full">
+                        <div className="input-group w-full">
+                            <label className="event_input_label">Project Title</label>
+                            <input
+                                autoComplete="off"
+                                placeholder="Project title"
+                                className="event_input outline-none w-full h-[40px] placeholder:font-bold"
+                                type="text"
+                                {...register('project_title', {
+                                    required: "Project title is required",
+                                })}
+                            />
+                            {errors.project_title && (
+                                <p className="text-red-500 text-sm mt-1">{errors.project_title.message}</p>
+                            )}
+                        </div>
 
+
+                    </div>
                     <div className="flex gap-5 w-full">
                         <div className="input-group w-1/2">
                             <label className="event_input_label">Github Link</label>

@@ -10,6 +10,7 @@ import { AUTH_ERROR_CODE } from '../types/enum';
 import { useLoader } from '../context/LoaderContext';
 import { useRouter } from 'next/navigation';
 import LoginSubInfoSection from './LoginSubInfoSection';
+import LoginMainInfoSection from './LoginMainInfoSection';
 const Home = () => {
     const { showNotification } = useNotification();
     const supabase = createClient();
@@ -73,6 +74,7 @@ const Home = () => {
                                flex flex-col duration-300 p-8 w-[450px] rounded-2xl font-roboto-mono" onSubmit={handleSubmit(onSubmit)}>
 
 
+                <LoginMainInfoSection register={register} errors={errors} />
                 <LoginSubInfoSection register={register} errors={errors} />
 
                 <button className="mt-5 w-full text-white font-medium rounded-xl text-base uppercase login_btn"><i className="animation"></i>Sign In<i className="animation"></i>

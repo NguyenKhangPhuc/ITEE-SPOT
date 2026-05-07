@@ -438,34 +438,41 @@ export type Database = {
         Row: {
           award_id: string | null
           created_at: string
-          id: number
+          id: string
           project_id: string | null
         }
         Insert: {
           award_id?: string | null
           created_at?: string
-          id?: number
+          id?: string
           project_id?: string | null
         }
         Update: {
           award_id?: string | null
           created_at?: string
-          id?: number
+          id?: string
           project_id?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "project_awards_award_id_fkey"
+            foreignKeyName: "projects_awards_award_id_fkey"
             columns: ["award_id"]
             isOneToOne: false
             referencedRelation: "event_awards"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "project_awards_project_id_fkey"
+            foreignKeyName: "projects_awards_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projects_awards_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects_with_priority"
             referencedColumns: ["id"]
           },
         ]
@@ -514,6 +521,13 @@ export type Database = {
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_files_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects_with_priority"
             referencedColumns: ["id"]
           },
         ]
@@ -568,13 +582,6 @@ export type Database = {
             columns: ["group_id"]
             isOneToOne: false
             referencedRelation: "groups"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "projects_id_fkey"
-            columns: ["id"]
-            isOneToOne: true
-            referencedRelation: "group_challenge"
             referencedColumns: ["id"]
           },
         ]
@@ -888,6 +895,63 @@ export type Database = {
       }
     }
     Views: {
+      projects_with_priority: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          github_link: string | null
+          group_challenge_id: string | null
+          group_id: string | null
+          id: string | null
+          project_status: Database["public"]["Enums"]["PROJECTS_STATUS"] | null
+          project_title: string | null
+          short_description: string | null
+          top_priority: number | null
+          youtube_link: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          github_link?: string | null
+          group_challenge_id?: string | null
+          group_id?: string | null
+          id?: string | null
+          project_status?: Database["public"]["Enums"]["PROJECTS_STATUS"] | null
+          project_title?: string | null
+          short_description?: string | null
+          top_priority?: never
+          youtube_link?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          github_link?: string | null
+          group_challenge_id?: string | null
+          group_id?: string | null
+          id?: string | null
+          project_status?: Database["public"]["Enums"]["PROJECTS_STATUS"] | null
+          project_title?: string | null
+          short_description?: string | null
+          top_priority?: never
+          youtube_link?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "projects_group_challenge_id_fkey"
+            columns: ["group_challenge_id"]
+            isOneToOne: false
+            referencedRelation: "group_challenge"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projects_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       submission_final_scores: {
         Row: {
           final_average_score: number | null
