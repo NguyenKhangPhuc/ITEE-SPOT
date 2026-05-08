@@ -15,7 +15,8 @@ export async function getAllProjectsBasedOnStatus({ status, ascending }: { statu
         .from('projects_with_priority')
         .select(`
             id, 
-            group_id, 
+            group_id,
+            group_challenge_id,
             project_title, 
             project_status, 
             top_priority,
@@ -49,7 +50,7 @@ export async function getAllProjects() {
 
     const { data, error } = await supabase
         .from('projects')
-        .select('id, group_id,project_title,project_status, groups (group_name, short_description, event_id, events (*))')
+        .select('id, group_id, group_challenge_id, project_title,project_status, groups (group_name, short_description, event_id, events (*))')
         .order('created_at', { ascending: false })
 
     if (error) {
@@ -62,7 +63,11 @@ export async function getSingleProject({ projectId }: { projectId: string }) {
     const supabase = await createClient()
     const { data, error } = await supabase
         .from('projects')
-        .select('*, groups (group_name, group_members(id, profiles(*)), events(*)), project_awards(*, event_awards(*))')
+        .select('*, project_files(*), groups (group_name, group_members(id, profiles(*)), events(*)), project_awards(*, event_awards(*))')
+        .order('award_priority', {
+            referencedTable: 'project_awards.event_awards',
+            ascending: true
+        })
         .eq('id', projectId)
         .single();
 
@@ -180,7 +185,7 @@ export async function saveStudentGroupProject({ project, submittedFiles, project
 export async function getSingleProjectByGroupAndChallenge({ group_id, group_challenge_id }: { group_id: string, group_challenge_id: string }) {
     const supabase = await createClient()
     const { data, error } = await supabase.from('projects')
-        .select('*, project_awards(*), project_files(*)')
+        .select('*, project_awards(*), project_files(*), groups (event_id, events (id, event_awards(*)))')
         .eq('group_id', group_id)
         .eq('group_challenge_id', group_challenge_id)
         .maybeSingle()
@@ -193,13 +198,51 @@ export async function getSingleProjectByGroupAndChallenge({ group_id, group_chal
     return { data, error }
 }
 
+
 export async function updateProjectStatus({ projectId, status }: { projectId: string, status: PROJECT_STATUS }) {
     const supabase = await createClient()
     const { data, error } = await supabase.from('projects').update({ project_status: status }).eq('id', projectId)
-        .select('id, group_id,project_title,project_status, groups (group_name, short_description, event_id, events (*))')
+        .select('id, group_id, group_challenge_id, project_title,project_status, groups (group_name, short_description, event_id, events (*))')
         .maybeSingle()
     if (error) {
         return { error: 'Failed to update the project status' }
+    }
+    return { data, error }
+}
+
+
+export async function getUserSubmittedProjects({ userId, status, ascending }: { userId: string, status: PROJECT_STATUS | null, ascending: boolean }) {
+    const supabase = await createClient()
+    let query = supabase
+        .from('projects_with_priority')
+        .select(`
+            id, 
+            group_id,
+            group_challenge_id,
+            project_title, 
+            project_status, 
+            top_priority,
+            project_awards!inner (
+                *, 
+                event_awards!inner (*)
+            ), 
+            groups (
+                group_name, 
+                short_description, 
+                event_id, 
+                events (*),
+                group_members(member_id)
+            )
+        `)
+        // .order('top_priority', { ascending: true, nullsFirst: false })
+        .eq('groups.group_members.member_id', userId)
+        .order('created_at', { ascending: ascending })
+    if (status) {
+        query = query.eq('project_status', status);
+    }
+    const { data, error } = await query;
+    if (error) {
+        return { error: 'Fail to fetch all projects' }
     }
     return { data, error }
 }

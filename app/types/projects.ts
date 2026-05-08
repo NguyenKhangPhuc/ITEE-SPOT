@@ -3,6 +3,7 @@ import { EventInsert } from "./event"
 import { Database } from "./database.types"
 import { EventAwardsInsert } from "./event_awards";
 import { ProfileInsert } from "./profile";
+import { ProjectFiles, ProjectFilesInsert } from "./project_files";
 
 export type Projects = Database["public"]["Tables"]["projects"]["Row"]
 
@@ -10,9 +11,9 @@ export type ProjectsInsert = Database["public"]["Tables"]["projects"]["Insert"]
 
 
 export interface ProjectsSummary {
-
     id: string | null;
     group_id: string | null;
+    group_challenge_id: string | null
     project_title: string | null;
     project_status: "pending" | "rejected" | "accepted" | null;
     groups: {
@@ -41,7 +42,9 @@ export interface ProjectsSummaryExtended extends ProjectsSummary {
     }[];
 }
 
+
 export interface SingleProject extends ProjectsInsert {
+    project_files: ProjectFilesInsert[]
     project_awards: {
         award_id: string | null;
         created_at: string;

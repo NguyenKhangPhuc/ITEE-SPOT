@@ -78,6 +78,17 @@ export async function getAllEvents() {
     return { data, error }
 }
 
+export async function getAllEventsWithGroupAndAward() {
+    const supabase = await createClient()
+
+    const { data, error } = await supabase.from('events').select('*, groups (id, group_challenges (id, title))')
+
+    if (error) {
+        return { error: 'Fail to fetch informations' }
+    }
+    return { data, error }
+}
+
 export async function getSingleEvent(id: string) {
     const supabase = await createClient();
 

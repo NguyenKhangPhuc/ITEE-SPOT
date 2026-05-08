@@ -1,20 +1,18 @@
-import { EVENT_STATUS, AWARD_TYPE } from "@/app/types/enum";
+'use client'
+import { EVENT_STATUS, AWARD_TYPE, PROJECT_STATUS } from "@/app/types/enum";
 import { SingleProject } from "@/app/types/projects";
-import { createClient } from "@/app/utils/supabase/client";
 import ReadOnlyEditor from "@/components/tiptap-templates/simple/ReadOnlyEditor";
-import Image from "next/image";
 import GitHubIcon from '@mui/icons-material/GitHub';
-import EmailIcon from '@mui/icons-material/Email';
-import SchoolIcon from '@mui/icons-material/School';
-import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
-import YoutubeVideo from "@/app/components/YoutubeVideo";
 import FixedYoutubeVideo from "@/app/components/FixedYoutubeVideo";
+import { useNotification } from "@/app/context/NotificationContext";
+import { useLoader } from "@/app/context/LoaderContext";
+import { updateProjectStatus } from "@/app/actions/projects";
 import SubmissionFiles from "@/app/submission/[groupId]/read-only/SubmissionFiles";
-const SingleProjectClient = ({ project }: { project: SingleProject }) => {
-    const supabase = createClient();
-
+const SingleProjectPendingClient = ({ project }: { project: SingleProject }) => {
+    const { showNotification } = useNotification()
+    const { setIsOpenLoader } = useLoader()
     const getStatusColor = (status: string) => {
         switch (status?.toLowerCase()) {
             case EVENT_STATUS.ONGOING: return 'text-green-600';
@@ -54,6 +52,23 @@ const SingleProjectClient = ({ project }: { project: SingleProject }) => {
             return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
         } catch (e) {
             return null;
+        }
+    }
+
+    const handleUpdatingProjectsStatus = async ({ projectId, status }: { projectId: string, status: PROJECT_STATUS }) => {
+        setIsOpenLoader(true)
+        try {
+            const { data, error } = await updateProjectStatus({ projectId, status })
+            if (error) {
+                throw new Error(error)
+            }
+            setIsOpenLoader(false)
+            showNotification('Update project status successfully')
+        } catch (error) {
+            setIsOpenLoader(false)
+            if (error instanceof Error) {
+                showNotification(error.message)
+            }
         }
     }
 
@@ -201,8 +216,21 @@ const SingleProjectClient = ({ project }: { project: SingleProject }) => {
                     ))}
                 </div>
             </div>
+
+            <div className="input-group w-full text-left">
+                <div className="w-full p-5 flex text-center justify-center items-center font-bold text-xl">Update the project status</div>
+                <select
+                    onChange={(e) => handleUpdatingProjectsStatus({ projectId: project.id!, status: e.target.value as PROJECT_STATUS })}
+                    defaultValue={project.project_status ?? PROJECT_STATUS.PENDING}
+                    className="event_input outline-none w-full h-[40px] bg-white border-2 border-black rounded px-2 cursor-pointer"
+                >
+                    <option value={PROJECT_STATUS.PENDING}>Pending</option>
+                    <option value={PROJECT_STATUS.ACCEPTED}>Accept</option>
+                    <option value={PROJECT_STATUS.REJECTED}>Reject</option>
+                </select>
+            </div>
         </div>
     );
 }
 
-export default SingleProjectClient;
+export default SingleProjectPendingClient;
