@@ -19,11 +19,13 @@ export async function updateEventCriteria({ updatedCriteria }: { updatedCriteria
 export async function createEventCriteria({ newCriteria, eventId }: { newCriteria: EventCriteriaInsert, eventId: string }) {
     const supabase = await createClient();
     newCriteria.event_id = eventId
+    newCriteria.id = undefined
     if (eventId.length == 0 || !eventId) {
-        return { error: "Fail to create the criteria" }
+        return { error: "Fail to create the criteria 2" }
     }
     const { data, error } = await supabase.from('event_grading_criteria').insert(newCriteria).select("*").maybeSingle()
     if (error) {
+        console.log(error)
         return { error: "Fail to create the criteria" }
     }
 

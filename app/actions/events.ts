@@ -108,6 +108,8 @@ export async function updateEventPoster({ eventId, posterFile, originalPath }: {
         }
         const { error: storageError } = await supabase.storage.from('attachments').upload(posterPath, posterFile);
         if (storageError) {
+            console.log(`Info: Eventid - ${eventId} ---- posterFile=${posterFile} ---- originalPath =${originalPath}`)
+            console.log(storageError)
             return { error: "Failed to upload to storage" }
         }
 

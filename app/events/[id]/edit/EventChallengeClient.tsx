@@ -7,9 +7,10 @@ import { useForm } from "react-hook-form"
 import ChallengeEdition from "./ChallengeEdition"
 import { useLoader } from "@/app/context/LoaderContext"
 
-const ChallengeCreationForm = ({ challenges, setChallenges, event }: {
+const ChallengeCreationForm = ({ challenges, setChallenges, event, page }: {
     challenges: Array<EventChallengeInsert>,
-    setChallenges: React.Dispatch<SetStateAction<Array<EventChallengeInsert>>>, event: EventChallengeInsert
+    setChallenges: React.Dispatch<SetStateAction<Array<EventChallengeInsert>>>, event: EventChallengeInsert,
+    page: 'basic' | 'challenge' | 'criteria' | 'awards'
 }) => {
     const {
         register,
@@ -48,9 +49,11 @@ const ChallengeCreationForm = ({ challenges, setChallenges, event }: {
         }
     }
 
-
+    if (page != 'challenge') {
+        return null
+    }
     return (
-        <>
+        <form className="w-full flex flex-col gap-5">
             <div className="w-full flex gap-5">
                 <div className="input-group w-1/2">
                     <label className="event_input_label">Company</label>
@@ -99,7 +102,7 @@ const ChallengeCreationForm = ({ challenges, setChallenges, event }: {
                 </div>
             )}
 
-        </>
+        </form>
 
     )
 }
