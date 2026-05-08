@@ -1,6 +1,7 @@
 import { Database } from "./database.types";
 import { UNIVERSITY, YEAR } from "./enum";
 import { Event, EventInsert, EventWithAwards } from "./event";
+import { EventChallengeInsert } from "./event_challenges";
 import { Profile } from "./profile";
 
 export type Group = Database["public"]["Tables"]["groups"]["Row"]
@@ -113,4 +114,14 @@ export interface Filter {
 export interface EditGroupInfo {
     groupName: string,
     short_description: string
+}
+
+export interface GroupWithChallenge {
+    id: string;
+    group_name: string | null | undefined;
+    group_challenge: {
+        id: string
+        challenge_id: string | null;
+        event_challenges: EventChallengeInsert | null;
+    }[];
 }

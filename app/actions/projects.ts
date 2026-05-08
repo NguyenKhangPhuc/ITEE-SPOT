@@ -183,6 +183,7 @@ export async function saveStudentGroupProject({ project, submittedFiles, project
 
 
 export async function getSingleProjectByGroupAndChallenge({ group_id, group_challenge_id }: { group_id: string, group_challenge_id: string }) {
+    console.log(group_id, group_challenge_id)
     const supabase = await createClient()
     const { data, error } = await supabase.from('projects')
         .select('*, project_awards(*), project_files(*), groups (event_id, events (id, event_awards(*)))')

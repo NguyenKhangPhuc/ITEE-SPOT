@@ -137,7 +137,7 @@ const EditProjectFormSection = ({
         }
     }
     return (
-        <form className="flex flex-col gap-5 w-full mt-5" onSubmit={handleSubmit(handleSaveProject)}>
+        <form className="flex flex-col gap-3 w-full mt-7" onSubmit={handleSubmit(handleSaveProject)}>
 
             <div className="flex gap-5 w-full">
                 <div className="input-group w-full">

@@ -26,32 +26,10 @@ const SHORT_DESCRIPTION_LENGTH = 200
 const STUDENT_SUBMISSION_DESCRIPTION = 5000
 
 
-const StudentManagementClient = ({ groupsWithEvents, user }: { groupsWithEvents: Array<UserGroupsWithEvent>, user: User }) => {
+const StudentManagementClient = ({ groupsWithEvents, initialUserProjects }: { groupsWithEvents: Array<UserGroupsWithEvent>, initialUserProjects: Array<ProjectsSummaryExtended> }) => {
     const [currentPage, setCurrentPage] = useState<'create' | 'manage'>('create')
-    const [userProjects, setUserProjects] = useState<Array<ProjectsSummaryExtended>>([])
-    const [chosenProject, setChosenProject] = useState<ProjectsSummaryExtended | null>()
-    const [chosenStatus, setChosenStatus] = useState<PROJECT_STATUS | null>(null)
-    const [chosenOrder, setChosenOrder] = useState<boolean>(false)
-    const { showNotification } = useNotification()
-    const { setIsOpenLoader } = useLoader()
-    const handleGetUserProjects = async () => {
-        setIsOpenLoader(true)
-        try {
-            const { data, error } = await getUserSubmittedProjects({ userId: user.id, status: null, ascending: false })
-            if (error) {
-                return { error: 'Fail to get user submitted projects' }
-            }
-            setUserProjects(data ?? [])
-            setCurrentPage('manage')
-            setIsOpenLoader(false)
-            showNotification('Fetch successfully')
-        } catch (error) {
-            setIsOpenLoader(false)
-            if (error instanceof Error) {
-                showNotification(error.message)
-            }
-        }
-    }
+    const [userProjects, setUserProjects] = useState<Array<ProjectsSummaryExtended>>(initialUserProjects)
+
     return (
         <div className="w-full bg-white rounded-xl p-5 mt-5">
             <div className="w-full flex gap-5 pb-10">
@@ -65,7 +43,7 @@ const StudentManagementClient = ({ groupsWithEvents, user }: { groupsWithEvents:
                 <button className={`duration-300 cursor-pointer ${currentPage == 'manage' ? 'text-white' : 'text-black'} 
                      p-5 text-center w-1/2 h-13 border-4 border-black ${currentPage == 'manage' ? 'bg-black' : 'bg-white'} 
                      hover:scale-102 rounded-[10px] flex items-center justify-center  sm:text-[13px] text-[8px]`}
-                    onClick={() => handleGetUserProjects()}
+                    onClick={() => setCurrentPage('manage')}
                 >
                     Managing Projects
                 </button>

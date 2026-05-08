@@ -1,26 +1,21 @@
 'use client'
-import { getPublicFileURL } from "@/app/actions/file_url"
-import { getSingleProjectByGroupAndChallenge, saveStudentGroupProject } from "@/app/actions/projects"
-import WordCounter from "@/app/components/WordCounter"
-import YoutubeVideo from "@/app/components/YoutubeVideo"
-import { MAX_TOTAL_SIZE, SHORT_DESCRIPTION_LENGTH, STUDENT_SUBMISSION_DESCRIPTION } from "@/app/constants"
+
+import { getSingleProjectByGroupAndChallenge } from "@/app/actions/projects"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
-import SubmissionFileSection from "@/app/submission/[groupId]/SubmissionFileSection"
-import { UserGroupsWithEvent } from "@/app/types/group"
+import { EventWithGroupsAndAward } from "@/app/types/event"
+import { GroupWithChallenge } from "@/app/types/group"
 import { ProjectAwardsInsert } from "@/app/types/project_awards"
 import { ProjectFileExtended } from "@/app/types/project_files"
 import { ProjectsInsert } from "@/app/types/projects"
-import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor"
-import { Editor } from "@tiptap/core"
-import Link from "next/link"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
-import EditProjectFormSection from "./EditProjectFormSection"
+import EditProjectFormSection from "../students/EditProjectFormSection"
 
-const SubmitShowcaseProjectSection = ({ groupsWithEvents, page }: { groupsWithEvents: Array<UserGroupsWithEvent>, page: 'create' | 'manage' }) => {
-    const [selectedGroup, setSelectedGroup] = useState<UserGroupsWithEvent | null>(null)
-    const [selectedChallenge, setSelectedChallenge] = useState<string | null>(null)
+const CreateShowCaseProjectSection = ({ eventsWithGroupsAndAwards, page }: { eventsWithGroupsAndAwards: Array<EventWithGroupsAndAward>, page: 'create' | 'manage' }) => {
+    const [selectedEvent, setSelectedEvent] = useState<EventWithGroupsAndAward | null>(null)
+    const [selectedGroup, setSelectedGroup] = useState<GroupWithChallenge | null>(null)
+    const [selectedChallengeId, setSelectedChallengeId] = useState<string | null>(null)
     const [initialEditorContent, setInitialEditorContent] = useState<string>("")
     const [submittedFiles, setSubmittedFiles] = useState<ProjectFileExtended[]>([])
     const [selectedAward, setSelectedAward] = useState<Array<ProjectAwardsInsert>>([])
@@ -33,24 +28,31 @@ const SubmitShowcaseProjectSection = ({ groupsWithEvents, page }: { groupsWithEv
         handleSubmit,
         control
     } = useForm<ProjectsInsert>()
-    const handleGroupSelect = (groupId: string) => {
-        if (!groupId) {
+    const handleSelectEvent = (eventId: string) => {
+        if (!eventId) {
+            setSelectedEvent(null)
             setSelectedGroup(null)
-            setSelectedChallenge(null)
+            setSelectedChallengeId(null)
             reset()
-            return
         }
-        const group = groupsWithEvents.find(g => g.id === groupId) ?? null
+        const event = eventsWithGroupsAndAwards.find((event) => event.id == eventId)!
+        setSelectedEvent(event)
+    }
+    const handleGroupSelect = (groupId: string) => {
+        if (!selectedEvent) {
+            setSelectedEvent(null)
+            setSelectedGroup(null)
+            setSelectedChallengeId(null)
+            reset()
+        }
+        const group = selectedEvent!.groups.find((group) => group.id == groupId)!
         setSelectedGroup(group)
-        setSelectedChallenge(null)
-        reset()
     }
 
     const handleChallengeSelect = async (groupChallengeId: string) => {
-        setSelectedChallenge(groupChallengeId || null)
+        setSelectedChallengeId(groupChallengeId || null)
 
-        if (groupChallengeId && selectedGroup) {
-
+        if (selectedEvent && selectedGroup && groupChallengeId) {
             setIsOpenLoader(true)
             try {
                 const { data, error } = await getSingleProjectByGroupAndChallenge({ group_id: selectedGroup.id, group_challenge_id: groupChallengeId })
@@ -88,47 +90,65 @@ const SubmitShowcaseProjectSection = ({ groupsWithEvents, page }: { groupsWithEv
 
         }
     }
+
     if (page != 'create') {
         return null
     }
     return (
-        <>
-            <div className="flex gap-5 w-full">
+        <div className="w-full flex flex-col gap-3">
+            <div className="flex gap-5 w-full ">
 
                 <div className="input-group w-1/2">
-                    <label className="event_input_label block mb-1">Your Participated Groups</label>
+                    <label className="event_input_label block mb-1">All Events</label>
                     <select
-                        onChange={(e) => handleGroupSelect(e.target.value)}
+                        onChange={(e) => handleSelectEvent(e.target.value)}
                         defaultValue=""
                         className="event_input outline-none w-full h-[40px] bg-white border border-gray-300 rounded px-2"
                     >
                         <option value="">Pick an option</option>
-                        {groupsWithEvents.map((group) => (
-                            <option key={group.id} value={group.id}>
-                                {group.group_name ?? "Unnamed Group"}
+                        {eventsWithGroupsAndAwards.map((event) => (
+                            <option key={event.id} value={event.id}>
+                                {event.title ?? "Unnamed Event"}
                             </option>
                         ))}
                     </select>
                 </div>
 
                 <div className="input-group w-1/2">
-                    <label className="event_input_label block mb-1">Challenge</label>
+                    <label className="event_input_label block mb-1">Event&apos;s Groups</label>
                     <select
-                        onChange={(e) => handleChallengeSelect(e.target.value)}
+                        onChange={(e) => handleGroupSelect(e.target.value)}
                         defaultValue=""
-                        disabled={!selectedGroup}
+                        disabled={selectedEvent == null}
                         className="event_input outline-none w-full h-[40px] bg-white border border-gray-300 rounded px-2 disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                         <option value="">Pick an option</option>
-                        {selectedGroup?.group_challenge.map((gc) => (
-                            <option key={gc.id ?? ""} value={gc.id ?? ""}>
-                                {gc.event_challenges?.title ?? "Unnamed Challenge"}
+                        {selectedEvent?.groups.map((g) => (
+                            <option key={g.id ?? ""} value={g.id ?? ""}>
+                                {g.group_name ?? "Unnamed Group"}
                             </option>
                         ))}
                     </select>
                 </div>
             </div>
-            {selectedGroup && selectedChallenge && (
+            <div className="input-group w-full">
+                <label className="event_input_label block mb-1">Event&apos;s Groups&apos;s Challenge</label>
+                <select
+                    onChange={(e) => handleChallengeSelect(e.target.value)}
+                    defaultValue=""
+                    disabled={selectedGroup == null}
+                    className="event_input outline-none w-full h-[40px] bg-white border border-gray-300 rounded px-2 disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                    <option value="">Pick an option</option>
+                    {selectedGroup?.group_challenge.map((g) => (
+                        <option key={g.id ?? ""} value={g.id ?? ""}>
+                            {g.event_challenges?.title ?? "Unnamed Group"}
+                        </option>
+                    ))}
+                </select>
+            </div>
+
+            {selectedEvent && selectedGroup && selectedChallengeId && (
                 <EditProjectFormSection
                     register={register}
                     errors={errors}
@@ -140,11 +160,13 @@ const SubmitShowcaseProjectSection = ({ groupsWithEvents, page }: { groupsWithEv
                     initialEditorContent={initialEditorContent}
                     setInitialEditorContent={setInitialEditorContent}
                     control={control}
-                    eventAwards={selectedGroup.events?.event_awards ?? []}
+                    eventAwards={selectedEvent.event_awards ?? []}
                 />
             )}
-        </>
+
+        </div>
     )
 }
 
-export default SubmitShowcaseProjectSection
+
+export default CreateShowCaseProjectSection
