@@ -18,8 +18,7 @@ export const NAVIGATION_BAR = [
     {
         category: 'About', items: [
             { title: 'Home', link: '/' },
-            { title: 'About us', link: '/about-us' },
-            { title: 'Projects', link: '/projects' },
+            { title: 'Past Projects', link: '/projects' },
             { title: 'Terms & Condition', link: '/terms-and-conditions' },
             { title: 'Privacy Policies', link: '/privacy-policy' }
         ]
@@ -27,224 +26,220 @@ export const NAVIGATION_BAR = [
     {
         category: 'Competitions', items: [
             { title: 'Events', link: '/events' },
-            { title: 'Groups', link: '/groups' },
-            { title: 'Profiles', link: '/profile' },
 
         ]
     },
     {
         category: 'Students', items: [
-            { title: 'Manage Projects', link: '/projects/students' },
-
+            { title: 'Groups', link: '/groups' },
+            { title: 'Profiles', link: '/profile' },
+            { title: 'Showcase Projects', link: '/projects/students' },
         ]
     },
 
     {
         category: 'Admin', items: [
-            { title: 'Create Events', link: '/events' },
+            { title: 'Create Events', link: '/events/create' },
             { title: 'Projects Management', link: '/projects/admins' },
         ]
     },
 ]
+    ;
 
-
-import { ProjectsSummaryExtended } from "../types/projects";
-import { AWARD_TYPE, EVENT_STATUS, PROJECT_STATUS } from "../types/enum";
-
-export const mockProjects: Array<ProjectsSummaryExtended> = [
-    {
-        id: "proj-001",
-        group_id: "group-001",
-        project_title: "AI-Powered Traffic Management System",
-        project_status: "accepted",
-        top_priority: 1,
-        groups: {
-            group_name: "Tech Innovators",
-            short_description: "A smart system using computer vision and machine learning to optimize urban traffic flow and reduce congestion in real-time.",
-            event_id: "event-001",
-            events: {
-                id: "event-001",
-                title: "National Tech Hackathon 2024",
-                status: "finished",
-                location: "Ho Chi Minh City",
-                start_date: "2024-11-01",
-                end_date: "2024-11-03",
-                poster_path: null,
-                short_description: "Vietnam's largest student hackathon",
-                organized_date: "2024-10-01",
-                created_at: "2024-09-15T08:00:00Z",
-            },
-        },
-        project_awards: [
-            {
-                id: "pa-001",
-                award_id: "award-001",
-                project_id: "proj-001",
-                created_at: "2024-11-03T18:00:00Z",
-                event_awards: {
-                    id: "award-001",
-                    award_title: "First Place",
-                    award_type: "general",
-                    award_priority: 1,
-                    event_id: "event-001",
-                },
-            },
-        ],
-    },
-    {
-        id: "proj-002",
-        group_id: "group-002",
-        project_title: "GreenTrack - Carbon Footprint Monitor",
-        project_status: "accepted",
-        top_priority: 2,
-        groups: {
-            group_name: "EcoMinds",
-            short_description: "A mobile application that helps individuals and businesses track, analyze, and reduce their carbon footprint through daily activity monitoring.",
-            event_id: "event-001",
-            events: {
-                id: "event-001",
-                title: "National Tech Hackathon 2024",
-                status: "finished",
-                location: "Ho Chi Minh City",
-                start_date: "2024-11-01",
-                end_date: "2024-11-03",
-                poster_path: null,
-                short_description: "Vietnam's largest student hackathon",
-                organized_date: "2024-10-01",
-                created_at: "2024-09-15T08:00:00Z",
-            },
-        },
-        project_awards: [
-            {
-                id: "pa-002",
-                award_id: "award-002",
-                project_id: "proj-002",
-                created_at: "2024-11-03T18:00:00Z",
-                event_awards: {
-                    id: "award-002",
-                    award_title: "Second Place",
-                    award_type: "general",
-                    award_priority: 2,
-                    event_id: "event-001",
-                },
-            },
-        ],
-    },
-    {
-        id: "proj-003",
-        group_id: "group-003",
-        project_title: "MediConnect - Rural Healthcare Platform",
-        project_status: "accepted",
-        top_priority: 1,
-        groups: {
-            group_name: "HealthBridge",
-            short_description: "Connecting rural patients with urban specialists through an AI-assisted telemedicine platform that works with low-bandwidth internet connections.",
-            event_id: "event-002",
-            events: {
-                id: "event-002",
-                title: "Healthcare Innovation Summit 2025",
-                status: "ongoing",
-                location: "Hanoi",
-                start_date: "2025-03-10",
-                end_date: "2025-03-12",
-                poster_path: null,
-                short_description: "Innovating the future of healthcare in Vietnam",
-                organized_date: "2025-02-01",
-                created_at: "2025-01-10T08:00:00Z",
-            },
-        },
-        project_awards: [
-            {
-                id: "pa-003",
-                award_id: "award-003",
-                project_id: "proj-003",
-                created_at: "2025-03-12T17:00:00Z",
-                event_awards: {
-                    id: "award-003",
-                    award_title: "Best Healthcare Solution",
-                    award_type: "specific",
-                    award_priority: 1,
-                    event_id: "event-002",
-                },
-            },
-        ],
-    },
-    {
-        id: "proj-004",
-        group_id: "group-004",
-        project_title: "LearnLoop - Adaptive E-Learning Engine",
-        project_status: "accepted",
-        top_priority: null,
-        groups: {
-            group_name: "StudyForge",
-            short_description: "An adaptive learning platform that personalizes educational content based on each student's learning pace, style, and performance history.",
-            event_id: "event-002",
-            events: {
-                id: "event-002",
-                title: "Healthcare Innovation Summit 2025",
-                status: "ongoing",
-                location: "Hanoi",
-                start_date: "2025-03-10",
-                end_date: "2025-03-12",
-                poster_path: null,
-                short_description: "Innovating the future of healthcare in Vietnam",
-                organized_date: "2025-02-01",
-                created_at: "2025-01-10T08:00:00Z",
-            },
-        },
-        project_awards: [
-            {
-                id: "pa-004",
-                award_id: "award-004",
-                project_id: "proj-004",
-                created_at: "2025-03-12T17:00:00Z",
-                event_awards: {
-                    id: "award-004",
-                    award_title: "Participant",
-                    award_type: "participant",
-                    award_priority: null,
-                    event_id: "event-002",
-                },
-            },
-        ],
-    },
-    {
-        id: "proj-005",
-        group_id: "group-005",
-        project_title: "SafeRoute - Women Safety Navigation App",
-        project_status: "accepted",
-        top_priority: null,
-        groups: {
-            group_name: "Guardian Angels",
-            short_description: "A navigation app that uses crowdsourced safety data and real-time incident reports to suggest the safest routes for women traveling alone at night.",
-            event_id: "event-001",
-            events: {
-                id: "event-001",
-                title: "National Tech Hackathon 2024",
-                status: "finished",
-                location: "Ho Chi Minh City",
-                start_date: "2024-11-01",
-                end_date: "2024-11-03",
-                poster_path: null,
-                short_description: "Vietnam's largest student hackathon",
-                organized_date: "2024-10-01",
-                created_at: "2024-09-15T08:00:00Z",
-            },
-        },
-        project_awards: [
-            {
-                id: "pa-005",
-                award_id: "award-005",
-                project_id: "proj-005",
-                created_at: "2024-11-03T18:00:00Z",
-                event_awards: {
-                    id: "award-005",
-                    award_title: "Participant",
-                    award_type: "participant",
-                    award_priority: null,
-                    event_id: "event-001",
-                },
-            },
-        ],
-    },
-];
+// export const mockProjects: Array<ProjectsSummaryExtended> = [
+//     {
+//         id: "proj-001",
+//         group_id: "group-001",
+//         project_title: "AI-Powered Traffic Management System",
+//         project_status: "accepted",
+//         top_priority: 1,
+//         groups: {
+//             group_name: "Tech Innovators",
+//             short_description: "A smart system using computer vision and machine learning to optimize urban traffic flow and reduce congestion in real-time.",
+//             event_id: "event-001",
+//             events: {
+//                 id: "event-001",
+//                 title: "National Tech Hackathon 2024",
+//                 status: "finished",
+//                 location: "Ho Chi Minh City",
+//                 start_date: "2024-11-01",
+//                 end_date: "2024-11-03",
+//                 poster_path: null,
+//                 short_description: "Vietnam's largest student hackathon",
+//                 organized_date: "2024-10-01",
+//                 created_at: "2024-09-15T08:00:00Z",
+//             },
+//         },
+//         project_awards: [
+//             {
+//                 id: "pa-001",
+//                 award_id: "award-001",
+//                 project_id: "proj-001",
+//                 created_at: "2024-11-03T18:00:00Z",
+//                 event_awards: {
+//                     id: "award-001",
+//                     award_title: "First Place",
+//                     award_type: "general",
+//                     award_priority: 1,
+//                     event_id: "event-001",
+//                 },
+//             },
+//         ],
+//     },
+//     {
+//         id: "proj-002",
+//         group_id: "group-002",
+//         project_title: "GreenTrack - Carbon Footprint Monitor",
+//         project_status: "accepted",
+//         top_priority: 2,
+//         groups: {
+//             group_name: "EcoMinds",
+//             short_description: "A mobile application that helps individuals and businesses track, analyze, and reduce their carbon footprint through daily activity monitoring.",
+//             event_id: "event-001",
+//             events: {
+//                 id: "event-001",
+//                 title: "National Tech Hackathon 2024",
+//                 status: "finished",
+//                 location: "Ho Chi Minh City",
+//                 start_date: "2024-11-01",
+//                 end_date: "2024-11-03",
+//                 poster_path: null,
+//                 short_description: "Vietnam's largest student hackathon",
+//                 organized_date: "2024-10-01",
+//                 created_at: "2024-09-15T08:00:00Z",
+//             },
+//         },
+//         project_awards: [
+//             {
+//                 id: "pa-002",
+//                 award_id: "award-002",
+//                 project_id: "proj-002",
+//                 created_at: "2024-11-03T18:00:00Z",
+//                 event_awards: {
+//                     id: "award-002",
+//                     award_title: "Second Place",
+//                     award_type: "general",
+//                     award_priority: 2,
+//                     event_id: "event-001",
+//                 },
+//             },
+//         ],
+//     },
+//     {
+//         id: "proj-003",
+//         group_id: "group-003",
+//         project_title: "MediConnect - Rural Healthcare Platform",
+//         project_status: "accepted",
+//         top_priority: 1,
+//         groups: {
+//             group_name: "HealthBridge",
+//             short_description: "Connecting rural patients with urban specialists through an AI-assisted telemedicine platform that works with low-bandwidth internet connections.",
+//             event_id: "event-002",
+//             events: {
+//                 id: "event-002",
+//                 title: "Healthcare Innovation Summit 2025",
+//                 status: "ongoing",
+//                 location: "Hanoi",
+//                 start_date: "2025-03-10",
+//                 end_date: "2025-03-12",
+//                 poster_path: null,
+//                 short_description: "Innovating the future of healthcare in Vietnam",
+//                 organized_date: "2025-02-01",
+//                 created_at: "2025-01-10T08:00:00Z",
+//             },
+//         },
+//         project_awards: [
+//             {
+//                 id: "pa-003",
+//                 award_id: "award-003",
+//                 project_id: "proj-003",
+//                 created_at: "2025-03-12T17:00:00Z",
+//                 event_awards: {
+//                     id: "award-003",
+//                     award_title: "Best Healthcare Solution",
+//                     award_type: "specific",
+//                     award_priority: 1,
+//                     event_id: "event-002",
+//                 },
+//             },
+//         ],
+//     },
+//     {
+//         id: "proj-004",
+//         group_id: "group-004",
+//         project_title: "LearnLoop - Adaptive E-Learning Engine",
+//         project_status: "accepted",
+//         top_priority: null,
+//         groups: {
+//             group_name: "StudyForge",
+//             short_description: "An adaptive learning platform that personalizes educational content based on each student's learning pace, style, and performance history.",
+//             event_id: "event-002",
+//             events: {
+//                 id: "event-002",
+//                 title: "Healthcare Innovation Summit 2025",
+//                 status: "ongoing",
+//                 location: "Hanoi",
+//                 start_date: "2025-03-10",
+//                 end_date: "2025-03-12",
+//                 poster_path: null,
+//                 short_description: "Innovating the future of healthcare in Vietnam",
+//                 organized_date: "2025-02-01",
+//                 created_at: "2025-01-10T08:00:00Z",
+//             },
+//         },
+//         project_awards: [
+//             {
+//                 id: "pa-004",
+//                 award_id: "award-004",
+//                 project_id: "proj-004",
+//                 created_at: "2025-03-12T17:00:00Z",
+//                 event_awards: {
+//                     id: "award-004",
+//                     award_title: "Participant",
+//                     award_type: "participant",
+//                     award_priority: null,
+//                     event_id: "event-002",
+//                 },
+//             },
+//         ],
+//     },
+//     {
+//         id: "proj-005",
+//         group_id: "group-005",
+//         project_title: "SafeRoute - Women Safety Navigation App",
+//         project_status: "accepted",
+//         top_priority: null,
+//         groups: {
+//             group_name: "Guardian Angels",
+//             short_description: "A navigation app that uses crowdsourced safety data and real-time incident reports to suggest the safest routes for women traveling alone at night.",
+//             event_id: "event-001",
+//             events: {
+//                 id: "event-001",
+//                 title: "National Tech Hackathon 2024",
+//                 status: "finished",
+//                 location: "Ho Chi Minh City",
+//                 start_date: "2024-11-01",
+//                 end_date: "2024-11-03",
+//                 poster_path: null,
+//                 short_description: "Vietnam's largest student hackathon",
+//                 organized_date: "2024-10-01",
+//                 created_at: "2024-09-15T08:00:00Z",
+//             },
+//         },
+//         project_awards: [
+//             {
+//                 id: "pa-005",
+//                 award_id: "award-005",
+//                 project_id: "proj-005",
+//                 created_at: "2024-11-03T18:00:00Z",
+//                 event_awards: {
+//                     id: "award-005",
+//                     award_title: "Participant",
+//                     award_type: "participant",
+//                     award_priority: null,
+//                     event_id: "event-001",
+//                 },
+//             },
+//         ],
+//     },
+// ];

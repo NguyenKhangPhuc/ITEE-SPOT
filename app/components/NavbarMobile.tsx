@@ -1,10 +1,15 @@
 'use client'
 import { User } from "@supabase/supabase-js"
 import Link from "next/link"
-import { useEffect, useState } from "react"
+import { SetStateAction, useEffect, useState } from "react"
 import { signout } from "../actions/authentication"
 import { useNotification } from "../context/NotificationContext"
 import Image from "next/image"
+import { NAVIGATION_BAR } from "../constants"
+import React from "react"
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 const NavbarMobile = ({ initialUser }: { initialUser: User | null }) => {
     const [isChecked, setIsChecked] = useState(false)
     const [user, setUser] = useState<User | null>(null)
@@ -51,7 +56,7 @@ const NavbarMobile = ({ initialUser }: { initialUser: User | null }) => {
                             <Image
                                 src="/assets/EU_LOGO.png"
                                 alt="EU Logo"
-                                width={65}   // Kích thước mặc định (Desktop)
+                                width={65}
                                 height={100}
                                 className="w-[50px] sm:w-[70px] h-auto"
                             />
@@ -71,36 +76,15 @@ const NavbarMobile = ({ initialUser }: { initialUser: User | null }) => {
         ${isChecked ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}
     `}>
                     <div className=" max-w-full mx-auto px-6  flex flex-col">
-                        <Link
-                            href="/events"
-                            onClick={() => setIsChecked(false)}
-                            className="w-full py-4 text-lg font-medium border-b border-white/20 text-start hover:pl-2 duration-300"
-                        >
-                            Events
-                        </Link>
-                        <Link
-                            href="/invitations"
-                            onClick={() => setIsChecked(false)}
-                            className="w-full py-4 text-lg font-medium border-b border-white/20 text-start hover:pl-2 duration-300"
-                        >
-                            Invitations
-                        </Link>
-                        <Link
-                            href="/groups"
-                            onClick={() => setIsChecked(false)}
-                            className="w-full py-4 text-lg font-medium border-b border-white/20 text-start hover:pl-2 duration-300"
-                        >
-                            Groups
-                        </Link>
-                        <Link
-                            href="/profile"
-                            onClick={() => setIsChecked(false)}
-                            className="w-full py-4 text-lg font-medium border-b border-white/20 text-start hover:pl-2 duration-300"
-                        >
-                            Profile
-                        </Link>
+                        {NAVIGATION_BAR.map((item, index) => {
+                            return (
+                                <React.Fragment key={`${item.category} - ${index}`}>
+                                    <NavigationItem item={item} setIsChecked={setIsChecked} />
+                                </React.Fragment>
+                            )
+                        })}
 
-                        {/* AUTH BUTTONS AT BOTTOM OF LIST */}
+
                         <div className="mt-6">
                             {user ? (
                                 <button
@@ -124,6 +108,56 @@ const NavbarMobile = ({ initialUser }: { initialUser: User | null }) => {
                         </div>
                     </div>
                 </div> : <></>}
+            </div>
+        </div>
+    )
+}
+
+interface NavigationItemProp {
+    item: {
+        category: string;
+        items: {
+            title: string;
+            link: string;
+        }[];
+    }
+    setIsChecked: React.Dispatch<SetStateAction<boolean>>
+}
+
+const NavigationItem = ({ item, setIsChecked }: NavigationItemProp) => {
+    const [isOpenItem, setIsOpenItem] = useState<boolean>(false)
+    return (
+        <div className="w-full py-4 text-lg font-medium text-start flex flex-col gap-2">
+            <div className="w-full flex justify-between border-b border-white/20 cursor-pointer"
+                onClick={() => setIsOpenItem(!isOpenItem)}
+            >
+                <div
+
+
+                    className="hover:pl-2 duration-300 pb-1 cursor-pointer"
+                >
+                    {item.category}
+
+                </div>
+                {isOpenItem ? <KeyboardArrowUpIcon sx={{ color: 'white', fontSize: '25px' }} /> : <KeyboardArrowDownIcon sx={{ color: 'white', fontSize: '25px' }} />}
+            </div>
+            <div className="w-full  flex flex-col gap-3 p-2">
+                {isOpenItem && item.items.map((subItem) => {
+                    return (
+                        <Link href={subItem.link}
+                            onClick={() => setIsChecked(false)}
+                            className="w-full flex justify-between border-b border-white/20 pb-1" key={`${item.category} - ${subItem.title}`}>
+                            <div
+
+
+                                className="hover:pl-2 duration-300"
+                            >
+                                {subItem.title}
+                            </div>
+                            <ArrowForwardIosIcon sx={{ color: 'white', fontSize: '12px' }} />
+                        </Link>
+                    )
+                })}
             </div>
         </div>
     )
