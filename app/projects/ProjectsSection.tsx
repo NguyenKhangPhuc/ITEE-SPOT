@@ -76,9 +76,9 @@ const ProjectsSection = ({ projects, title }: ProjectsSectionProps) => {
                 {visibleProjects.map((project) => (
                     <div
                         key={project.id}
-                        className="bg-white border border-gray-100 rounded-2xl overflow-hidden flex flex-row shadow-sm hover:shadow-md transition-shadow"
+                        className="bg-white border border-gray-100 rounded-2xl overflow-hidden flex sm:flex-row flex-col shadow-sm hover:shadow-md transition-shadow"
                     >
-                        <div className="xl:w-[300px] w-[200px] min-w-[280px] h-[300px] relative flex-shrink-0 bg-gray-100">
+                        <div className="xl:w-[300px] sm:min-w-[280px] w-full h-[300px] relative flex-shrink-0 bg-gray-100">
                             {project.groups?.events?.poster_path ? (
                                 <Image
                                     src={handleGetUrl(project.groups.events.poster_path)}
@@ -135,7 +135,7 @@ const ProjectsSection = ({ projects, title }: ProjectsSectionProps) => {
                             <div className="mt-auto pt-1">
                                 <Link
                                     href={`/projects/${project.id}`}
-                                    className="inline-flex items-center justify-center px-5 h-10 border-2 border-black rounded-xl bg-white hover:bg-black hover:text-white transition-colors duration-300 font-bold text-sm text-black"
+                                    className="inline-flex items-center justify-center px-5 h-10 border-3 border-black rounded-lg bg-white hover:bg-black hover:text-white transition-colors duration-300 font-bold text-sm text-black"
                                 >
                                     See the project
                                 </Link>

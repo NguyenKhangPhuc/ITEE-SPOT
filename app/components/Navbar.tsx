@@ -6,8 +6,12 @@ import { useNotification } from "../context/NotificationContext"
 import { useEffect, useState } from "react"
 import Image from "next/image"
 import { NAVIGATION_BAR } from "../constants"
+import { ProfileInsert } from "../types/profile"
+import { PROFILE_ROLE } from "../types/enum"
+import React from "react"
+import { Item } from "@radix-ui/react-dropdown-menu"
 
-const NavBar = ({ initialUser }: { initialUser: User | null }) => {
+const NavBar = ({ initialUser }: { initialUser: ProfileInsert | null }) => {
     const { showNotification } = useNotification()
     const [user, setUser] = useState(initialUser);
     useEffect(() => {
@@ -23,6 +27,23 @@ const NavBar = ({ initialUser }: { initialUser: User | null }) => {
 
                 showNotification(error.message)
             }
+        }
+    }
+    const handleGetNavigation = (navRole: PROFILE_ROLE | null) => {
+        if (user == null) {
+            return false
+        }
+        if (navRole != null && user.role == PROFILE_ROLE.JUDGES) {
+            return navRole != PROFILE_ROLE.ADMIN
+        }
+
+        if (navRole != null && user.role == PROFILE_ROLE.ADMIN) {
+            return true
+        }
+
+        if (navRole != null && navRole == user.role) {
+            console.log(navRole == user.role)
+            return navRole == user.role
         }
     }
 
@@ -89,19 +110,34 @@ const NavBar = ({ initialUser }: { initialUser: User | null }) => {
                         </Link> */}
                         {NAVIGATION_BAR.map((nav) => {
                             return (
-                                <div key={`category ${nav.category}`} className="dropdown text-center min-w-[160px]">
-                                    <div className="dropbtn text-center" >{nav.category}</div>
-                                    <div className="dropdown-content bg-white text-black w-[160px]">
-                                        {nav.items.map((dropdown) => {
-                                            return (
-                                                <Link key={`Link ${dropdown.title}`} href={dropdown.link} className="dropdown-link">
-                                                    {dropdown.title}
-                                                </Link>
+                                <React.Fragment key={`nav ${nav.category}`}>
+                                    {handleGetNavigation(nav.role) && <div key={`category ${nav.category}`} className="dropdown text-center min-w-[160px]">
+                                        <div className="dropbtn text-center" >{nav.category}</div>
+                                        <div className="dropdown-content bg-white text-black w-[160px]">
+                                            {nav.items.map((dropdown) => {
+                                                return (
+                                                    <Link key={`Link ${dropdown.title}`} href={dropdown.link} className="dropdown-link">
+                                                        {dropdown.title}
+                                                    </Link>
 
-                                            )
-                                        })}
-                                    </div>
-                                </div>
+                                                )
+                                            })}
+                                        </div>
+                                    </div>}
+                                    {nav.role == null && <div key={`category ${nav.category}`} className="dropdown text-center min-w-[160px]">
+                                        <div className="dropbtn text-center" >{nav.category}</div>
+                                        <div className="dropdown-content bg-white text-black w-[160px]">
+                                            {nav.items.map((dropdown) => {
+                                                return (
+                                                    <Link key={`Link ${dropdown.title}`} href={dropdown.link} className="dropdown-link">
+                                                        {dropdown.title}
+                                                    </Link>
+
+                                                )
+                                            })}
+                                        </div>
+                                    </div>}
+                                </React.Fragment>
                             )
                         })}
                         <div className="absolute right-6 top-1/2 -translate-y-1/2">

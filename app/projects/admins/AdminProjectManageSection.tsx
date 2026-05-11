@@ -150,7 +150,7 @@ const AdminProjectManageSection = ({ page, currentProjects, setCurrentProjects }
         <>
             <div className="w-full overflow-x-auto border-4 border-black rounded-[10px] text-sm">
                 <div className="w-full flex justify-between items-center">
-                    <div className="text-lg  text-black p-2">All Projects <span className="text-xs font-normal opacity-70"></span></div>
+                    <div className="min-w-[200px] text-lg  text-black p-2">All Projects <span className="text-xs font-normal opacity-70"></span></div>
                     <div className="flex items-center gap-5 p-2">
                         <select
                             onChange={(e) => {

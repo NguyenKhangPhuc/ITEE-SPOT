@@ -213,26 +213,21 @@ export async function updateProjectStatus({ projectId, status }: { projectId: st
 
 
 export async function getUserSubmittedProjects({ userId, status, ascending }: { userId: string, status: PROJECT_STATUS | null, ascending: boolean }) {
+    console.log()
     const supabase = await createClient()
     let query = supabase
         .from('projects_with_priority')
-        .select(`
-            id, 
-            group_id,
-            group_challenge_id,
-            project_title, 
-            project_status, 
-            top_priority,
+        .select(`*,
             project_awards!inner (
                 *, 
                 event_awards!inner (*)
             ), 
-            groups (
+            groups!inner (
                 group_name, 
                 short_description, 
                 event_id, 
                 events (*),
-                group_members(member_id)
+                group_members!inner (member_id)
             )
         `)
         // .order('top_priority', { ascending: true, nullsFirst: false })
@@ -241,7 +236,9 @@ export async function getUserSubmittedProjects({ userId, status, ascending }: { 
     if (status) {
         query = query.eq('project_status', status);
     }
+
     const { data, error } = await query;
+    console.log(`This is the information ${data} + ${userId}`)
     if (error) {
         return { error: 'Fail to fetch all projects' }
     }
