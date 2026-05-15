@@ -13,13 +13,13 @@ import ProjectsSection from "./ProjectsSection";
 import { mockProjects } from "../constants";
 
 const ProjectsClient = ({ projects }: { projects: Array<ProjectsSummaryExtended> | null }) => {
-    const generalProject = mockProjects?.filter((pro) => {
+    const generalProject = projects?.filter((pro) => {
         return pro.project_awards[0].event_awards.award_type == AWARD_TYPE.GENERAL
     })
-    const specificProjects = mockProjects?.filter((pro) => {
+    const specificProjects = projects?.filter((pro) => {
         return pro.project_awards[0].event_awards.award_type == AWARD_TYPE.SPECIFIC
     })
-    const participantsProjects = mockProjects?.filter((pro) => {
+    const participantsProjects = projects?.filter((pro) => {
         return pro.project_awards[0].event_awards.award_type == AWARD_TYPE.PARTICIPANT
     })
 

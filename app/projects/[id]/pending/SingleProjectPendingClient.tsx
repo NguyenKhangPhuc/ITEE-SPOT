@@ -216,7 +216,7 @@ const SingleProjectPendingClient = ({ project }: { project: SingleProject }) => 
                     ))}
                 </div>
             </div>
-
+            {/* 
             <div className="input-group w-full text-left">
                 <div className="w-full p-5 flex text-center justify-center items-center font-bold text-xl">Update the project status</div>
                 <select
@@ -228,7 +228,7 @@ const SingleProjectPendingClient = ({ project }: { project: SingleProject }) => 
                     <option value={PROJECT_STATUS.ACCEPTED}>Accept</option>
                     <option value={PROJECT_STATUS.REJECTED}>Reject</option>
                 </select>
-            </div>
+            </div> */}
         </div>
     );
 }

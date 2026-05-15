@@ -12,6 +12,8 @@ import { Database } from "./app/types/database.types"
 import { createServerClient } from "@supabase/ssr"
 import { eventSubmissionGradingRoute } from "./app/middleware/submission_evaluation_all"
 import { maintenanceModeCheck } from "./app/middleware/maintenance"
+import { projectsManageRoute } from "./app/middleware/project_admin_manage_proxy"
+import { projectDetailsPendingRoute } from "./app/middleware/project_details_pending_proxy"
 
 
 export async function proxy(request: NextRequest) {
@@ -59,6 +61,10 @@ export async function proxy(request: NextRequest) {
     if (submissionGradingRouteCheck.status !== 200) return submissionGradingRouteCheck
     const eventSubmissionGrading = await eventSubmissionGradingRoute({ request, user: user.user })
     if (eventSubmissionGrading.status !== 200) return eventSubmissionGrading
+    const projectManageRouteCheck = await projectsManageRoute({ request, user: user.user })
+    if (projectManageRouteCheck.status !== 200) return projectManageRouteCheck
+    const projectDetailsPendingRouteCheck = await projectDetailsPendingRoute({ request, user: user.user })
+    if (projectDetailsPendingRouteCheck.status !== 200) return projectDetailsPendingRouteCheck
 }
 
 export const config = {

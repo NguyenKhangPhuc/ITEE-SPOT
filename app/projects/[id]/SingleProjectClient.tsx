@@ -81,9 +81,9 @@ const SingleProjectClient = ({ project }: { project: SingleProject }) => {
                     </div>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-6">
+                <div className="flex lg:flex-row flex-col lg:items-center items-start lg:justify-start justify-center gap-10">
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex sm:flex-row flex-col justify-start items-center gap-4 ">
                         <h2 className="text-2xl font-bold text-black min-w-max">
                             Team: {project.groups?.group_name}
                         </h2>
@@ -93,31 +93,33 @@ const SingleProjectClient = ({ project }: { project: SingleProject }) => {
                     </div>
 
 
-                    {project.project_awards.map((award) => {
-                        const awardColor = getAwardColor(award.event_awards?.award_type || "");
+                    <div className="flex gap-2">
+                        {project.project_awards.map((award) => {
+                            const awardColor = getAwardColor(award.event_awards?.award_type || "");
 
-                        return (
-                            <div
-                                key={`award-${award.award_id}`}
-                                style={{ color: awardColor }}
-                                className="award-card relative "
-                            >
-                                <svg
-                                    className="svg-icon"
-                                    height="50"
-                                    width="50"
-                                    fill={awardColor}
-                                    viewBox="0 0 100 100"
+                            return (
+                                <div
+                                    key={`award-${award.award_id}`}
+                                    style={{ color: awardColor }}
+                                    className="award-card relative "
                                 >
-                                    <path d="M62.11,53.93c22.582-3.125,22.304-23.471,18.152-29.929-4.166-6.444-10.36-2.153-10.36-2.153v-4.166H30.099v4.166s-6.194-4.291-10.36,2.153c-4.152,6.458-4.43,26.804,18.152,29.929l5.236,7.777v8.249s-.944,4.597-4.833,4.986c-3.903,.389-7.791,4.028-7.791,7.374h38.997c0-3.347-3.889-6.986-7.791-7.374-3.889-.389-4.833-4.986-4.833-4.986v-8.249l5.236-7.777Zm7.388-24.818s2.833-3.097,5.111-1.347c2.292,1.75,2.292,15.86-8.999,18.138l3.889-16.791Zm-44.108-1.347c2.278-1.75,5.111,1.347,5.111,1.347l3.889,16.791c-11.291-2.278-11.291-16.388-8.999-18.138Z" />
-                                </svg>
+                                    <svg
+                                        className="svg-icon"
+                                        height="50"
+                                        width="50"
+                                        fill={awardColor}
+                                        viewBox="0 0 100 100"
+                                    >
+                                        <path d="M62.11,53.93c22.582-3.125,22.304-23.471,18.152-29.929-4.166-6.444-10.36-2.153-10.36-2.153v-4.166H30.099v4.166s-6.194-4.291-10.36,2.153c-4.152,6.458-4.43,26.804,18.152,29.929l5.236,7.777v8.249s-.944,4.597-4.833,4.986c-3.903,.389-7.791,4.028-7.791,7.374h38.997c0-3.347-3.889-6.986-7.791-7.374-3.889-.389-4.833-4.986-4.833-4.986v-8.249l5.236-7.777Zm7.388-24.818s2.833-3.097,5.111-1.347c2.292,1.75,2.292,15.86-8.999,18.138l3.889-16.791Zm-44.108-1.347c2.278-1.75,5.111,1.347,5.111,1.347l3.889,16.791c-11.291-2.278-11.291-16.388-8.999-18.138Z" />
+                                    </svg>
 
-                                <div className="award-title text-base pointer-events-none" >
-                                    {award.event_awards?.award_title}
+                                    <div className="award-title text-base pointer-events-none" >
+                                        {award.event_awards?.award_title}
+                                    </div>
                                 </div>
-                            </div>
-                        );
-                    })}
+                            );
+                        })}
+                    </div>
 
                 </div>
 
