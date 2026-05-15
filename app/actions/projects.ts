@@ -66,7 +66,7 @@ export async function getSingleProject({ projectId }: { projectId: string }) {
     const supabase = await createClient()
     const { data, error } = await supabase
         .from('projects')
-        .select('*, project_files(*), groups (group_name, group_members(id, profiles(*)), events(*)), project_awards!inner (*, event_awards (*))')
+        .select('*, project_files(*), groups (group_name, group_members(id, profiles(*)), events(*)), project_awards (*, event_awards (*))')
         .order('event_awards(award_priority)', {
             referencedTable: 'project_awards',
             ascending: true
@@ -76,7 +76,7 @@ export async function getSingleProject({ projectId }: { projectId: string }) {
 
 
     if (error) {
-
+        console.log(error)
         return { error: 'Failed to fetch the project' }
     }
 
@@ -191,7 +191,7 @@ export async function getSingleProjectByGroupAndChallenge({ group_id, group_chal
         .eq('group_id', group_id)
         .eq('group_challenge_id', group_challenge_id)
         .maybeSingle()
-
+    console.log(data, data?.groups?.events?.event_awards)
     if (error) {
         return { error: "Failed to fetch the information" }
     }

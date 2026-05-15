@@ -35,12 +35,9 @@ export async function projectsManageRoute({ request, user }: { request: NextRequ
         pathname.startsWith('/projects') && pathnameSplitted.length == 3
     ) {
         const specificRoute = pathnameSplitted[2]
-        if (user == null) {
-            const url = request.nextUrl.clone()
-            url.pathname = '/login'
-            return NextResponse.redirect(url)
-        }
+
         if (specificRoute == 'admins') {
+
             const { data: userRole, error: userRoleError } = await supabase.from('profiles').select('role').eq('id', user!.id).maybeSingle()
 
             if (userRoleError || userRole?.role != PROFILE_ROLE.ADMIN) {

@@ -34,10 +34,17 @@ export async function updateSession(request: NextRequest) {
     // IMPORTANT: If you remove getClaims() and you use server-side rendering
     // with the Supabase client, your users may be randomly logged out.
     const { data } = await supabase.auth.getClaims()
-
+    const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     const user = data?.claims
     const pathname = request.nextUrl.pathname;
     const isBaseProjectsPage = pathname === '/projects';
+    const pathParts = pathname.split('/');
+    const isProjectDetailPage =
+        pathParts.length === 3 &&
+        pathParts[1] === 'projects' &&
+        UUID_REGEX.test(pathParts[2]);
+    const isAccessingProjectSystem = isBaseProjectsPage || isProjectDetailPage;
+    console.log(isProjectDetailPage, isAccessingProjectSystem, pathParts)
     if (
         !user &&
         !pathname.startsWith('/login') &&
@@ -47,7 +54,7 @@ export async function updateSession(request: NextRequest) {
         !pathname.startsWith('/reset-password') &&
         !pathname.startsWith('/terms-and-conditions') &&
         !pathname.startsWith('/privacy-policy') &&
-        !isBaseProjectsPage &&
+        !isAccessingProjectSystem &&
         pathname !== '/'
     ) {
         // no user, potentially respond by redirecting the user to the login page

@@ -39,7 +39,7 @@ export async function projectDetailsPendingRoute({ request, user }: { request: N
             url.pathname = '/login'
             return NextResponse.redirect(url)
         }
-        const id = pathname.split('/')[2]
+
         const projectId = pathnameSplitted[2]
         if (user == null) {
             const url = request.nextUrl.clone()
@@ -53,24 +53,36 @@ export async function projectDetailsPendingRoute({ request, user }: { request: N
             return NextResponse.redirect(url)
         }
 
-        const { data: groupMember, error: groupMemberError } = await supabase
-            .from('group_members')
-            .select('*')
-            .eq('group_id', projectData?.group_id ?? "")
-            .eq('member_id', user?.id ?? "")
-            .maybeSingle()
+        const { data: role, error: roleError } = await supabase.from('profiles').select('role, id').eq('id', user.id).maybeSingle();
 
-        if (groupMemberError || !groupMember) {
+        if (!role || roleError) {
             const url = request.nextUrl.clone()
             url.pathname = '/projects'
             return NextResponse.redirect(url)
         }
 
-        if (!projectData || projectData.project_status == PROJECT_STATUS.ACCEPTED) {
-            const url = request.nextUrl.clone()
-            url.pathname = '/projects'
-            return NextResponse.redirect(url)
+        if (role.role != PROFILE_ROLE.ADMIN) {
+            const { data: groupMember, error: groupMemberError } = await supabase
+                .from('group_members')
+                .select('*')
+                .eq('group_id', projectData?.group_id ?? "")
+                .eq('member_id', user?.id ?? "")
+                .maybeSingle()
+
+            if (groupMemberError || !groupMember) {
+                const url = request.nextUrl.clone()
+                url.pathname = '/projects'
+                return NextResponse.redirect(url)
+            }
+
+            if (!projectData || projectData.project_status == PROJECT_STATUS.ACCEPTED) {
+                const url = request.nextUrl.clone()
+                url.pathname = '/projects'
+                return NextResponse.redirect(url)
+            }
         }
+
+
 
     }
 
