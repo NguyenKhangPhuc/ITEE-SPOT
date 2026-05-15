@@ -36,17 +36,19 @@ export async function updateSession(request: NextRequest) {
     const { data } = await supabase.auth.getClaims()
 
     const user = data?.claims
-
+    const pathname = request.nextUrl.pathname;
+    const isBaseProjectsPage = pathname === '/projects';
     if (
         !user &&
-        !request.nextUrl.pathname.startsWith('/login') &&
-        !request.nextUrl.pathname.startsWith('/sign-up') &&
-        !request.nextUrl.pathname.startsWith('/auth/callback') &&
-        !request.nextUrl.pathname.startsWith('/forget-password') &&
-        !request.nextUrl.pathname.startsWith('/reset-password') &&
-        !request.nextUrl.pathname.startsWith('/terms-and-conditions') &&
-        !request.nextUrl.pathname.startsWith('/privacy-policy') &&
-        request.nextUrl.pathname !== '/'
+        !pathname.startsWith('/login') &&
+        !pathname.startsWith('/sign-up') &&
+        !pathname.startsWith('/auth/callback') &&
+        !pathname.startsWith('/forget-password') &&
+        !pathname.startsWith('/reset-password') &&
+        !pathname.startsWith('/terms-and-conditions') &&
+        !pathname.startsWith('/privacy-policy') &&
+        !isBaseProjectsPage &&
+        pathname !== '/'
     ) {
         // no user, potentially respond by redirecting the user to the login page
         const url = request.nextUrl.clone()

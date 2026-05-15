@@ -19,7 +19,7 @@ export async function updateUserGrading({ grades, submissionId }: { grades: Arra
         .upsert(grades, { onConflict: 'user_id, submission_id, event_criteria_id' }).select('*, event_grading_criteria (percentage, type)')
         .order('event_criteria_id', { ascending: false })
     if (error) {
-        throw new Error('Fail to update the grades')
+        return { error: "Failed to update the grade" }
     }
     const { data: newFinalScore, error: finalScoreError } = await supabase.from('submission_final_scores').select('*').eq('submission_id', submissionId).single();
     if (finalScoreError) {

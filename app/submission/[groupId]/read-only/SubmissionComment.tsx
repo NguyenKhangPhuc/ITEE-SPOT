@@ -11,6 +11,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import { ProfileInsert } from "@/app/types/profile";
 import { PROFILE_ROLE } from "@/app/types/enum";
 import { useLoader } from "@/app/context/LoaderContext";
+import Pagination from "@/app/components/Pagination";
 interface SubmissionCommentProps {
     getValues: UseFormGetValues<{
         created_at?: string;
@@ -207,44 +208,7 @@ const SubmissionComment = ({ getValues, user }: SubmissionCommentProps) => {
                             </div>
                         ))}
                     </div>
-                    <div className="flex items-center gap-2">
-                        {Array.from({ length: submissionComments?.totalPages ?? 0 }, (_, i) => i + 1).map((page, index) => {
-                            const isFirst = page === 1;
-                            const isLast = page === submissionComments?.totalPages;
-                            const isAdjacent = Math.abs(page - chosenPage) <= 1;
-
-                            if (isFirst || isLast || isAdjacent) {
-                                return (
-                                    <button
-                                        key={page}
-                                        onClick={() => handleChoosePage(page)}
-                                        className={`w-10 h-10 border border-black flex items-center 
-                                            justify-center transition-colors duration-300 font-medium cursor-pointer
-                                                ${page === chosenPage
-                                                ? "bg-black text-white"
-                                                : "bg-white text-black hover:bg-black hover:text-white"}
-                                        `}
-                                    >
-                                        {page}
-                                    </button>
-                                );
-                            }
-
-
-                            if (
-                                (page === chosenPage - 2 && page > 1) ||
-                                (page === chosenPage + 2 && page < (submissionComments?.totalPages ?? 0))
-                            ) {
-                                return (
-                                    <span key={page} className="w-10 h-10 flex items-center justify-center text-black font-bold">
-                                        ...
-                                    </span>
-                                );
-                            }
-
-                            return null;
-                        })}
-                    </div>
+                    <Pagination totalPages={submissionComments?.totalPages} handleChoosePage={handleChoosePage} chosenPage={chosenPage} />
 
                 </div>
             }

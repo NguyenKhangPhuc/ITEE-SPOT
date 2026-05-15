@@ -4,20 +4,18 @@ import { useNotification } from "@/app/context/NotificationContext"
 import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor"
 import { Editor } from "@tiptap/core"
 import { useRouter } from "next/navigation"
-import React, { ChangeEvent, SetStateAction, useState } from "react"
-import { CriteriaMode, useForm } from "react-hook-form"
+import { useState } from "react"
+import { useForm } from "react-hook-form"
 import ClearIcon from '@mui/icons-material/Clear';
-import { Event, EventInsert } from "@/app/types/event"
+import { EventInsert } from "@/app/types/event"
 import { EventChallengeInsert } from "@/app/types/event_challenges"
 import Image from "next/image"
-import { SubmissionFileExtended } from "@/app/types/submission_files"
 import { EVENT_CREATED_DESCRIPTION } from "@/app/constants"
 import { useLoader } from "@/app/context/LoaderContext"
 import ChallengeCreationForm from "./ChallengeCreationForm"
 import EventCreationInfo from "./EventCreationInfo"
-import { EventCriteria, EventCriteriaInsert } from "@/app/types/event_criteria"
+import { EventCriteriaInsert } from "@/app/types/event_criteria"
 import CriteriaCreation from "./EventCriteria"
-
 
 const Home = () => {
     const {
@@ -76,7 +74,7 @@ const Home = () => {
     }
     return (
         <div className="w-full min-h-screen screen-bg font-roboto-mono">
-            <div className="max-w-6xl mx-auto px-6 pt-5 pb-5">
+            <div className="max-w-7xl mx-auto px-6 pt-5 pb-5">
                 <form className="flex flex-col content-main-color mt-5 p-5 rounded-xl gap-5 items-start" onSubmit={handleSubmit(handleCreateNewEvent)}>
                     <div className="w-full flex flex-col items-center">
                         <div className="relative w-40 h-40 group">

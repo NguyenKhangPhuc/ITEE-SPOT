@@ -34,6 +34,38 @@ export type Database = {
   }
   public: {
     Tables: {
+      event_awards: {
+        Row: {
+          award_priority: number | null
+          award_title: string | null
+          award_type: Database["public"]["Enums"]["AWARD_TYPE"] | null
+          event_id: string | null
+          id: string
+        }
+        Insert: {
+          award_priority?: number | null
+          award_title?: string | null
+          award_type?: Database["public"]["Enums"]["AWARD_TYPE"] | null
+          event_id?: string | null
+          id?: string
+        }
+        Update: {
+          award_priority?: number | null
+          award_title?: string | null
+          award_type?: Database["public"]["Enums"]["AWARD_TYPE"] | null
+          event_id?: string | null
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_awards_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       event_challenges: {
         Row: {
           company_name: string | null
@@ -402,6 +434,158 @@ export type Database = {
         }
         Relationships: []
       }
+      project_awards: {
+        Row: {
+          award_id: string | null
+          created_at: string
+          id: string
+          project_id: string | null
+        }
+        Insert: {
+          award_id?: string | null
+          created_at?: string
+          id?: string
+          project_id?: string | null
+        }
+        Update: {
+          award_id?: string | null
+          created_at?: string
+          id?: string
+          project_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "projects_awards_award_id_fkey"
+            columns: ["award_id"]
+            isOneToOne: false
+            referencedRelation: "event_awards"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projects_awards_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projects_awards_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects_with_priority"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_files: {
+        Row: {
+          created_at: string
+          group_id: string | null
+          id: string
+          mime_type: string | null
+          original_file_name: string | null
+          project_id: string | null
+          size: number | null
+          storage_path: string | null
+        }
+        Insert: {
+          created_at?: string
+          group_id?: string | null
+          id?: string
+          mime_type?: string | null
+          original_file_name?: string | null
+          project_id?: string | null
+          size?: number | null
+          storage_path?: string | null
+        }
+        Update: {
+          created_at?: string
+          group_id?: string | null
+          id?: string
+          mime_type?: string | null
+          original_file_name?: string | null
+          project_id?: string | null
+          size?: number | null
+          storage_path?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_files_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_files_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_files_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects_with_priority"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      projects: {
+        Row: {
+          created_at: string
+          description: string | null
+          github_link: string | null
+          group_challenge_id: string | null
+          group_id: string | null
+          id: string
+          project_status: Database["public"]["Enums"]["PROJECTS_STATUS"] | null
+          project_title: string | null
+          short_description: string | null
+          youtube_link: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          github_link?: string | null
+          group_challenge_id?: string | null
+          group_id?: string | null
+          id?: string
+          project_status?: Database["public"]["Enums"]["PROJECTS_STATUS"] | null
+          project_title?: string | null
+          short_description?: string | null
+          youtube_link?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          github_link?: string | null
+          group_challenge_id?: string | null
+          group_id?: string | null
+          id?: string
+          project_status?: Database["public"]["Enums"]["PROJECTS_STATUS"] | null
+          project_title?: string | null
+          short_description?: string | null
+          youtube_link?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "projects_group_challenge_id_fkey"
+            columns: ["group_challenge_id"]
+            isOneToOne: false
+            referencedRelation: "group_challenge"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projects_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       submission_comments: {
         Row: {
           content: string | null
@@ -711,6 +895,63 @@ export type Database = {
       }
     }
     Views: {
+      projects_with_priority: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          github_link: string | null
+          group_challenge_id: string | null
+          group_id: string | null
+          id: string | null
+          project_status: Database["public"]["Enums"]["PROJECTS_STATUS"] | null
+          project_title: string | null
+          short_description: string | null
+          top_priority: number | null
+          youtube_link: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          github_link?: string | null
+          group_challenge_id?: string | null
+          group_id?: string | null
+          id?: string | null
+          project_status?: Database["public"]["Enums"]["PROJECTS_STATUS"] | null
+          project_title?: string | null
+          short_description?: string | null
+          top_priority?: never
+          youtube_link?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          github_link?: string | null
+          group_challenge_id?: string | null
+          group_id?: string | null
+          id?: string | null
+          project_status?: Database["public"]["Enums"]["PROJECTS_STATUS"] | null
+          project_title?: string | null
+          short_description?: string | null
+          top_priority?: never
+          youtube_link?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "projects_group_challenge_id_fkey"
+            columns: ["group_challenge_id"]
+            isOneToOne: false
+            referencedRelation: "group_challenge"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projects_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       submission_final_scores: {
         Row: {
           final_average_score: number | null
@@ -732,6 +973,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      AWARD_TYPE: "general" | "specific" | "participant"
       CRITERIA_TYPE: "normal" | "specific"
       DEGREE: "Bachelor" | "Master" | "Ph.D"
       EVENT_STATUS: "ongoing" | "finished"
@@ -742,6 +984,7 @@ export type Database = {
         | "Electronics and Communications Engineering"
         | "Computer Science and Engineering"
         | "Biomedical Engineering"
+      PROJECTS_STATUS: "pending" | "accepted" | "rejected"
       UNIVERSITY: "University of Oulu" | "Oulu University of Applied Science"
       YEAR: "First Year" | "Second Year" | "Third Year" | "Fourth Year"
     }
@@ -874,6 +1117,7 @@ export const Constants = {
   },
   public: {
     Enums: {
+      AWARD_TYPE: ["general", "specific", "participant"],
       CRITERIA_TYPE: ["normal", "specific"],
       DEGREE: ["Bachelor", "Master", "Ph.D"],
       EVENT_STATUS: ["ongoing", "finished"],
@@ -885,6 +1129,7 @@ export const Constants = {
         "Computer Science and Engineering",
         "Biomedical Engineering",
       ],
+      PROJECTS_STATUS: ["pending", "accepted", "rejected"],
       UNIVERSITY: ["University of Oulu", "Oulu University of Applied Science"],
       YEAR: ["First Year", "Second Year", "Third Year", "Fourth Year"],
     },

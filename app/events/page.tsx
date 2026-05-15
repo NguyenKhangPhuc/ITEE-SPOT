@@ -10,11 +10,7 @@ const Home = async () => {
     }
     return (
         <div className="w-full min-h-screen screen-bg font-roboto-mono">
-            <div className="max-w-6xl mx-auto px-6 flex flex-col p-5 ">
-
-                <Link href={'/events/create'} className="create_btn w-40">
-                    Create
-                </Link>
+            <div className="max-w-7xl mx-auto px-6 flex flex-col p-5 ">
                 <EventsClient events={events ?? []} />
             </div>
         </div>

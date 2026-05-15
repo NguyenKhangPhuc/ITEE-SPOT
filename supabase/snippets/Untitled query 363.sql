@@ -1,2 +1,2 @@
-ALTER TABLE invitation
-ADD CONSTRAINT unique_group_invitation UNIQUE (group_id, member_email);
+ALTER TABLE projects
+ADD CONSTRAINT unique_project_group UNIQUE (group_id, group_challenge_id);

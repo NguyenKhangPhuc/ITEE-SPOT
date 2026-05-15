@@ -9,7 +9,10 @@ import { EventCriteriaInsert } from "@/app/types/event_criteria"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 
-const EventCriteriaEdit = ({ receivedCriteria, eventId }: { receivedCriteria: Array<EventCriteriaInsert>, eventId: string }) => {
+const EventCriteriaEdit = ({
+    receivedCriteria,
+    eventId,
+    page }: { receivedCriteria: Array<EventCriteriaInsert>, eventId: string, page: 'basic' | 'challenge' | 'criteria' | 'awards' }) => {
     const [criteria, setCriteria] = useState(receivedCriteria)
     const {
         register,
@@ -24,6 +27,7 @@ const EventCriteriaEdit = ({ receivedCriteria, eventId }: { receivedCriteria: Ar
     const handleAddingCriteria = async (newCriteria: EventCriteriaInsert) => {
         setIsOpenLoader(true)
         try {
+
             const { data, error } = await createEventCriteria({ newCriteria, eventId })
             if (error) {
                 throw new Error(error)
@@ -70,8 +74,11 @@ const EventCriteriaEdit = ({ receivedCriteria, eventId }: { receivedCriteria: Ar
 
         }
     }
+    if (page != 'criteria') {
+        return null
+    }
     return (
-        <div className="w-full flex flex-col">
+        <form className="w-full flex flex-col">
             <div className="w-full flex flex-col gap-2">
                 <div className="flex w-full gap-4">
                     <div className="input-group w-2/3">
@@ -172,7 +179,7 @@ const EventCriteriaEdit = ({ receivedCriteria, eventId }: { receivedCriteria: Ar
                 ))}
             </div>
 
-        </div>
+        </form>
     )
 }
 

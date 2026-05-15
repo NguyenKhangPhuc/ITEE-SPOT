@@ -1,13 +1,20 @@
 'use client'
 import { User } from "@supabase/supabase-js"
 import Link from "next/link"
-import { useEffect, useState } from "react"
+import { SetStateAction, useEffect, useState } from "react"
 import { signout } from "../actions/authentication"
 import { useNotification } from "../context/NotificationContext"
 import Image from "next/image"
-const NavbarMobile = ({ initialUser }: { initialUser: User | null }) => {
+import { NAVIGATION_BAR } from "../constants"
+import React from "react"
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { ProfileInsert } from "../types/profile"
+import { PROFILE_ROLE } from "../types/enum"
+const NavbarMobile = ({ initialUser }: { initialUser: ProfileInsert | null }) => {
     const [isChecked, setIsChecked] = useState(false)
-    const [user, setUser] = useState<User | null>(null)
+    const [user, setUser] = useState<ProfileInsert | null>(null)
     const { showNotification } = useNotification()
     useEffect(() => {
 
@@ -26,7 +33,7 @@ const NavbarMobile = ({ initialUser }: { initialUser: User | null }) => {
     }
     return (
         <div className="fixed top-0 left-0 w-full bg-black text-white z-50 font-roboto-mono">
-            <div className="max-w-6xl mx-auto px-6 flex">
+            <div className="max-w-full mx-auto px-6 flex">
                 <div className="w-full flex items-center justify-between h-18">
                     <Link href={`/`} className="text-xl font-bold z-100">
                         ITEE SPOT
@@ -51,7 +58,7 @@ const NavbarMobile = ({ initialUser }: { initialUser: User | null }) => {
                             <Image
                                 src="/assets/EU_LOGO.png"
                                 alt="EU Logo"
-                                width={65}   // Kích thước mặc định (Desktop)
+                                width={65}
                                 height={100}
                                 className="w-[50px] sm:w-[70px] h-auto"
                             />
@@ -70,37 +77,16 @@ const NavbarMobile = ({ initialUser }: { initialUser: User | null }) => {
         fixed inset-0 bg-black z-[80] pt-24 gap-2 duration-300
         ${isChecked ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}
     `}>
-                    <div className=" max-w-6xl mx-auto px-6  flex flex-col">
-                        <Link
-                            href="/events"
-                            onClick={() => setIsChecked(false)}
-                            className="w-full py-4 text-lg font-medium border-b border-white/20 text-start hover:pl-2 duration-300"
-                        >
-                            Events
-                        </Link>
-                        <Link
-                            href="/invitations"
-                            onClick={() => setIsChecked(false)}
-                            className="w-full py-4 text-lg font-medium border-b border-white/20 text-start hover:pl-2 duration-300"
-                        >
-                            Invitations
-                        </Link>
-                        <Link
-                            href="/groups"
-                            onClick={() => setIsChecked(false)}
-                            className="w-full py-4 text-lg font-medium border-b border-white/20 text-start hover:pl-2 duration-300"
-                        >
-                            Groups
-                        </Link>
-                        <Link
-                            href="/profile"
-                            onClick={() => setIsChecked(false)}
-                            className="w-full py-4 text-lg font-medium border-b border-white/20 text-start hover:pl-2 duration-300"
-                        >
-                            Profile
-                        </Link>
+                    <div className=" max-w-full mx-auto px-6  flex flex-col">
+                        {NAVIGATION_BAR.map((item, index) => {
+                            return (
+                                <React.Fragment key={`${item.category} - ${index}`}>
+                                    <NavigationItem item={item} setIsChecked={setIsChecked} user={initialUser} />
+                                </React.Fragment>
+                            )
+                        })}
 
-                        {/* AUTH BUTTONS AT BOTTOM OF LIST */}
+
                         <div className="mt-6">
                             {user ? (
                                 <button
@@ -125,6 +111,116 @@ const NavbarMobile = ({ initialUser }: { initialUser: User | null }) => {
                     </div>
                 </div> : <></>}
             </div>
+        </div>
+    )
+}
+
+interface NavigationItemProp {
+    item: {
+        category: string;
+        items: {
+            title: string;
+            link: string;
+        }[];
+        role: PROFILE_ROLE | null
+    }
+    setIsChecked: React.Dispatch<SetStateAction<boolean>>,
+    user: ProfileInsert | null
+}
+
+const NavigationItem = ({ item, setIsChecked, user }: NavigationItemProp) => {
+    const [isOpenItem, setIsOpenItem] = useState<boolean>(false)
+    const handleGetNavigation = (navRole: PROFILE_ROLE | null) => {
+        if (user == null) {
+            return false
+        }
+        if (navRole != null && user.role == PROFILE_ROLE.JUDGES) {
+            return navRole != PROFILE_ROLE.ADMIN
+        }
+
+        if (navRole != null && user.role == PROFILE_ROLE.ADMIN) {
+            return true
+        }
+
+        if (navRole != null && navRole == user.role) {
+            return navRole == user.role
+        }
+    }
+
+    return (
+        <div className="w-full py-4 text-lg font-medium text-start flex flex-col gap-2">
+            {handleGetNavigation(item.role) &&
+                <>
+                    <div className="w-full flex justify-between border-b border-white/20 cursor-pointer"
+                        onClick={() => setIsOpenItem(!isOpenItem)}
+                    >
+                        <div
+
+
+                            className="hover:pl-2 duration-300 pb-1 cursor-pointer"
+                        >
+                            {item.category}
+
+                        </div>
+                        {isOpenItem ? <KeyboardArrowUpIcon sx={{ color: 'white', fontSize: '25px' }} /> : <KeyboardArrowDownIcon sx={{ color: 'white', fontSize: '25px' }} />}
+                    </div>
+                    <div className="w-full  flex flex-col gap-3 p-2">
+                        {isOpenItem && item.items.map((subItem) => {
+                            return (
+                                <Link href={subItem.link}
+                                    onClick={() => setIsChecked(false)}
+                                    className="w-full flex justify-between border-b border-white/20 pb-1" key={`${item.category} - ${subItem.title}`}>
+                                    <div
+
+
+                                        className="hover:pl-2 duration-300"
+                                    >
+                                        {subItem.title}
+                                    </div>
+                                    <ArrowForwardIosIcon sx={{ color: 'white', fontSize: '12px' }} />
+                                </Link>
+                            )
+                        })}
+                    </div>
+                </>
+            }
+
+            {item.role == null &&
+                <>
+                    <div className="w-full flex justify-between border-b border-white/20 cursor-pointer"
+                        onClick={() => setIsOpenItem(!isOpenItem)}
+                    >
+                        <div
+
+
+                            className="hover:pl-2 duration-300 pb-1 cursor-pointer"
+                        >
+                            {item.category}
+
+                        </div>
+                        {isOpenItem ? <KeyboardArrowUpIcon sx={{ color: 'white', fontSize: '25px' }} /> : <KeyboardArrowDownIcon sx={{ color: 'white', fontSize: '25px' }} />}
+                    </div>
+                    <div className="w-full  flex flex-col gap-3 p-2">
+                        {isOpenItem && item.items.map((subItem) => {
+                            return (
+                                <Link href={subItem.link}
+                                    onClick={() => setIsChecked(false)}
+                                    className="w-full flex justify-between border-b border-white/20 pb-1" key={`${item.category} - ${subItem.title}`}>
+                                    <div
+
+
+                                        className="hover:pl-2 duration-300"
+                                    >
+                                        {subItem.title}
+                                    </div>
+                                    <ArrowForwardIosIcon sx={{ color: 'white', fontSize: '12px' }} />
+                                </Link>
+                            )
+                        })}
+                    </div>
+                </>
+            }
+
         </div>
     )
 }

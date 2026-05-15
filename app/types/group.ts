@@ -1,6 +1,7 @@
 import { Database } from "./database.types";
 import { UNIVERSITY, YEAR } from "./enum";
-import { Event, EventInsert } from "./event";
+import { Event, EventInsert, EventWithAwards } from "./event";
+import { EventChallengeInsert } from "./event_challenges";
 import { Profile } from "./profile";
 
 export type Group = Database["public"]["Tables"]["groups"]["Row"]
@@ -45,7 +46,7 @@ export type EventGroups = {
             title: string | null;
         } | null;
     }[];
-}[] | null
+}
 
 export type UserGroupsWithEvent = {
     created_at: string;
@@ -58,18 +59,20 @@ export type UserGroupsWithEvent = {
         member_id: string | null;
     }[];
     group_challenge: {
+        id: string | null;
         challenge_id: string | null;
         event_challenges: {
             company_name: string | null;
             title: string | null;
         } | null;
     }[];
-    events: EventInsert | null;
+    events: EventWithAwards | null;
     all_members: {
         member_id: string | null;
         profiles: Profile | null;
     }[];
-}[] | null
+}
+
 
 
 export type GroupEvents = {
@@ -100,3 +103,25 @@ export type GroupEvents = {
         } | null;
     } | null;
 }[] | null
+
+
+export interface Filter {
+    challenges: Array<string>
+    programmes: Array<string>,
+    degrees: Array<string>
+}
+
+export interface EditGroupInfo {
+    groupName: string,
+    short_description: string
+}
+
+export interface GroupWithChallenge {
+    id: string;
+    group_name: string | null | undefined;
+    group_challenge: {
+        id: string
+        challenge_id: string | null;
+        event_challenges: EventChallengeInsert | null;
+    }[];
+}

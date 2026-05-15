@@ -51,3 +51,15 @@ export enum CRITERIA_TYPE {
     NORMAL = 'normal',
     SPECIFIC = 'specific',
 }
+
+export enum PROJECT_STATUS {
+    PENDING = 'pending',
+    ACCEPTED = 'accepted',
+    REJECTED = 'rejected'
+}
+
+export enum AWARD_TYPE {
+    GENERAL = 'general',
+    SPECIFIC = 'specific',
+    PARTICIPANT = 'participant'
+}
