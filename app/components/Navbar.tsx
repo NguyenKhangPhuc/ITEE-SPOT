@@ -42,7 +42,6 @@ const NavBar = ({ initialUser }: { initialUser: ProfileInsert | null }) => {
         }
 
         if (navRole != null && navRole == user.role) {
-            console.log(navRole == user.role)
             return navRole == user.role
         }
     }

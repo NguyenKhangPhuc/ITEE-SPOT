@@ -60,7 +60,6 @@ const CreateShowCaseProjectSection = ({ eventsWithGroupsAndAwards, page }: { eve
                     throw new Error(error)
                 }
                 setIsOpenLoader(false)
-                console.log(data)
                 if (data) {
                     reset(data)
                     setSubmittedFiles(data.project_files)

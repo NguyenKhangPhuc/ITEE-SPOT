@@ -34,12 +34,18 @@ export async function projectDetailsPendingRoute({ request, user }: { request: N
     if (
         pathname.startsWith('/projects') && pathnameSplitted.length == 4 && pathnameSplitted[3] == 'pending'
     ) {
+        if (user == null) {
+            const url = request.nextUrl.clone()
+            url.pathname = '/login'
+            return NextResponse.redirect(url)
+        }
+        const id = pathname.split('/')[2]
         const projectId = pathnameSplitted[2]
         if (user == null) {
             const url = request.nextUrl.clone()
             url.pathname = '/login'
         }
-        const { data: projectData, error: projectError } = await supabase.from('projects').select('id,project_status').eq('id', projectId).maybeSingle();
+        const { data: projectData, error: projectError } = await supabase.from('projects').select('id,project_status,group_id').eq('id', projectId).maybeSingle();
 
         if (projectError) {
             const url = request.nextUrl.clone()
@@ -47,7 +53,20 @@ export async function projectDetailsPendingRoute({ request, user }: { request: N
             return NextResponse.redirect(url)
         }
 
-        if (!projectData || projectData.project_status != PROJECT_STATUS.PENDING) {
+        const { data: groupMember, error: groupMemberError } = await supabase
+            .from('group_members')
+            .select('*')
+            .eq('group_id', projectData?.group_id ?? "")
+            .eq('member_id', user?.id ?? "")
+            .maybeSingle()
+
+        if (groupMemberError || !groupMember) {
+            const url = request.nextUrl.clone()
+            url.pathname = '/projects'
+            return NextResponse.redirect(url)
+        }
+
+        if (!projectData || projectData.project_status == PROJECT_STATUS.ACCEPTED) {
             const url = request.nextUrl.clone()
             url.pathname = '/projects'
             return NextResponse.redirect(url)

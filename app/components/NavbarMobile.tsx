@@ -143,7 +143,6 @@ const NavigationItem = ({ item, setIsChecked, user }: NavigationItemProp) => {
         }
 
         if (navRole != null && navRole == user.role) {
-            console.log(navRole == user.role)
             return navRole == user.role
         }
     }

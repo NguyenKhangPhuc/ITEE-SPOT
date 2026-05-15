@@ -10,17 +10,16 @@ import { useLoader } from "../context/LoaderContext";
 import Pagination from "../components/Pagination";
 import { getAllProjectsBasedOnStatus } from "../actions/projects";
 import ProjectsSection from "./ProjectsSection";
-import { mockProjects } from "../constants";
 
 const ProjectsClient = ({ projects }: { projects: Array<ProjectsSummaryExtended> | null }) => {
     const generalProject = projects?.filter((pro) => {
-        return pro.project_awards[0].event_awards.award_type == AWARD_TYPE.GENERAL
+        return pro.project_awards[0].event_awards!.award_type == AWARD_TYPE.GENERAL
     })
     const specificProjects = projects?.filter((pro) => {
-        return pro.project_awards[0].event_awards.award_type == AWARD_TYPE.SPECIFIC
+        return pro.project_awards[0].event_awards!.award_type == AWARD_TYPE.SPECIFIC
     })
     const participantsProjects = projects?.filter((pro) => {
-        return pro.project_awards[0].event_awards.award_type == AWARD_TYPE.PARTICIPANT
+        return pro.project_awards[0].event_awards!.award_type == AWARD_TYPE.PARTICIPANT
     })
 
 

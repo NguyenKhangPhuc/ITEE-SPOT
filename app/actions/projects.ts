@@ -20,9 +20,9 @@ export async function getAllProjectsBasedOnStatus({ status, ascending }: { statu
             project_title, 
             project_status, 
             top_priority,
-            project_awards!inner (
+            project_awards (
                 *, 
-                event_awards!inner (*)
+                event_awards (*)
             ), 
             groups (
                 group_name, 
@@ -31,7 +31,10 @@ export async function getAllProjectsBasedOnStatus({ status, ascending }: { statu
                 events (*)
             )
         `)
-        .order('top_priority', { ascending: true, nullsFirst: false })
+        .order('event_awards(award_priority)', {
+            referencedTable: 'project_awards',
+            ascending: true
+        })
         .order('created_at', { ascending: ascending })
     if (status) {
         query = query.eq('project_status', status);
@@ -63,15 +66,17 @@ export async function getSingleProject({ projectId }: { projectId: string }) {
     const supabase = await createClient()
     const { data, error } = await supabase
         .from('projects')
-        .select('*, project_files(*), groups (group_name, group_members(id, profiles(*)), events(*)), project_awards(*, event_awards(*))')
-        .order('award_priority', {
-            referencedTable: 'project_awards.event_awards',
+        .select('*, project_files(*), groups (group_name, group_members(id, profiles(*)), events(*)), project_awards!inner (*, event_awards (*))')
+        .order('event_awards(award_priority)', {
+            referencedTable: 'project_awards',
             ascending: true
         })
         .eq('id', projectId)
         .single();
 
+
     if (error) {
+
         return { error: 'Failed to fetch the project' }
     }
 
@@ -80,7 +85,6 @@ export async function getSingleProject({ projectId }: { projectId: string }) {
 
 export async function saveStudentGroupProject({ project, submittedFiles, projectAwards }:
     { project: ProjectsInsert, submittedFiles: Array<SubmissionFileExtended>, projectAwards: Array<ProjectAwardsInsert> }) {
-    console.log(project.group_challenge_id)
     const supabase = await createClient()
     const { data: subData, error: subError } = await supabase
         .from('projects')
@@ -98,11 +102,9 @@ export async function saveStudentGroupProject({ project, submittedFiles, project
         .maybeSingle()
 
     if (subError) {
-        console.log(subError)
         return { error: "Fail to update the project submission" }
     };
     if (!subData) {
-        console.log(subData + " This is the error")
         return { error: "Fail to update the project submission" }
     };
 
@@ -183,7 +185,6 @@ export async function saveStudentGroupProject({ project, submittedFiles, project
 
 
 export async function getSingleProjectByGroupAndChallenge({ group_id, group_challenge_id }: { group_id: string, group_challenge_id: string }) {
-    console.log(group_id, group_challenge_id)
     const supabase = await createClient()
     const { data, error } = await supabase.from('projects')
         .select('*, project_awards(*), project_files(*), groups (event_id, events (id, event_awards(*)))')
@@ -192,7 +193,6 @@ export async function getSingleProjectByGroupAndChallenge({ group_id, group_chal
         .maybeSingle()
 
     if (error) {
-        console.log(error)
         return { error: "Failed to fetch the information" }
     }
 
@@ -213,7 +213,6 @@ export async function updateProjectStatus({ projectId, status }: { projectId: st
 
 
 export async function getUserSubmittedProjects({ userId, status, ascending }: { userId: string, status: PROJECT_STATUS | null, ascending: boolean }) {
-    console.log()
     const supabase = await createClient()
     let query = supabase
         .from('projects_with_priority')
@@ -238,7 +237,6 @@ export async function getUserSubmittedProjects({ userId, status, ascending }: { 
     }
 
     const { data, error } = await query;
-    console.log(`This is the information ${data} + ${userId}`)
     if (error) {
         return { error: 'Fail to fetch all projects' }
     }

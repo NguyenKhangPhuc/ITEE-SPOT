@@ -95,7 +95,6 @@ const AdminProjectManageSection = ({ page, currentProjects, setCurrentProjects }
                 throw new Error(error)
             }
             setIsOpenLoader(false)
-            console.log(data)
             if (data) {
                 reset(data)
                 setChosenProject(project)
@@ -131,8 +130,6 @@ const AdminProjectManageSection = ({ page, currentProjects, setCurrentProjects }
 
                 return project
             }) ?? []
-            console.log(data)
-            console.log(currentProjects)
             setCurrentProjects(updatedProjects)
             setIsOpenLoader(false)
             showNotification('Update project status successfully')

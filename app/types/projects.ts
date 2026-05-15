@@ -38,7 +38,7 @@ export interface ProjectsSummaryExtended extends ProjectsSummary {
             award_type: "general" | "specific" | "participant" | null;
             event_id: string | null;
             id: string;
-        };
+        } | null;
     }[];
 }
 

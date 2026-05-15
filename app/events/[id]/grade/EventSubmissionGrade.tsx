@@ -155,7 +155,6 @@ const EventSubmissionGrade = ({ eventCriteria, user, eventId }: { eventCriteria:
     }
 
     const handleChoosingSubmissionGrade = (items: Array<UserSubmissionGradeWithPercentage>, submissionId: string | null) => {
-        console.log(items)
         if (!submissionId) {
             showNotification("Select unsuccessfully")
             return
@@ -167,19 +166,6 @@ const EventSubmissionGrade = ({ eventCriteria, user, eventId }: { eventCriteria:
             reset({ normalGrades: normalGradeCriteria, specificGrades: specificGradeCriteria })
         } else {
             setChosenSubmissionGrade(submissionId)
-            console.log(specificCriteria.map((ele) => {
-                return {
-                    event_criteria_id: ele.id,
-                    user_id: user.id,
-                    submission_id: submissionId,
-                    grade: 50,
-                    event_grading_criteria: {
-                        percentage: ele.percentage,
-                        type: CRITERIA_TYPE.SPECIFIC
-                    }
-                }
-
-            }),)
             reset({
                 normalGrades:
                     normalCriteria.map((ele) => {

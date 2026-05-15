@@ -98,7 +98,6 @@ const EditProjectFormSection = ({
         if (selectedAward.find((ele) => ele.award_id == awardId)) {
             return true
         }
-        console.log(false)
         return false
     }
 
@@ -120,8 +119,6 @@ const EditProjectFormSection = ({
     const handleSaveProject = async (project: ProjectsInsert) => {
         setIsOpenLoader(true)
         try {
-            console.log("Project before saving " + project)
-            console.log("Selected Award ", selectedAward)
             project.description = editorValue?.getHTML()
             const { data, error } = await saveStudentGroupProject({ project, submittedFiles, projectAwards: selectedAward })
             if (error) {

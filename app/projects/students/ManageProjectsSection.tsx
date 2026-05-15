@@ -95,7 +95,6 @@ const ManageProjectsSection = ({ page, userProjects, setUserProjects }: ManagePr
                 throw new Error(error)
             }
             setIsOpenLoader(false)
-            console.log(data)
             if (data) {
                 reset(data)
                 setChosenProject(project)

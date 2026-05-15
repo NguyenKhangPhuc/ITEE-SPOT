@@ -78,7 +78,7 @@ const ProjectsSection = ({ projects, title }: ProjectsSectionProps) => {
                         key={project.id}
                         className="bg-white border border-gray-100 rounded-2xl overflow-hidden flex sm:flex-row flex-col shadow-sm hover:shadow-md transition-shadow"
                     >
-                        <div className="xl:w-[300px] sm:min-w-[280px] w-full h-[300px] relative flex-shrink-0 bg-gray-100">
+                        <div className="xl:w-[300px] sm:min-w-[280px] w-full h-[300px] relative flex-shrink-0 bg-gray-300">
                             {project.groups?.events?.poster_path ? (
                                 <Image
                                     src={handleGetUrl(project.groups.events.poster_path)}
