@@ -12,7 +12,6 @@ import { getAllProjectsBasedOnStatus } from "../actions/projects";
 import ProjectsSection from "./ProjectsSection";
 
 const ProjectsClient = ({ projects }: { projects: Array<ProjectsSummaryExtended> | null }) => {
-    console.log(projects)
     const generalProject = projects?.filter((pro) => {
         if (pro.project_awards[0] == null) {
             return true

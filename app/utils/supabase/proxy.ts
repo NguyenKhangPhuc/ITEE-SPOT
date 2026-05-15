@@ -44,7 +44,6 @@ export async function updateSession(request: NextRequest) {
         pathParts[1] === 'projects' &&
         UUID_REGEX.test(pathParts[2]);
     const isAccessingProjectSystem = isBaseProjectsPage || isProjectDetailPage;
-    console.log(isProjectDetailPage, isAccessingProjectSystem, pathParts)
     if (
         !user &&
         !pathname.startsWith('/login') &&
