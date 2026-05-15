@@ -14,7 +14,7 @@ interface ProjectsSectionProps {
 
 const ProjectsSection = ({ projects, title }: ProjectsSectionProps) => {
     const supabase = createClient();
-    const [visibleCount, setVisibleCount] = useState(1);
+    const [visibleCount, setVisibleCount] = useState(3);
 
     const visibleProjects = projects?.slice(0, visibleCount) ?? [];
     const isExpanded = visibleCount >= (projects?.length ?? 0);
@@ -50,11 +50,11 @@ const ProjectsSection = ({ projects, title }: ProjectsSectionProps) => {
         <div className="w-full flex flex-col gap-6 pt-5">
             <div className="flex items-center justify-between">
                 <h2 className="text-2xl font-bold text-white">{title}</h2>
-                {projects.length > 1 && (
+                {projects.length > 3 && (
                     <button
                         onClick={() =>
                             isExpanded
-                                ? setVisibleCount(1)
+                                ? setVisibleCount(3)
                                 : setVisibleCount(projects.length)
                         }
                         className="flex items-center gap-1 text-sm font-semibold text-gray-600 hover:text-white transition-colors duration-300"

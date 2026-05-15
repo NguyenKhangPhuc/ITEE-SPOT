@@ -181,7 +181,7 @@ const SingleProjectPendingClient = ({ project }: { project: SingleProject }) => 
                         <div key={member.id} className="bg-white p-6 rounded-xl shadow-xl/30 border border-gray-50 hover:-translate-y-1 duration-300">
                             <div className="flex flex-col gap-3">
                                 <p className="text-2xl font-black text-black uppercase border-b-2 border-black pb-2">
-                                    {member.profiles?.full_name || "Nặc danh"}
+                                    {member.profiles?.full_name || "No full name"}
                                 </p>
 
                                 <div className="grid grid-cols-1 gap-2 text-sm text-gray-600">
