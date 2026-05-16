@@ -5,11 +5,12 @@ import { useNotification } from "@/app/context/NotificationContext"
 import { SubmissionFileExtended } from "@/app/types/submission_files"
 
 interface SubmissionFilesProps {
-    submittedFiles: SubmissionFileExtended[]
+    submittedFiles: SubmissionFileExtended[],
+    title: string
 
 }import DownloadIcon from '@mui/icons-material/Download';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
-const SubmissionFiles = ({ submittedFiles }: SubmissionFilesProps) => {
+const SubmissionFiles = ({ submittedFiles, title }: SubmissionFilesProps) => {
     const { showNotification } = useNotification()
     const handleDownloadFile = async (file: SubmissionFileExtended) => {
         if (file.storage_path != null && file.storage_path != "") {
@@ -36,10 +37,10 @@ const SubmissionFiles = ({ submittedFiles }: SubmissionFilesProps) => {
     }
     return (
         <>
-            <div className="text-lg font-bold uppercase tracking-tight">Submitted File</div>
+            <div className="text-lg font-bold uppercase tracking-tight">{title}</div>
             {submittedFiles?.length > 0 ? (
 
-                <div className="grid lg:grid-cols-7 md:grid-cols-5 grid-cols-3 gap-4 w-full">
+                <div className="grid lg:grid-cols-7 md:grid-cols-5 grid-cols-1 gap-4 w-full">
                     {submittedFiles.map((fileItem, index) => (
                         <div
                             key={index}

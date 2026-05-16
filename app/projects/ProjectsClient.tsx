@@ -2,13 +2,6 @@
 import Link from "next/link";
 import { AWARD_TYPE, EVENT_STATUS, PROJECT_STATUS } from "../types/enum";
 import { ProjectsSummary, ProjectsSummaryExtended } from "../types/projects"
-import { createClient } from "../utils/supabase/client";
-import Image from 'next/image'
-import { useState } from "react";
-import { useNotification } from "../context/NotificationContext";
-import { useLoader } from "../context/LoaderContext";
-import Pagination from "../components/Pagination";
-import { getAllProjectsBasedOnStatus } from "../actions/projects";
 import ProjectsSection from "./ProjectsSection";
 
 const ProjectsClient = ({ projects }: { projects: Array<ProjectsSummaryExtended> | null }) => {
@@ -25,8 +18,6 @@ const ProjectsClient = ({ projects }: { projects: Array<ProjectsSummaryExtended>
         return pro.project_awards[0]?.event_awards?.award_type == AWARD_TYPE.PARTICIPANT
     })
 
-
-
     return (
         <div className="w-full flex flex-col gap-6 pt-5">
             {projects?.length == 0 && <div className="w-full flex justify-center text-white/70">No projects published yet</div>}
@@ -34,7 +25,7 @@ const ProjectsClient = ({ projects }: { projects: Array<ProjectsSummaryExtended>
             <ProjectsSection projects={specificProjects ?? []} title="Specific Awards" />
             <ProjectsSection projects={participantsProjects ?? []} title="Participants" />
 
-
+            {/* <ProjectsSection projects={projects ?? []} title="Participants" /> */}
         </div>
     )
 }

@@ -28,7 +28,8 @@ export async function getAllProjectsBasedOnStatus({ status, ascending }: { statu
                 group_name, 
                 short_description, 
                 event_id, 
-                events (*)
+                events (*),
+                group_members (member_id, profiles (*))
             )
         `)
         .order('event_awards(award_priority)', {
@@ -53,7 +54,7 @@ export async function getAllProjects() {
 
     const { data, error } = await supabase
         .from('projects')
-        .select('id, group_id, group_challenge_id, project_title,project_status, groups (group_name, short_description, event_id, events (*))')
+        .select('id, group_id, group_challenge_id, project_title,project_status, groups (group_name, short_description, event_id, events (*), group_members (member_id, profiles (*)))')
         .order('created_at', { ascending: false })
 
     if (error) {
@@ -201,7 +202,6 @@ export async function getSingleProjectByGroupAndChallenge({ group_id, group_chal
 export async function updateProjectStatus({ projectId, status }: { projectId: string, status: PROJECT_STATUS }) {
     const supabase = await createClient()
     const { data, error } = await supabase.from('projects').update({ project_status: status }).eq('id', projectId)
-        .select('id, group_id, group_challenge_id, project_title,project_status, groups (group_name, short_description, event_id, events (*))')
         .maybeSingle()
     if (error) {
         return { error: 'Failed to update the project status' }
@@ -224,7 +224,7 @@ export async function getUserSubmittedProjects({ userId, status, ascending }: { 
                 short_description, 
                 event_id, 
                 events (*),
-                group_members!inner (member_id)
+                group_members!inner (member_id, profiles (*))
             )
         `)
         // .order('top_priority', { ascending: true, nullsFirst: false })

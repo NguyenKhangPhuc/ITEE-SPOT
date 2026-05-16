@@ -21,6 +21,10 @@ export interface ProjectsSummary {
         short_description: string | null;
         event_id: string | null;
         events: EventInsert | null;
+        group_members: {
+            member_id: string | null,
+            profiles: ProfileInsert | null
+        }[];
     } | null;
 
 }
