@@ -24,7 +24,7 @@ const ProjectsClient = ({ projects }: { projects: Array<ProjectsSummaryExtended>
             {projects?.length == 0 && <div className="w-full flex justify-center text-white/70">No projects published yet</div>}
             <ProjectsSection projects={generalProject ?? []} title="General Awards" />
             <ProjectsSection projects={specificProjects ?? []} title="Specific Awards" />
-            <ProjectsSection projects={participantsProjects ?? []} title="Participants" />
+            <ProjectsSection projects={participantsProjects ?? []} title="Participants | Audience Favorite" />
 
             {/* <ProjectsSection projects={projects ?? []} title="Participants" /> */}
         </div>
