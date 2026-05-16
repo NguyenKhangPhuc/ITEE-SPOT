@@ -35,8 +35,9 @@ const ProjectsSection = ({ projects, title }: ProjectsSectionProps) => {
     const getAwardColor = (type: string) => {
         switch (type) {
             case AWARD_TYPE.GENERAL:
+                return '#19b30b';
             case AWARD_TYPE.SPECIFIC:
-                return '#e94822';
+                return '#19b30b';
             case AWARD_TYPE.PARTICIPANT:
                 return '#2f43ba';
             default:
@@ -96,16 +97,28 @@ const ProjectsSection = ({ projects, title }: ProjectsSectionProps) => {
 
                         <div className="flex flex-col flex-1 p-5 gap-3 min-w-0">
                             <div className="flex items-center gap-2 flex-wrap">
-                                <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide truncate max-w-[180px]">
+                                <span className="text-xs font-semibold text-gray-500 uppercase break-word">
                                     {project.groups?.events?.title || "Unknown Event"}
                                 </span>
                                 <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${getStatusColor(project.groups?.events?.status ?? "")}`}>
-                                    {project.groups?.events?.status || "N/A"}
+                                    {project.groups?.events?.status == EVENT_STATUS.FINISHED ? 'Completed' : 'Ongoing'}
                                 </span>
                             </div>
 
                             <h3 className="text-xl font-bold text-black leading-tight truncate">
                                 {project.groups?.group_name || "Untitled Group"}
+                            </h3>
+
+                            <div className="w-full flex flex-wrap gap-y-1">
+                                {project.groups?.group_members.map((member, index, array) => (
+                                    <span key={`member-${member.member_id}`} className="flex items-center">
+                                        {member.profiles?.full_name}
+                                        {index < array.length - 1 && <span className="mx-3">&</span>}
+                                    </span>
+                                ))}
+                            </div>
+                            <h3 className="text-lg font-bold text-black ">
+                                {project.project_title || "Untitled Project"}
                             </h3>
 
                             {project.project_awards.length > 0 && (

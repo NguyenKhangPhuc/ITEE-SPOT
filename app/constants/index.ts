@@ -38,6 +38,7 @@ export const NAVIGATION_BAR = [
         category: 'Students', items: [
             { title: 'Groups', link: '/groups' },
             { title: 'Profiles', link: '/profile' },
+            { title: 'Invitations', link: '/invitations' },
             { title: 'Showcase Projects', link: '/projects/students' },
         ],
         role: PROFILE_ROLE.STUDENT

@@ -115,7 +115,7 @@ const ReadOnlySubmission = ({ groupSubmissions, user }: { groupSubmissions: Grou
                         funfacts={funfacts}
                     />
 
-                    <SubmissionFiles submittedFiles={submittedFiles} />
+                    <SubmissionFiles submittedFiles={submittedFiles} title="Submitted Files" />
 
                     {(user.role == PROFILE_ROLE.ADMIN || user.role == PROFILE_ROLE.JUDGES) && <SubmissionRating user={user} userRating={userRating} setUserRating={setUserRating} getValues={getValues} />}
 

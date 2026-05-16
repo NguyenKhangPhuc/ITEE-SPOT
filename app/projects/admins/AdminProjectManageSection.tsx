@@ -120,12 +120,9 @@ const AdminProjectManageSection = ({ page, currentProjects, setCurrentProjects }
             if (error) {
                 throw new Error(error)
             }
-            if (!data) {
-                throw new Error('Fail to fetch updated data')
-            }
             const updatedProjects = currentProjects?.map((project) => {
-                if (project.id == data?.id) {
-                    return data
+                if (project.id == projectId) {
+                    return { ...project, project_status: status }
                 }
 
                 return project
@@ -203,14 +200,15 @@ const AdminProjectManageSection = ({ page, currentProjects, setCurrentProjects }
                                 <td className="p-4 border-r-2 border-black  font-semibold text-sm text-left">
                                     {item.project_title}
                                 </td>
+                                <td className={`p-1 border-r-2 border-black  font-semibold text-sm text-center ${handleGettingStatusColor(item?.project_status)}`}>
+                                    {item.project_status}
+                                </td>
                                 <td className="p-3 border-r-2 border-black font-semibold text-sm underline text-center cursor-pointer"
                                     onClick={() => handleChooseProject(item)}
                                 >
                                     Edit
                                 </td>
-                                <td className={`p-1 border-r-2 border-black  font-semibold text-sm text-center ${handleGettingStatusColor(item?.project_status)}`}>
-                                    {item.project_status}
-                                </td>
+
 
 
                                 <td className="p-3 border-r-2 border-black font-semibold text-sm">
