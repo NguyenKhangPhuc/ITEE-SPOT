@@ -5,6 +5,7 @@ import { ProjectsSummary, ProjectsSummaryExtended } from "../types/projects"
 import ProjectsSection from "./ProjectsSection";
 
 const ProjectsClient = ({ projects }: { projects: Array<ProjectsSummaryExtended> | null }) => {
+
     const generalProject = projects?.filter((pro) => {
         if (pro.project_awards[0] == null) {
             return true
