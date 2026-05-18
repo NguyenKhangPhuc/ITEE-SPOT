@@ -88,7 +88,7 @@ const ProjectsClient = ({ projects, events }: { projects: Array<ProjectsSummaryE
 
                     <div className="flex-1 overflow-y-auto pr-2">
                         <div className="mb-6">
-                            <label className="block font-semibold mb-3 text-gray-700">Challenges</label>
+                            <label className="block font-semibold mb-3 text-gray-700">Events</label>
                             <div className="flex flex-wrap gap-4">
                                 {events.map((event) => (
                                     <div key={event.id} className="flex items-center gap-2">

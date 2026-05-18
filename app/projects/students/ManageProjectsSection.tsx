@@ -152,6 +152,7 @@ const ManageProjectsSection = ({ page, userProjects, setUserProjects }: ManagePr
                 <table className="w-full min-w-max border-collapse">
                     <thead>
                         <tr className="bg-black text-white">
+                            <th className="w-20 p-1 border-r border-white border-b-4 border-b-black text-center">Number</th>
                             <th className="w-50  p-4 border-r border-white border-b-4 border-b-black text-left">Event</th>
                             <th className="w-50  p-4 border-r border-white border-b-4 border-b-black text-left">Group</th>
                             <th className="w-50  p-4 border-r border-white border-b-4 border-b-black text-left">Project</th>
@@ -167,6 +168,9 @@ const ManageProjectsSection = ({ page, userProjects, setUserProjects }: ManagePr
                             <tr key={item.id || index} className={` duration-300 border-b-2 border-black last:border-b-0 `}
 
                             >
+                                <td className="p-4 border-r-2 border-black  font-bold text-lg text-center">
+                                    {index + 1}
+                                </td>
                                 <td className="p-4 border-r-2 border-black  font-semibold text-sm">
                                     {item.groups?.events?.title || "No Title"}
                                 </td>
