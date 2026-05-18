@@ -111,6 +111,10 @@ export interface Filter {
     degrees: Array<string>
 }
 
+export interface ProjectFilter {
+    events: Array<string>
+}
+
 export interface EditGroupInfo {
     groupName: string,
     short_description: string
