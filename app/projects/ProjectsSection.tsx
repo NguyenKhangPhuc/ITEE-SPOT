@@ -110,11 +110,11 @@ const ProjectsSection = ({ projects, title }: ProjectsSectionProps) => {
                                 {project.groups?.group_name || "Untitled Group"}
                             </h3>
 
-                            <div className="w-full flex flex-wrap gap-y-1">
+                            <div className="w-full flex flex-wrap gap-y-1 text-sm italic">
                                 {project.groups?.group_members.map((member, index, array) => (
                                     <span key={`member-${member.member_id}`} className="flex items-center">
                                         {member.profiles?.full_name}
-                                        {index < array.length - 1 && <span className="mx-3">&</span>}
+                                        {index != array.length - 1 && <span className="mx-3">&</span>}
                                     </span>
                                 ))}
                             </div>
