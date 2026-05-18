@@ -61,7 +61,7 @@ const SingleProjectClient = ({ project }: { project: SingleProject }) => {
 
 
     return (
-        <div className="w-full mt-10 flex flex-col gap-8 bg-white sm:p-8 p-3  font-roboto-mono ">
+        <div className="w-full mt-10 flex flex-col gap-5 bg-white sm:p-8 p-3  font-roboto-mono ">
 
             <div className=" rounded-xl  flex flex-col gap-6">
 
@@ -125,8 +125,47 @@ const SingleProjectClient = ({ project }: { project: SingleProject }) => {
 
                 </div>
             </div>
+            <div className="w-full flex flex-wrap gap-y-1 text-sm italic text-blue-600">
+                {project.groups?.group_members.map((member, index, array) => (
+                    <span key={`member-${member.id}`} className="flex items-center cursor-pointer underline">
+                        {member.profiles?.full_name}
+                        {index != array.length - 1 && <span className="mx-3">&</span>}
+                    </span>
+                ))}
+            </div>
 
 
+
+
+            <hr className="border-t-1 border-black w-full" />
+
+            <div className="flex flex-col gap-6">
+
+
+                <FixedYoutubeVideo embeddedUrl={handleGetEmbeddedUrl() ?? ""} />
+                <div className="flex items-center justify-between gap-6 mt-4">
+                    <h3 className="text-2xl font-black text-black ">
+                        Project: {project.project_title}
+                    </h3>
+                    {project.github_link && (
+                        <a href={project.github_link} className="hover:scale-110 duration-300  ">
+                            <GitHubIcon sx={{ fontSize: '40px' }} />
+                        </a>
+                    )}
+
+                </div>
+
+                <p className="text-sm text-black/70 itatic max-w-5xl">
+                    {project.short_description}
+                </p>
+
+                <div className="flex flex-col gap-4 min-h-[600px] shadow-template p-8 w-full bg-white rounded-xl border border-gray-100">
+                    <div className="prose prose-lg max-w-none">
+
+                        <ReadOnlyEditor content={project.description || ""} />
+                    </div>
+                </div>
+            </div>
             <div className="mt-2 w-full">
                 <h4 className="w-full flex sm:justify-start justify-center text-2xl font-bold mb-6 flex items-center gap-2 text-black uppercase tracking-widest">
                     Meet the Team
@@ -169,36 +208,6 @@ const SingleProjectClient = ({ project }: { project: SingleProject }) => {
                             </div>
                         </div>
                     ))}
-                </div>
-            </div>
-
-            <hr className="border-t-1 border-black w-full" />
-
-            <div className="flex flex-col gap-6">
-
-
-                <FixedYoutubeVideo embeddedUrl={handleGetEmbeddedUrl() ?? ""} />
-                <div className="flex items-center justify-between gap-6 mt-4">
-                    <h3 className="text-2xl font-black text-black ">
-                        Project: {project.project_title}
-                    </h3>
-                    {project.github_link && (
-                        <a href={project.github_link} className="hover:scale-110 duration-300  ">
-                            <GitHubIcon sx={{ fontSize: '40px' }} />
-                        </a>
-                    )}
-
-                </div>
-
-                <p className="text-sm text-black/70 itatic max-w-5xl">
-                    {project.short_description}
-                </p>
-
-                <div className="flex flex-col gap-4 min-h-[600px] shadow-template p-8 w-full bg-white rounded-xl border border-gray-100">
-                    <div className="prose prose-lg max-w-none">
-
-                        <ReadOnlyEditor content={project.description || ""} />
-                    </div>
                 </div>
             </div>
             <SubmissionFiles submittedFiles={project.project_files} title="Project Details" />

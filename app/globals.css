@@ -1394,7 +1394,7 @@ More comprehensive version at shenanigans.shoghisimon.ca/collection/css-rain-bg/
 .award-title {
   opacity: 0;
   position: absolute;
-  min-width: 200px;
+  min-width: 300px;
   top: -10px;
   display: flex;
   justify-content: center;
