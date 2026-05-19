@@ -127,10 +127,10 @@ const SingleProjectClient = ({ project }: { project: SingleProject }) => {
             </div>
             <div className="w-full flex flex-wrap gap-y-1 text-sm italic text-blue-600">
                 {project.groups?.group_members.map((member, index, array) => (
-                    <span key={`member-${member.id}`} className="flex items-center cursor-pointer underline">
+                    <Link href={`/student/${member.profiles?.id}`} key={`member-${member.id}`} className="cursor-pointer flex items-center cursor-pointer underline">
                         {member.profiles?.full_name}
                         {index != array.length - 1 && <span className="mx-3">&</span>}
-                    </span>
+                    </Link>
                 ))}
             </div>
 
@@ -172,7 +172,7 @@ const SingleProjectClient = ({ project }: { project: SingleProject }) => {
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {project.groups?.group_members?.map((member) => (
-                        <div key={member.id} className="bg-white p-6 rounded-xl shadow-template border border-gray-50 hover:-translate-y-1 duration-300">
+                        <Link href={`/student/${member.profiles?.id}`} key={member.id} className="cursor-pointer bg-white p-6 rounded-xl shadow-template border border-gray-50 hover:-translate-y-1 duration-300">
                             <div className="flex flex-col gap-3">
                                 <p className="text-2xl font-black text-black uppercase border-b-2 border-black pb-2">
                                     {member.profiles?.full_name || "No full name"}
@@ -206,7 +206,7 @@ const SingleProjectClient = ({ project }: { project: SingleProject }) => {
                                     )}
                                 </div>
                             </div>
-                        </div>
+                        </Link>
                     ))}
                 </div>
             </div>

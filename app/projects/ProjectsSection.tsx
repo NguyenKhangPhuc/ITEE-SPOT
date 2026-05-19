@@ -78,17 +78,22 @@ const ProjectsSection = ({ projects, title }: ProjectsSectionProps) => {
                 {visibleProjects.map((project) => (
                     <div
                         key={project.id}
-                        className="bg-white border border-gray-100 rounded-2xl overflow-hidden flex sm:flex-row flex-col shadow-sm hover:shadow-md transition-shadow"
+                        className="bg-white rounded-2xl flex sm:flex-row flex-col shadow-sm hover:shadow-md transition-shadow"
                     >
-                        <div className="xl:w-[300px] sm:min-w-[280px] w-full h-[300px] relative flex-shrink-0 bg-gray-300">
+                        <div className="xl:w-[300px] sm:w-[240px] sm:h-auto w-full h-[300px]  bg-gray-300 flex justify-center items-center"
+                        >
                             {project.groups?.events?.poster_path ? (
-                                <Image
-                                    src={handleGetUrl(project.groups.events.poster_path)}
-                                    alt={project.groups?.group_name || "Project thumbnail"}
-                                    fill
-                                    className="object-cover hover:scale-105 duration-300"
-                                    priority={false}
-                                />
+                                <div className="xl:w-70 xl:h-70 sm:w-50 sm:h-50 w-60 h-60 rounded-full overflow-hidden border-4 border-white relative  flex items-center justify-center cursor-pointer bg-gray-800">
+                                    <Image
+                                        src={handleGetUrl(project.groups.events.poster_path)}
+                                        alt={project.groups?.group_name || "Project thumbnail"}
+                                        width={400}
+                                        height={400}
+                                        sizes="200px"
+                                        className="object-cover rounded-full "
+                                    />
+                                </div>
+
                             ) : (
                                 <div className="w-full h-full flex items-center justify-center bg-gray-900 text-white text-sm font-semibold tracking-wide">
                                     No image
@@ -97,6 +102,7 @@ const ProjectsSection = ({ projects, title }: ProjectsSectionProps) => {
                         </div>
 
                         <div className="flex flex-col flex-1 p-5 gap-3 min-w-0">
+
                             <div className="flex items-center gap-2 flex-wrap">
                                 <span className="text-xs font-semibold text-gray-500 uppercase break-word">
                                     {project.groups?.events?.title || "Unknown Event"}

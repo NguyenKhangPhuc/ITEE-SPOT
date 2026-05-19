@@ -389,6 +389,7 @@ export type Database = {
           company_name: string | null
           company_unit: string | null
           degree: Database["public"]["Enums"]["DEGREE"] | null
+          description: string | null
           email: string | null
           full_name: string | null
           github: string | null
@@ -405,6 +406,7 @@ export type Database = {
           company_name?: string | null
           company_unit?: string | null
           degree?: Database["public"]["Enums"]["DEGREE"] | null
+          description?: string | null
           email?: string | null
           full_name?: string | null
           github?: string | null
@@ -421,6 +423,7 @@ export type Database = {
           company_name?: string | null
           company_unit?: string | null
           degree?: Database["public"]["Enums"]["DEGREE"] | null
+          description?: string | null
           email?: string | null
           full_name?: string | null
           github?: string | null
