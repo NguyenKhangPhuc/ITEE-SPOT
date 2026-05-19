@@ -82,6 +82,21 @@ const UserTextInfoSection = ({ user, register, errors }: UserTextInfoSection) =>
                         </p>
                     )}
                 </div>
+
+            </div>
+            <div className="input-group w-full ">
+                <label className="event_input_label">About you</label>
+                <textarea
+                    autoComplete="off"
+                    placeholder="Description"
+                    className="event_input outline-none w-full placeholder:font-bold h-[80px]"
+                    {...register('description')}
+                />
+                {errors.description && (
+                    <p className="text-red-500 text-sm mt-1">
+                        {errors.description.message}
+                    </p>
+                )}
             </div>
         </>
     )
