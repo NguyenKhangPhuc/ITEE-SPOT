@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form"
 import UserTextInfoSection from "./UserTextInfoSection"
 import UserSelectionInfoSection from "./UserSelectionInfoSection"
 import UserLinkInfoSection from "./UserLinkInfoSection"
+import UserPosterSection from "./UserPosterSection"
 
 const UserProfileClient = ({ user }: { user: Profile }) => {
     const {
@@ -47,7 +48,7 @@ const UserProfileClient = ({ user }: { user: Profile }) => {
         <div className="w-full p-5 mt-5 content-main-color rounded-xl">
             <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-4">
 
-
+                <UserPosterSection user={user} />
                 <UserTextInfoSection register={register} user={user} errors={errors} />
                 <UserSelectionInfoSection register={register} errors={errors} />
                 <UserLinkInfoSection register={register} errors={errors} />

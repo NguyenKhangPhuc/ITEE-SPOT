@@ -14,6 +14,7 @@ import { eventSubmissionGradingRoute } from "./app/middleware/submission_evaluat
 import { maintenanceModeCheck } from "./app/middleware/maintenance"
 import { projectsManageRoute } from "./app/middleware/project_admin_manage_proxy"
 import { projectDetailsPendingRoute } from "./app/middleware/project_details_pending_proxy"
+import { studentRoute } from "./app/middleware/student_profile"
 
 
 export async function proxy(request: NextRequest) {
@@ -65,6 +66,9 @@ export async function proxy(request: NextRequest) {
     if (projectManageRouteCheck.status !== 200) return projectManageRouteCheck
     const projectDetailsPendingRouteCheck = await projectDetailsPendingRoute({ request, user: user.user })
     if (projectDetailsPendingRouteCheck.status !== 200) return projectDetailsPendingRouteCheck
+    const studentRouteCheck = await studentRoute({ request, user: user.user })
+    if (studentRouteCheck.status !== 200) return studentRouteCheck
+
 }
 
 export const config = {

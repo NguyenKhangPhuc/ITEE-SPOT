@@ -87,7 +87,7 @@ const NavbarMobile = ({ initialUser }: { initialUser: ProfileInsert | null }) =>
                         })}
 
 
-                        <div className="mt-6">
+                        <div className="">
                             {user ? (
                                 <button
                                     onClick={() => {
@@ -148,7 +148,7 @@ const NavigationItem = ({ item, setIsChecked, user }: NavigationItemProp) => {
     }
 
     return (
-        <div className="w-full py-4 text-lg font-medium text-start flex flex-col gap-2">
+        <div className="w-full py-1 text-lg font-medium text-start flex flex-col gap-2">
             {handleGetNavigation(item.role) &&
                 <>
                     <div className="w-full flex justify-between border-b border-white/20 cursor-pointer"
