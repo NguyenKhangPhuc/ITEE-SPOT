@@ -62,3 +62,34 @@ export async function verifySignUpAccount(verifyAccount: VerifyAccountForm) {
     }
     return { data, error }
 }
+
+export async function updateProfileAvatar({ userId, posterFile, originalPath }: { userId: string, posterFile: File | null, originalPath: string | null }) {
+    const supabase = await createClient();
+    let posterPath = null
+    if (posterFile != null) {
+        posterPath = `${userId}/${Date.now()}-${posterFile.name}`;
+
+        if (originalPath) {
+            const { error } = await supabase.storage.from('attachments').remove([originalPath])
+        }
+        const { error: storageError } = await supabase.storage.from('attachments').upload(posterPath, posterFile);
+        if (storageError) {
+            return { error: "Failed to upload to storage" }
+        }
+
+        const { error } = await supabase.from('profiles').update({ avatar_url: posterPath }).eq('id', userId)
+        if (error) {
+            return { error: "Failed to update image, please contact staff" }
+        }
+        return { error: null }
+    }
+
+    if (originalPath) {
+        const { error } = await supabase.storage.from('attachments').remove([originalPath])
+    }
+    const { error } = await supabase.from('profiles').update({ avatar_url: null }).eq('id', userId)
+    if (error) {
+        return { error: "Failed to update image, please contact staff" }
+    }
+    return { error }
+}
