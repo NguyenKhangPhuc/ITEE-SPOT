@@ -56,7 +56,6 @@ const StudentProfileClient = ({ user, userProjects }: { user: ProfileInsert, use
                     </div>
 
                     <div className="mt-20 xl:mt-4 xl:pl-28">
-                        {/* Name + Degree */}
                         <div className="flex flex-wrap items-center gap-2">
                             {user.full_name && (
                                 <h1 className="text-2xl xl:text-3xl font-bold text-slate-800 leading-tight">
@@ -78,7 +77,6 @@ const StudentProfileClient = ({ user, userProjects }: { user: ProfileInsert, use
                             </div>
                         </div>
 
-                        {/* Job Title · Company Unit · Company Name */}
                         {(user.job_title || user.company_unit || user.company_name) && (
                             <p className="mt-1 text-sm text-slate-500 flex flex-wrap items-center gap-1">
                                 {user.job_title && <span className="font-medium text-slate-600">{user.job_title}</span>}
@@ -145,7 +143,9 @@ const StudentProfileClient = ({ user, userProjects }: { user: ProfileInsert, use
             </div>
 
             <div className="w-full flex flex-col gap-5">
-                <ProjectsSection projects={userProjects} title={`${user.full_name}'s Projects`} />
+
+                {userProjects.length != 0 ? <ProjectsSection projects={userProjects} title={`${user.full_name}'s Projects`} /> :
+                    <div className="text-white/70 text-sm">No publish projects yet.</div>}
             </div>
         </div>
     )
