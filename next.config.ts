@@ -22,6 +22,12 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/storage/v1/object/public/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'supabase.ikapo.fi',
+        port: '',
+        pathname: '/storage/v1/object/public/**',
+      },
     ],
     dangerouslyAllowLocalIP: true,
   },

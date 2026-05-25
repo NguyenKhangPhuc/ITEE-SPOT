@@ -14,38 +14,46 @@ const Home = () => {
 
                     <section>
                         <h2 className="text-lg font-semibold text-color mb-2">2. Information We Collect</h2>
-                        <p>To provide a functional collaborative environment, we collect the following categories of data:</p>
+                        <p>To provide a functional collaborative environment, we collect and process the following categories of data based on our database schema:</p>
                         <ul className="list-disc ml-6 mt-3 space-y-2">
-                            <li><strong>Account Information:</strong> Email address and Name (provided via Email or GitHub authentication).</li>
-                            <li><strong>Academic Profile:</strong> University name, Degree level, and Major.</li>
-                            <li><strong>Professional Profile:</strong> Job Title, Company Name, and Company Unit.</li>
-                            <li><strong>External Identifiers:</strong> GitHub profile links and LinkedIn profile links.</li>
+                            <li><strong>Identity & Account Information:</strong> Full name, email address, and avatar URL (via GitHub or email authentication).</li>
+                            <li><strong>Academic & Professional Profile:</strong> University, degree level, major, year of study, job title, company name, and company unit.</li>
+                            <li><strong>External Identifiers:</strong> Links to GitHub and LinkedIn profiles.</li>
+                            <li><strong>Project & Content Data:</strong> Project titles, descriptions, YouTube links, and any information provided in &quot;fun facts&quot; or project files.</li>
+                            <li><strong>Technical Identifiers:</strong> Invitation records (member emails) and system logs including IP addresses (stored for a maximum of 24 hours).</li>
                         </ul>
                     </section>
 
                     <section>
-                        <h2 className="text-lg font-semibold text-color mb-2">3. Purpose of Processing</h2>
-                        <p>Data is processed strictly to facilitate the matchmaking of students with relevant projects and industry partners. We do not sell or share your data with third parties for marketing purposes.</p>
+                        <h2 className="text-lg font-semibold text-color mb-2">3. Purpose of Processing & Public Visibility</h2>
+                        <p>Data is processed strictly to facilitate the matchmaking of students with projects and industry partners. <strong>Important regarding Profile Visibility:</strong></p>
+                        <p className="mt-2">By using the platform, your professional profile and project contributions are made visible to other registered participants and authorized judges to facilitate networking and project evaluation. We do not sell or share your data with third parties for marketing purposes.</p>
                     </section>
 
                     <section>
                         <h2 className="text-lg font-semibold text-color mb-2">4. Legal Basis (GDPR)</h2>
-                        <p>We process your data based on your <strong>explicit consent</strong> provided during account creation and profile updates. You have the right to withdraw this consent at any time by deleting your profile.</p>
+                        <p>We process your data based on your <strong>explicit consent</strong> provided during account creation. For system security and log maintenance, we process data based on <strong>legitimate interests</strong>. You have the right to withdraw consent at any time by deleting your profile.</p>
+                        <p>Users are advised not to provide special sensitive personal information.</p>
                     </section>
 
                     <section>
-                        <h2 className="text-lg font-semibold text-color mb-2">5. Data Storage and Security</h2>
-                        <p>Your data is securely stored using Supabase Cloud services hosted within the European Union (EU). We implement industry-standard encryption and security protocols to protect your personal information.</p>
+                        <h2 className="text-lg font-semibold text-color mb-2">5. Data Storage and Third-Party Processors</h2>
+                        <p>To ensure high security and performance, we utilize <strong>Supabase Cloud Services</strong> (a product of Supabase, Inc.) as our primary data sub-processor for database hosting and user authentication.</p>
+                        <ul className="list-disc ml-6 mt-3 space-y-2">
+                            <li><strong>Data Location:</strong> Your personal data is hosted on servers located within the <strong>European Union (EU)</strong>.</li>
+                            <li><strong>Security Standards:</strong> Supabase provides enterprise-grade security, including AES-256 encryption for data at rest and TLS for data in transit.</li>
+                            <li><strong>Infrastructure:</strong> We leverage Supabase&apos;s Row Level Security (RLS) to maintain strict isolation of user data.</li>
+                        </ul>
                     </section>
 
                     <section>
                         <h2 className="text-lg font-semibold text-color mb-2">6. Your Rights</h2>
                         <p>Under the General Data Protection Regulation (GDPR), you have the following rights:</p>
                         <ul className="list-disc ml-6 mt-3 space-y-2">
-                            <li><strong>Access:</strong> The right to request a copy of your stored data.</li>
-                            <li><strong>Rectification:</strong> The right to update or correct inaccurate data.</li>
+                            <li><strong>Access & Portability:</strong> The right to request a copy of your stored data in a structured format.</li>
+                            <li><strong>Rectification:</strong> The right to update or correct inaccurate data at any time.</li>
                             <li><strong>Erasure:</strong> The right to request the deletion of your account (&quot;Right to be Forgotten&quot;).</li>
-                            <li><strong>Portability:</strong> The right to receive your data in a structured, machine-readable format.</li>
+                            <li><strong>Restriction:</strong> The right to object to certain processing activities.</li>
                         </ul>
                     </section>
 
@@ -59,4 +67,5 @@ const Home = () => {
         </div>
     );
 }
-export default Home
+
+export default Home;

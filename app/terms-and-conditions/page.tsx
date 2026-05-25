@@ -14,37 +14,47 @@ const Home = () => {
 
                     <section>
                         <h2 className="text-lg font-semibold text-color mb-2">2. Description of Service</h2>
-                        <p>ITEE SPOT is a collaborative tool designed to facilitate connections between students, academic staff, and industry partners within the Faculty of Information Technology and Electrical Engineering (ITEE).</p>
+                        <p>ITEE SPOT is a collaborative platform designed to manage events, hackathons, and project matchmaking. It facilitates connections between students, academic staff, and industry partners within the Faculty of Information Technology and Electrical Engineering (ITEE) through group formation and project showcases.</p>
                     </section>
 
                     <section className="flex flex-col gap-5">
                         <h2 className="text-lg font-semibold text-color mb-2">3. User Registration and Access</h2>
-                        <p>Users may register via Email or GitHub. You are responsible for maintaining the confidentiality of your account and for all activities that occur under your account. </p>
-                        <p>Users, who have registered for specific events organised by ITEE are invited to the platform. Hence the use is by invitation only. Access is managed by the platform administrator and access typically given for a three-month period to encourage participants to return to the shared materials and potential further collaboration.</p>
+                        <p>Users may register via Email or GitHub authentication. Access is primarily managed by invitation. By registering, you are responsible for maintaining the confidentiality of your account and all activities (such as project submissions or group interactions) that occur under your profile.</p>
+                        <p>Access is typically granted for a specific period (e.g., three months) related to the event lifecycle to encourage participants to collaborate and finalize shared materials. The administrator reserves the right to manage or revoke access based on event requirements.</p>
                     </section>
 
                     <section>
-                        <h2 className="text-lg font-semibold text-color mb-2">4. Data Collection & Privacy</h2>
-                        <p>Any personal data you provide through the platform registration form or profile settings (such as name, email, university, and professional links) is collected solely for the purpose of connecting you with relevant IKAPO student projects and potential collaboration opportunities.</p>
+                        <h2 className="text-lg font-semibold text-color mb-2">4. User Content and Public Visibility</h2>
+                        <p>By using the platform, you agree that:</p>
+                        <ul className="list-disc ml-6 mt-3 space-y-2">
+                            <li><strong>Profile Display:</strong> Your professional details (name, university, job title, and social links) will be visible to other registered participants and judges.</li>
+                            <li><strong>Project Submissions:</strong> Content uploaded to the platform, including project descriptions, GitHub repositories, YouTube links, and files, will be shared for evaluation and collaborative purposes.</li>
+                            <li><strong>Conduct:</strong> You are solely responsible for the accuracy and legality of the content you post (including &quot;fun facts&quot; and project materials).</li>
+                        </ul>
                     </section>
 
                     <section>
-                        <h2 className="text-lg font-semibold text-color mb-2">5. Third-Party Links</h2>
-                        <p>This tool may contain links to external websites or services (e.g., GitHub, LinkedIn). We are not responsible for the content, privacy practices, or availability of any third-party sites. Accessing third-party links is at your own risk.</p>
+                        <h2 className="text-lg font-semibold text-color mb-2">5. Data Privacy</h2>
+                        <p>We take your privacy seriously. Personal data collection is limited to what is necessary for event operations (matchmaking, group management, and judging). Please refer to our <strong>Privacy Policy</strong> for detailed information on how we handle your data and your rights under GDPR.</p>
                     </section>
 
                     <section>
-                        <h2 className="text-lg font-semibold text-color mb-2">6. Modifications</h2>
-                        <p>We reserve the right to update or modify these Terms & Conditions at any time without prior notice. Changes will take effect immediately upon being posted. Your continued use of the tool after modifications constitutes acceptance of the updated terms.</p>
+                        <h2 className="text-lg font-semibold text-color mb-2">6. Third-Party Links</h2>
+                        <p>ITEE SPOT integrates with and provides links to external services such as GitHub, LinkedIn, and YouTube. We are not responsible for the content, privacy policies, or practices of these third-party services. Accessing these links is at your own risk.</p>
                     </section>
 
                     <section>
-                        <h2 className="text-lg font-semibold text-color mb-2">7. Governing Law</h2>
-                        <p>These Terms & Conditions shall be governed by and construed in accordance with the laws of Finland. Any disputes arising from the use of this tool shall be subject to the jurisdiction of the courts of Finland.</p>
+                        <h2 className="text-lg font-semibold text-color mb-2">7. Modifications</h2>
+                        <p>We reserve the right to update or modify these Terms & Conditions at any time. Continued use of the platform following any changes constitutes your acceptance of the new Terms.</p>
+                    </section>
+
+                    <section>
+                        <h2 className="text-lg font-semibold text-color mb-2">8. Governing Law</h2>
+                        <p>These Terms & Conditions are governed by the laws of Finland. Any disputes arising from the use of this tool shall be subject to the jurisdiction of the courts of Finland.</p>
                     </section>
 
                     <section className="pt-6 border-t border-color/20">
-                        <h2 className="text-lg font-semibold text-color mb-2">8. Contact</h2>
+                        <h2 className="text-lg font-semibold text-color mb-2">9. Contact</h2>
                         <p>If you have any questions about these Terms & Conditions, please contact the IKAPO Project at the University of Oulu:</p>
                         <p className="font-bold mt-2 text-color">hanna.saarela@oulu.fi</p>
                     </section>
@@ -54,4 +64,4 @@ const Home = () => {
     );
 }
 
-export default Home
+export default Home;
