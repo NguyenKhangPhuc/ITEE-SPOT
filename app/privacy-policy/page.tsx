@@ -38,11 +38,20 @@ const Home = () => {
 
                     <section>
                         <h2 className="text-lg font-semibold text-color mb-2">5. Data Storage and Third-Party Processors</h2>
-                        <p>To ensure high security and performance, we utilize <strong>Supabase Cloud Services</strong> (a product of Supabase, Inc.) as our primary data sub-processor for database hosting and user authentication.</p>
+                        <p>Your data is securely stored and processed using infrastructure provided by <strong>CSC – IT Center for Science (Finland).</strong> All data is hosted within the European Union (EU). We ensure that Data Processing Agreements (DPA) are in place with these providers to guarantee your data is handled in compliance with GDPR.&quot;</p>
                         <ul className="list-disc ml-6 mt-3 space-y-2">
-                            <li><strong>Data Location:</strong> Your personal data is hosted on servers located within the <strong>European Union (EU)</strong>.</li>
-                            <li><strong>Security Standards:</strong> Supabase provides enterprise-grade security, including AES-256 encryption for data at rest and TLS for data in transit.</li>
+                            <li>
+                                <strong>Data Location:</strong> All personal data is hosted on servers located within the
+                                <strong> European Union (EU)</strong>, specifically utilizing CSC&apos;s Finnish infrastructure to self-hosting Supabase.
+                            </li>
+                            <li>
+                                <strong>Special Data Handling:</strong> Consistent with CSC requirements, we do not process
+                                special categories of personal data (sensitive data) unless explicitly agreed upon.
+                            </li>
+                            <li><strong>Security Measures:</strong> We implement industry-standard security protocols, including <strong>TLS/SSL encryption</strong> for data in transit and restricted access at the infrastructure level.</li>
                             <li><strong>Infrastructure:</strong> We leverage Supabase&apos;s Row Level Security (RLS) to maintain strict isolation of user data.</li>
+                            <li><strong>Data Isolation:</strong> We utilize <strong>Row Level Security (RLS)</strong> within our self-hosted database to ensure that users can only access their own authorized data.</li>
+                            <li><strong>Maintenance:</strong> Regular security patches and updates are applied to the self-hosted environment to protect against vulnerabilities.</li>
                         </ul>
                     </section>
 
