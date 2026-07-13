@@ -17,6 +17,7 @@ const ProjectsClient = ({ projects, events }: { projects: Array<ProjectsSummaryE
             events: []
         }
     });
+    console.log(currentProjects)
     const generalProject = currentProjects?.filter((pro) => {
         if (pro.project_awards[0] == null) {
             return true

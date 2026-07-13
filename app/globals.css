@@ -3,6 +3,64 @@
 @import '../styles/_keyframe-animations.scss';
 @import "tailwindcss";
 
+@theme {
+  --color-surface-variant: #373433;
+  --color-on-secondary-container: #a3bab4;
+  --color-inverse-on-surface: #33302f;
+  --color-tertiary-fixed: #ffe257;
+  --color-secondary-fixed: #d0e7e1;
+  --color-on-tertiary-fixed-variant: #534600;
+  --color-surface-container-high: #2c2928;
+  --color-surface-container: #211f1e;
+  --color-on-error-container: #ffdad6;
+  --color-on-tertiary: #393000;
+  --color-surface-tint: #00e0b3;
+  --color-background: #151312;
+  --color-surface-dim: #151312;
+  --color-on-background: #e8e1df;
+  --color-on-secondary: #203430;
+  --color-on-primary-container: #00725a;
+  --color-on-surface-variant: #b9cbc2;
+  --color-primary-fixed-dim: #00e0b3;
+  --color-tertiary-container: #ffe150;
+  --color-secondary-container: #364b46;
+  --color-primary-container: #00ffcc;
+  --color-on-tertiary-fixed: #211b00;
+  --color-tertiary: #fffeff;
+  --color-surface-bright: #3b3937;
+  --color-primary: #fdfffc;
+  --color-on-primary-fixed-variant: #00513f;
+  --color-surface-container-highest: #373433;
+  --color-surface-container-lowest: #100e0d;
+  --color-on-tertiary-container: #746300;
+  --color-on-primary-fixed: #002118;
+  --color-surface-container-low: #1d1b1a;
+  --color-secondary-fixed-dim: #b5cbc5;
+  --color-secondary: #b5cbc5;
+  --color-outline: #83958d;
+  --color-inverse-surface: #e8e1df;
+  --color-on-error: #690005;
+  --color-error-container: #93000a;
+  --color-primary-fixed: #24ffcd;
+  --color-tertiary-fixed-dim: #e2c635;
+  --color-on-primary: #00382b;
+  --color-surface: #151312;
+  --color-on-surface: #e8e1df;
+  --color-on-secondary-fixed: #0a1f1b;
+  --color-error: #ffb4ab;
+  --color-inverse-primary: #006b54;
+  --color-outline-variant: #3a4a44;
+  --color-on-secondary-fixed-variant: #364b46;
+  --color-mint: #00e0b3;
+
+  --font-montserrat: 'Montserrat', sans-serif;
+  --font-inter: 'Inter', sans-serif;
+
+  --duration-300: 300ms;
+  --duration-500: 500ms;
+  --duration-700: 700ms;
+}
+
 
 .font-roboto-mono {
   font-family: 'Roboto Mono', monospace;
@@ -283,6 +341,16 @@
 .duration-300 {
   transition: all;
   transition-duration: 300ms;
+}
+
+.duration-500 {
+  transition: all;
+  transition-duration: 500ms;
+}
+
+.duration-700 {
+  transition: all;
+  transition-duration: 700ms;
 }
 
 
