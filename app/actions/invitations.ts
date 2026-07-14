@@ -66,3 +66,13 @@ export async function rejectInvitation({ invitationId }: { invitationId: string 
 
     return { data, error }
 }
+
+
+export const getPendingGroupInvitationsById = async (groupId: string) => {
+    const supabase = await createClient();
+    const { data, error } = await supabase.from('invitation').select('*').eq('group_id', groupId).eq('invitation_status', INVITATION_STATUS.PENDING)
+    if (error) {
+        return { error: 'Failed to find the pending invitations' }
+    }
+    return { data, error }
+}
