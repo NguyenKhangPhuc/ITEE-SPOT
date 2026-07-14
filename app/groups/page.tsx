@@ -1,23 +1,34 @@
-import { getUser } from "@/app/actions/authentication";
-import { getEventChallenges } from "@/app/actions/event_challenges";
-import { getSingleEvent } from "@/app/actions/events";
-import { getUserGroups } from "../actions/groups";
-import { Event } from "../types/event";
-import GroupsClient from "./GroupsClient";
+import { getUserGroups } from "../actions/groups"
+import GroupsClient from "./GroupsClient"
+import BackButton from "@/app/components/BackButton"
 
-
-export default async function Home() {
-    const { data, error } = await getUserGroups()
-    if (error) {
-        return <div className="w-full flex items-center justify-center text-red-500">Something went wrong:  {error.message}</div>;
-    }
-
+/**
+ * PURPOSE:
+ * Server Component that acts as the entry point for the User's Registered Groups dashboard.
+ * It queries all groups associated with the active student session and delegates rendering to GroupsClient.
+ *
+ * CONTEXT/PARENT FILE:
+ * Entry route at 'app/groups/page.tsx'.
+ *
+ * INPUTS / PARAMETERS:
+ * None.
+ */
+export default async function GroupsPage() {
+  const { data: groups, error } = await getUserGroups()
+  if (error) {
     return (
-        <div className="w-full min-h-screen screen-bg font-roboto-mono">
-            <div className="max-w-7xl mx-auto px-6 flex flex-col p-5 ">
-                <div className="text-2xl font-bold text-color">Your registed groups</div>
-                <GroupsClient groupsWithEvents={data ?? []} />
-            </div>
-        </div>
-    );
+      <div className="w-full min-h-screen bg-[#151312] flex items-center justify-center font-mono text-red-400 text-sm">
+        {error.message}
+      </div>
+    )
+  }
+
+  return (
+    <div className="w-full min-h-screen bg-[#151312] text-[#e8e1df] font-mono">
+      <div className="max-w-7xl mx-auto px-6 md:px-16 py-24 flex flex-col gap-6">
+        <BackButton />
+        <GroupsClient groupsWithEvents={groups ?? []} />
+      </div>
+    </div>
+  )
 }

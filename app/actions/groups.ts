@@ -1,6 +1,7 @@
 'use server'
 import { SubmissionInsert } from "../types/submission";
 import { createClient } from "../utils/supabase/server";
+import { UnifiedGroup } from "../types/group";
 
 export async function getUserGroups() {
     const supabase = await createClient();
@@ -12,10 +13,25 @@ export async function getUserGroups() {
     }
 
     const { data, error } = await supabase.from('groups')
-        .select('*, group_members!inner (member_id), group_challenge(id, challenge_id, event_challenges (company_name, title)), events(*, event_awards(*)), all_members:group_members (member_id, profiles (*))')
+        .select(`
+            id,
+            group_name,
+            short_description,
+            poster_path,
+            created_at,
+            events (title, event_awards (*)),
+            members:group_members (member_id, profiles (full_name, email, degree, programme)),
+            challenges:group_challenge (id, challenge_id, event_challenges (company_name, title)),
+            group_members!inner (member_id)
+        `)
         .eq('group_members.member_id', user.user.id)
+        .returns<UnifiedGroup[]>()
 
-    return { data, error }
+    if (error || !data) {
+        return { data: null, error: error ? { message: error.message } : null }
+    }
+
+    return { data, error: null }
 }
 
 export async function getSingleGroup({ groupId }: { groupId: string }) {
@@ -40,10 +56,24 @@ export async function getEventGroups(eventId: string) {
     const supabase = await createClient();
 
     const { data, error } = await supabase.from('groups')
-        .select('*, group_members(member_id, profiles (*)), group_challenge(challenge_id, event_challenges (company_name, title))')
+        .select(`
+            id,
+            group_name,
+            short_description,
+            poster_path,
+            created_at,
+            events (title),
+            members:group_members (member_id, profiles (full_name, email, degree, programme)),
+            challenges:group_challenge (id, challenge_id, event_challenges (company_name, title))
+        `)
         .eq('event_id', eventId)
+        .returns<UnifiedGroup[]>()
 
-    return { data, error }
+    if (error || !data) {
+        return { data: null, error: error ? { message: error.message } : null }
+    }
+
+    return { data, error: null }
 }
 
 export async function updateGroupPosterPath({ groupId, avatarFile, originalPath }: { groupId: string, avatarFile: File | null, originalPath: string | null }) {
