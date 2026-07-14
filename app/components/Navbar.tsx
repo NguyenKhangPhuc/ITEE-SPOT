@@ -159,7 +159,7 @@ const NavBar = ({ initialUser }: { initialUser: ProfileInsert | null }) => {
 
                 <div className="mt-6 flex items-center gap-3 text-[10px] font-mono text-[#83958d]">
                     <div className={`w-2 h-2 rounded-full animate-pulse ${user ? 'bg-[#00e0b3]' : 'bg-red-500'}`}></div>
-                    {user ? `Auth: ${user.role.toUpperCase()}` : 'Auth: Offline'}
+                    {user ? `Auth: ${user?.role!.toUpperCase()}` : 'Auth: Offline'}
                 </div>
             </div>
         </nav>

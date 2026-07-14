@@ -20,7 +20,7 @@ export interface ProjectsSummary {
     project_status: "pending" | "rejected" | "accepted" | null;
     project_title: string | null;
     short_description: string | null;
-    top_priority: number | null;
+    top_priority?: number | null;
     youtube_link: string | null;
 
     groups: {

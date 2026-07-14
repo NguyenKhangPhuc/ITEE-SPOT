@@ -16,10 +16,10 @@ import Image from "next/image"
  */
 export default function TeamSection() {
   const teamMembers = [
-    { name: "Hanna", role: "Founder // Lead_Vision", image: "/team/hanna.jpg" },
-    { name: "Kiyoko", role: "Lead // Architecture", image: "/team/kiyoko.png" },
-    { name: "Phuc", role: "Lead // Interface_UX", image: "/team/phuc.png" },
-    { name: "Marina", role: "Ops // Logistics", image: "/team/marina.png" }
+    { name: "Hanna", role: "Development Manager", image: "/team/hanna.jpg" },
+    { name: "Kiyoko", role: "Project Specialist", image: "/team/kiyoko.png" },
+    { name: "Phuc", role: "Trainee", image: "/team/phuc.png" },
+    { name: "Marina", role: "Trainee", image: "/team/marina.png" }
   ]
 
   return (

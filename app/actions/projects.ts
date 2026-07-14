@@ -51,7 +51,7 @@ export async function getAllProjects() {
 
     const { data, error } = await supabase
         .from('projects')
-        .select('id, group_id, group_challenge_id, project_title,project_status, groups (group_name, short_description, event_id, events (*), group_members (member_id, profiles (*)))')
+        .select('*, groups (group_name, short_description,poster_path, event_id, events (*), group_members (member_id, profiles (*)))')
         .order('created_at', { ascending: false })
 
     if (error) {

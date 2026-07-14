@@ -1517,7 +1517,29 @@ More comprehensive version at shenanigans.shoghisimon.ca/collection/css-rain-bg/
     transform: rotate(5deg);
   }
 
-  100% {
-    transform: scale(1) rotate(0deg);
-  }
 }
+
+/* Custom Global Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #151312;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2c2928;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #00e0b3;
+}
+
+/* Firefox support */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #2c2928 #151312;
+}
