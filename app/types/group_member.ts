@@ -4,4 +4,5 @@ export interface RegisterGroupMember {
     challenges: Array<string>;
     event_id: string;
     user_id: string;
+    short_description: string;
 }

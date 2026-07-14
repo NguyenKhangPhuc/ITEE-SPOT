@@ -37,6 +37,7 @@ export async function insertGroupMembers(registerGroupMemberData: RegisterGroupM
 
     const { data: createdGroup, error: groupError } = await supabase.from('groups').insert([{
         group_name: registerGroupMemberData.title,
+        short_description: registerGroupMemberData.short_description,
         event_id: registerGroupMemberData.event_id,
     }]).select().single()
 
