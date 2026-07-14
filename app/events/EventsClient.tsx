@@ -10,6 +10,7 @@ import EventsSidebar from "./components/EventsSidebar"
 import EventCard from "./components/Event"
 import Pagination from "../helpers/Pagination"
 import { tw } from "../constants/design-tokens"
+import BackButton from "../components/BackButton"
 
 /**
  * PURPOSE:
@@ -158,6 +159,11 @@ export default function EventsClient({ events }: { events: EventInsert[] }) {
 
   return (
     <div className={`w-full min-h-screen ${tw.bg.background} ${tw.text.onBackground} font-montserrat overflow-x-hidden py-24 px-6 md:px-16`}>
+      {/* Back Button */}
+      <div className="max-w-7xl mx-auto">
+        <BackButton />
+      </div>
+
       {/* Title Banner */}
       <EventsHeader />
 
