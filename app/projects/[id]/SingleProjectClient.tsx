@@ -11,8 +11,8 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import YoutubeVideo from "@/app/components/YoutubeVideo";
 import FixedYoutubeVideo from "@/app/components/FixedYoutubeVideo";
-import SubmissionFiles from "@/app/submission/[groupId]/read-only/SubmissionFiles";
 import Link from "next/link";
+import SubmissionFiles from "@/app/submission/[groupId]/read-only/components/SubmissionFiles";
 const SingleProjectClient = ({ project }: { project: SingleProject }) => {
     const supabase = createClient();
 

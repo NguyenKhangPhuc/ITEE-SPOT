@@ -13,6 +13,7 @@ export type GroupSubmissions = {
     id: string;
     short_description: string | null;
     youtube_link: string | null;
+    title: string | null
     group_challenge: {
         id: string;
         event_challenges: {

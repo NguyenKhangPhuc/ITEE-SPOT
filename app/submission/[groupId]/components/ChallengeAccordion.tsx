@@ -23,8 +23,8 @@ import {
 } from "@/app/constants"
 import SubmissionFormFields from "./SubmissionFormFields"
 import SubmissionPreview from "./SubmissionPreview"
-import SubmissionFileSection from "../SubmissionFileSection"
 import { tw } from "@/app/constants/design-tokens"
+import SubmissionFileSection from "./SubmissionFileSection"
 
 interface ChallengeAccordionProps {
   challenge: EventChallenge

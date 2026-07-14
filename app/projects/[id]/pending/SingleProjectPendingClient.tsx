@@ -9,8 +9,8 @@ import FixedYoutubeVideo from "@/app/components/FixedYoutubeVideo";
 import { useNotification } from "@/app/context/NotificationContext";
 import { useLoader } from "@/app/context/LoaderContext";
 import { updateProjectStatus } from "@/app/actions/projects";
-import SubmissionFiles from "@/app/submission/[groupId]/read-only/SubmissionFiles";
 import Link from "next/link";
+import SubmissionFiles from "@/app/submission/[groupId]/read-only/components/SubmissionFiles";
 const SingleProjectPendingClient = ({ project }: { project: SingleProject }) => {
     const { showNotification } = useNotification()
     const { setIsOpenLoader } = useLoader()
