@@ -213,4 +213,121 @@ body,
       border-radius: 2px;
     }
   }
-}
+}
+
+/* Global simple-editor-wrapper retheming for dark terminal view */
+.simple-editor-wrapper {
+  height: auto !important;
+  background-color: #151312 !important;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  /* Retheme the toolbar container */
+  .sticky.bg-white {
+    background-color: #1d1b1a !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+    padding: 0.25rem 0.5rem !important;
+  }
+
+  /* Retheme toolbar buttons and icons */
+  button {
+    color: #b9cbc2 !important;
+
+    svg {
+      fill: #b9cbc2 !important;
+      color: #b9cbc2 !important;
+    }
+
+    &:hover {
+      background-color: rgba(0, 224, 179, 0.1) !important;
+      color: #00e0b3 !important;
+
+      svg {
+        fill: #00e0b3 !important;
+        color: #00e0b3 !important;
+      }
+    }
+
+    &[data-active="true"] {
+      background-color: rgba(0, 224, 179, 0.15) !important;
+      color: #00e0b3 !important;
+
+      svg {
+        fill: #00e0b3 !important;
+        color: #00e0b3 !important;
+      }
+    }
+  }
+
+  /* Retheme the editor input container */
+  .simple-editor-content {
+    background-color: #151312 !important;
+    min-height: 200px;
+    max-height: 400px;
+    overflow-y: auto;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+
+    .tiptap.ProseMirror.simple-editor {
+      min-height: 180px;
+      padding: 1.5rem !important;
+      outline: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: #b9cbc2;
+      background-color: #151312 !important;
+      text-align: left;
+
+      p {
+        margin-bottom: 0.5rem;
+        color: #b9cbc2;
+      }
+
+      h1, h2, h3, h4, h5, h6 {
+        color: #e8e1df;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 700;
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
+      }
+
+      blockquote {
+        border-left: 3px solid #00e0b3;
+        margin: 1rem 0;
+        padding: 0.5rem 1rem;
+        background-color: rgba(0, 224, 179, 0.05);
+        color: #b9cbc2;
+        font-style: italic;
+      }
+
+      code {
+        background-color: #1d1b1a;
+        color: #00e0b3;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 3px;
+        padding: 0.1rem 0.3rem;
+        font-family: 'Roboto Mono', monospace;
+      }
+    }
+  }
+
+  /* Retheme the word/character counter at the bottom */
+  .character-count {
+    background-color: #1d1b1a !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    color: #83958d !important;
+    padding: 0.5rem 1rem !important;
+    position: static !important;
+    display: flex;
+    justify-content: flex-end;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 10px;
+
+    svg {
+      color: #00e0b3 !important;
+    }
+  }
+}
+

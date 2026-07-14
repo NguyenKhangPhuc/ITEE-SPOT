@@ -1,7 +1,7 @@
 'use client'
 
+import { RegisterGroupMember } from "@/app/types/group_member"
 import { useWatch, Control } from "react-hook-form"
-import { RegisterForm } from "../RegisterClient"
 
 /**
  * PURPOSE:
@@ -17,7 +17,7 @@ import { RegisterForm } from "../RegisterClient"
  * - control (Control<RegisterForm>, Required): The react-hook-form control object forwarded
  *   from the parent form, used to subscribe to the title field value.
  */
-export default function GroupNameDisplay({ control }: { control: Control<RegisterForm> }) {
+export default function GroupNameDisplay({ control }: { control: Control<RegisterGroupMember> }) {
   const title = useWatch({ name: "title", control })
 
   return (

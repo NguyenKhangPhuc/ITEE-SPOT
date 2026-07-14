@@ -1,25 +1,46 @@
 'use client'
 
-import { Control, useWatch } from "react-hook-form"
-import { SHORT_DESCRIPTION_LENGTH } from "../constants"
+import { useWatch, Control, FieldValues, Path } from "react-hook-form"
 
-const WordCounter = ({ control }: { control: Control }) => {
-    const descriptionValue = useWatch({ name: "short_description", control })
-    return (
-        <div style={{ textAlign: "right", marginTop: "5px", fontSize: "14px" }}>
-            <span
-                style={{
-                    color:
-                        (descriptionValue?.length ?? 0) >= SHORT_DESCRIPTION_LENGTH
-                            ? "red"
-                            : "gray",
-                }}
-            >
-                {descriptionValue?.length ?? 0}
-            </span>
-            /{SHORT_DESCRIPTION_LENGTH} Characters
-        </div>
-    )
+interface WordCounterProps<T extends FieldValues> {
+  control: Control<T>
+  fieldName: Path<T>
+  limit: number
 }
 
-export default WordCounter
+/**
+ * PURPOSE:
+ * A globally reusable, type-safe character counter component. It hooks into the react-hook-form
+ * state via useWatch to read the target field's value live, rendering the current character count
+ * against the configured limit. It utilizes react-hook-form generics to ensure the field name
+ * belongs to the form type.
+ *
+ * CONTEXT/PARENT FILE:
+ * Placed in 'app/components/WordCounter.tsx' to be shared between registration,
+ * group settings, and submission forms.
+ *
+ * INPUTS / PARAMETERS:
+ * - control (Control<T>, Required): The react-hook-form control object.
+ * - fieldName (Path<T>, Required): The generic key/path of the watched form field.
+ * - limit (number, Required): The maximum character limit allowed.
+ */
+export default function WordCounter<T extends FieldValues>({
+  control,
+  fieldName,
+  limit,
+}: WordCounterProps<T>) {
+  const value = useWatch({ name: fieldName, control })
+  const length = (value as string | undefined)?.length ?? 0
+  const isOver = length >= limit
+
+  return (
+    <div className="flex justify-end mt-1">
+      <span className={`text-[10px] font-mono ${isOver ? 'text-red-400' : 'text-[#83958d]'}`}>
+        {length}
+      </span>
+      <span className="text-[10px] font-mono text-[#83958d]">
+        /{limit} characters
+      </span>
+    </div>
+  )
+}

@@ -2,14 +2,15 @@
 
 import { Control, FieldErrors, UseFormRegister } from "react-hook-form"
 import { User } from "@supabase/supabase-js"
-import { RegisterForm } from "../RegisterClient"
-import WordCounter, { SHORT_DESCRIPTION_LENGTH } from "./WordCounter"
+import WordCounter from "@/app/components/WordCounter"
+import { SHORT_DESCRIPTION_LENGTH } from "@/app/constants"
 import { tw } from "@/app/constants/design-tokens"
+import { RegisterGroupMember } from "@/app/types/group_member"
 
 interface IdentitySectionProps {
-  register: UseFormRegister<RegisterForm>
-  errors: FieldErrors<RegisterForm>
-  control: Control<RegisterForm>
+  register: UseFormRegister<RegisterGroupMember>
+  errors: FieldErrors<RegisterGroupMember>
+  control: Control<RegisterGroupMember>
   user: User
   otherMembers: number[]
 }
@@ -85,7 +86,7 @@ export default function IdentitySection({
             })}
           />
           {/* Isolated character counter — only this re-renders on typing */}
-          <WordCounter control={control} />
+          <WordCounter control={control} fieldName="short_description" limit={SHORT_DESCRIPTION_LENGTH} />
           {errors.short_description && (
             <p className="text-red-400 text-[10px] font-mono mt-0.5">{errors.short_description.message}</p>
           )}

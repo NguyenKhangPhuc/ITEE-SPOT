@@ -1,5 +1,6 @@
 'use client'
 
+// Trigger rebuild to update constants
 import { getPublicFileURL } from "@/app/actions/file_url"
 import { saveStudentGroupProject } from "@/app/actions/projects"
 import WordCounter from "@/app/components/WordCounter"

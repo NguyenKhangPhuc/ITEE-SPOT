@@ -56,7 +56,7 @@ export default function GroupActionButtons({
 
         {/* Warning Note */}
         <p className="text-[8px] font-mono text-[#83958d] text-center uppercase tracking-wider">
-          Warning: Irreversible disconnect from local cluster.
+          Warning: Irreversible disconnect from your group
         </p>
       </div>
     </motion.div>

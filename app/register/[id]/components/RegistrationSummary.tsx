@@ -5,13 +5,13 @@ import Link from "next/link"
 import Image from "next/image"
 import { useWatch, Control } from "react-hook-form"
 import { Event } from "@/app/types/event"
-import { RegisterForm } from "../RegisterClient"
 import GroupNameDisplay from "./GroupNameDisplay"
 import { tw } from "@/app/constants/design-tokens"
+import { RegisterGroupMember } from "@/app/types/group_member"
 
 interface RegistrationSummaryProps {
   event: Event
-  control: Control<RegisterForm>
+  control: Control<RegisterGroupMember>
   initialMemberCount: number
   getUrl: (path: string) => string
 }
@@ -109,8 +109,7 @@ export default function RegistrationSummary({
           {/* Warning notice */}
           <div className="border border-[#00e0b3]/10 bg-[#00e0b3]/5 rounded-sm p-3 mt-2">
             <p className="text-[9px] font-mono text-[#83958d] leading-relaxed">
-              [WARNING]: Group registration requires all member nodes to confirm via secure link
-              within 72 hours of initialization. Fail to authenticate results in record purging.
+              [WARNING]: Group registration requires all member to be registered on the ITEE SPOT platform before getting included in a group
             </p>
           </div>
         </div>

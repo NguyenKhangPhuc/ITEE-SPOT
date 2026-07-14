@@ -1,83 +1,76 @@
-import { ProjectFileExtended } from '@/app/types/project_files';
-import { SubmissionFileExtended } from '@/app/types/submission_files';
-import ClearIcon from '@mui/icons-material/Clear';
-import DownloadIcon from '@mui/icons-material/Download';
-import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
+'use client'
+
+import { ProjectFileExtended } from '@/app/types/project_files'
+import { SubmissionFileExtended } from '@/app/types/submission_files'
+import { tw } from '@/app/constants/design-tokens'
 
 interface SubmissionFileSectionProps {
-    handleCatchFiles: (file: File) => void,
-    submittedFiles: SubmissionFileExtended[] | ProjectFileExtended[],
-    handleDeleteFiles: (fileIndex: number) => void,
-    handleDownloadFile: (file: SubmissionFileExtended | ProjectFileExtended) => Promise<void>
+  handleCatchFiles: (file: File) => void
+  submittedFiles: Array<SubmissionFileExtended | ProjectFileExtended>
+  handleDeleteFiles: (fileIndex: number) => void
+  handleDownloadFile: (file: SubmissionFileExtended | ProjectFileExtended) => Promise<void>
 }
-const SubmissionFileSection = ({
-    handleCatchFiles, submittedFiles, handleDeleteFiles, handleDownloadFile
-}: SubmissionFileSectionProps) => {
-    return (
-        <>
-            <div className="relative w-full h-32 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center hover:bg-gray-50 transition-colors group">
-                <div className="text-center pointer-events-none">
-                    <p className="text-gray-600">
-                        <span className="font-semibold">Paste or drop a file here</span> or click to upload
-                    </p>
-                    <p className="text-xs text-gray-400">PDF, WORD, PPTX (max. 5MB)</p>
-                </div>
 
-                <input
-                    type="file"
-                    multiple
-                    className="absolute inset-0 opacity-0 cursor-pointer"
-                    accept=".pdf, .doc, .docx, .ppt, .pptx"
-                    onChange={(e) => {
-                        const files = e.target.files;
-                        if (files && files.length > 0) {
-                            handleCatchFiles(files[0]);
-                        }
-                    }}
-                />
+/**
+ * PURPOSE:
+ * Displays the list of uploaded project/submission files. Each file is rendered as a dark,
+ * compact card with download links and a delete option, styled following the dark terminal theme.
+ *
+ * CONTEXT/PARENT FILE:
+ * Extracted from 'app/submission/[groupId]/SubmissionClient.tsx' and used within
+ * 'app/submission/[groupId]/components/ChallengeAccordion.tsx'.
+ *
+ * INPUTS / PARAMETERS:
+ * - handleCatchFiles ((file: File) => void, Required): Callback to add a newly uploaded file.
+ * - submittedFiles (Array, Required): List of already submitted/staged file records.
+ * - handleDeleteFiles ((fileIndex: number) => void, Required): Callback to remove a file.
+ * - handleDownloadFile ((file) => Promise<void>, Required): Callback to download/view the file.
+ */
+export default function SubmissionFileSection({
+  submittedFiles,
+  handleDeleteFiles,
+  handleDownloadFile,
+}: SubmissionFileSectionProps) {
+  return (
+    <>
+      {submittedFiles && submittedFiles.length > 0 && (
+        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3 w-full">
+          {submittedFiles.map((fileItem, index) => (
+            <div
+              key={index}
+              onClick={() => handleDownloadFile(fileItem)}
+              className={`${tw.bg.surfaceContainerHigh} ${tw.border.whiteSubtle} border rounded-sm p-4 relative flex flex-col items-center justify-center gap-2 hover:border-[#00e0b3]/30 transition-all duration-300 group cursor-pointer`}
+            >
+              {/* Delete Button */}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleDeleteFiles(index)
+                }}
+                className="absolute -top-1.5 -right-1.5 bg-red-500/20 hover:bg-red-500 text-red-400 hover:text-white rounded-full p-0.5 shadow-lg border border-red-500/30 transition-colors z-10 cursor-pointer flex items-center justify-center"
+              >
+                <span className="material-symbols-outlined text-xs">close</span>
+              </button>
+
+              {/* Download Indicator Overlay */}
+              <span className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 text-[#00e0b3] transition-opacity duration-300 material-symbols-outlined text-xs">
+                download
+              </span>
+
+              {/* File Icon */}
+              <span className="material-symbols-outlined text-xl text-[#83958d] group-hover:text-[#00e0b3] transition-colors">
+                insert_drive_file
+              </span>
+
+              {/* Filename */}
+              <span className="text-[10px] font-mono text-center text-[#b9cbc2] break-all line-clamp-2 px-1">
+                {fileItem.original_file_name}
+              </span>
             </div>
-            {submittedFiles?.length > 0 && (
-
-                <div className="grid lg:grid-cols-7 md:grid-cols-5 grid-cols-3 gap-4 w-full">
-                    {submittedFiles.map((fileItem, index) => (
-                        <div
-                            key={index}
-                            onClick={() => handleDownloadFile(fileItem)}
-                            className="cursor-pointer relative h-30 min-w-full flex flex-col items-center justify-center p-2 bg-white rounded-md border border-gray-100 shadow-xl shadow-black/30 hover:scale-102 group duration-300 cursor"
-                        >
-                            <button
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleDeleteFiles(index);
-                                }}
-                                className="cursor-pointer absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-lg hover:bg-red-600 transition-colors z-10"
-                                type="button"
-                            >
-                                <ClearIcon />
-                            </button>
-
-                            <button
-
-                                className="absolute top-0 left-0 opacity-0 group-hover:opacity-100 text-black transition-opacity duration-300"
-                                type="button"
-                            >
-                                <DownloadIcon sx={{ fontSize: '18px' }} />
-                            </button>
-
-                            <div className="text-gray-400 mb-1">
-                                <InsertDriveFileIcon />
-                            </div>
-
-                            <span className="text-[13px] text-center font-medium text-black break-all line-clamp-2 px-1">
-                                {fileItem.original_file_name}
-                            </span>
-                        </div>
-                    ))}
-                </div>
-
-            )}
-        </>
-    )
+          ))}
+        </div>
+      )}
+    </>
+  )
 }
-
-export default SubmissionFileSection

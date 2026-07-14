@@ -2,13 +2,13 @@
 
 import { useWatch, Control, FieldErrors, UseFormRegister } from "react-hook-form"
 import { EventChallengeInsert } from "@/app/types/event_challenges"
-import { RegisterForm } from "../RegisterClient"
 import { tw } from "@/app/constants/design-tokens"
+import { RegisterGroupMember } from "@/app/types/group_member"
 
 interface ChallengeSectionProps {
-  register: UseFormRegister<RegisterForm>
-  errors: FieldErrors<RegisterForm>
-  control: Control<RegisterForm>
+  register: UseFormRegister<RegisterGroupMember>
+  errors: FieldErrors<RegisterGroupMember>
+  control: Control<RegisterGroupMember>
   challenges: EventChallengeInsert[]
 }
 
