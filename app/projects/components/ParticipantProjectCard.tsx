@@ -80,7 +80,7 @@ export default function ParticipantProjectCard({
         </div>
 
         {/* Inline Core Registry list */}
-        <div className="flex flex-col gap-0.5 font-mono text-[7px] tracking-wider text-[#b9cbc2]">
+        <div className="flex flex-col gap-0.5 font-mono text-[7px] tracking-wider text-[#b9cbc2] min-h-[32px]">
           {(project.groups?.group_members ?? []).slice(0, 3).map((m, idx) => (
             <div key={idx} className="flex justify-between items-center pr-2">
               <span className="truncate max-w-[120px]">{m.profiles?.full_name}</span>

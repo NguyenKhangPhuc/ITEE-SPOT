@@ -95,7 +95,7 @@ export default function AwardProjectCard({
         {/* Core Registry Box */}
         <div className="bg-[#151312] border border-white/5 rounded-sm p-4 flex flex-col gap-2 font-mono text-[8px] tracking-wider">
           <span className="text-[#00e0b3] font-bold uppercase">CORE REGISTRY:</span>
-          <div className="flex flex-col gap-1.5 max-h-[80px] overflow-y-auto">
+          <div className="flex flex-col gap-1.5 h-[80px] overflow-y-auto">
             {(project.groups?.group_members ?? []).map((m, idx) => (
               <div key={idx} className="flex justify-between items-center text-[#e8e1df]">
                 <span className="font-semibold truncate pr-2">{m.profiles?.full_name}</span>
@@ -105,7 +105,7 @@ export default function AwardProjectCard({
           </div>
         </div>
 
-        <p className="text-xs font-mono text-[#83958d] line-clamp-2 leading-relaxed min-h-[32px]">
+        <p className="text-xs font-mono text-[#83958d] line-clamp-2 leading-relaxed min-h-[40px]">
           {project.short_description ||
             project.groups?.short_description ||
             'No project parameters or synopsis mapped to this node.'}
