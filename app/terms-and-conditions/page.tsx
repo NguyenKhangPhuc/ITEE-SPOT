@@ -4,20 +4,6 @@ import { motion } from 'framer-motion'
 import { tw } from '@/app/constants/design-tokens'
 import Link from 'next/link'
 
-const containerVariants = {
-  hidden: {},
-  show: {
-    transition: {
-      staggerChildren: 0.08,
-    },
-  },
-}
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } },
-}
-
 interface Section {
   index: number
   title: string
@@ -196,7 +182,14 @@ export default function TermsAndConditionsPage() {
 
         {/* Sections */}
         <motion.div
-          variants={containerVariants}
+          variants={{
+            hidden: {},
+            show: {
+              transition: {
+                staggerChildren: 0.08,
+              },
+            },
+          }}
           initial="hidden"
           animate="show"
           className="flex flex-col gap-5"
@@ -204,7 +197,10 @@ export default function TermsAndConditionsPage() {
           {sections.map((section) => (
             <motion.div
               key={section.index}
-              variants={itemVariants}
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } },
+              }}
               className={`${tw.bg.surfaceContainerLow} border ${tw.border.whiteSubtle} rounded-sm p-6 flex flex-col gap-4 relative overflow-hidden`}
             >
               {/* Left accent line */}
@@ -229,7 +225,10 @@ export default function TermsAndConditionsPage() {
 
           {/* Contact section */}
           <motion.div
-            variants={itemVariants}
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } },
+            }}
             className={`${tw.bg.surfaceContainerLow} border border-[#00e0b3]/20 rounded-sm p-6 flex flex-col gap-4 relative overflow-hidden`}
           >
             <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-[#00e0b3]" />

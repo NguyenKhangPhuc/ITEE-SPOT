@@ -78,22 +78,22 @@ export default function HeroSection() {
       } else {
         currentLineIdx++
         currentCharIdx = 0
-        if (currentLines.length > 12) {
+        if (currentLines.length > 20) {
           currentLines.shift()
         }
         currentLines.push("")
       }
-    }, 45)
+    }, 25)
 
     return () => clearInterval(interval)
   }, [])
 
   return (
-    <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden px-6 md:px-16 bg-[linear-gradient(to_right,rgba(0,224,179,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,224,179,0.05)_1px,transparent_1px)] bg-[size:40px_40px]">
+    <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden px-6 md:px-16 bg-[linear-gradient(to_right,rgba(0,224,179,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,224,179,0.05)_1px,transparent_1px)] bg-[size:40px_40px]">
 
       <div className="absolute inset-0 bg-gradient-to-b from-[#151312]/50 via-[#151312] to-[#151312] pointer-events-none"></div>
 
-      <div className="absolute inset-0 p-10 font-mono text-[9px] md:text-[11px] text-[#00e0b3]/30 overflow-hidden pointer-events-none select-none flex flex-col justify-end leading-relaxed text-left max-w-full">
+      <div className="absolute inset-0 p-10 font-mono text-[9px] md:text-[11px] text-[#00e0b3]/50 overflow-hidden pointer-events-none select-none flex flex-col justify-end leading-relaxed text-left max-w-full">
         {typedLines.map((line, idx) => (
           <div key={`bg-line-${idx}`} className="whitespace-pre min-h-[1.5em]">
             {line}

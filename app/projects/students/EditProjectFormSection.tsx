@@ -8,7 +8,7 @@ import YoutubeVideo from "@/app/components/YoutubeVideo"
 import { MAX_TOTAL_SIZE, SHORT_DESCRIPTION_LENGTH, STUDENT_SUBMISSION_DESCRIPTION } from "@/app/constants"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
-import SubmissionFileSection from "@/app/submission/[groupId]/SubmissionFileSection"
+import SubmissionFileSection from "@/app/submission/[groupId]/components/SubmissionFileSection"
 import { EventAwardsInsert } from "@/app/types/event_awards"
 import { ProjectAwardsInsert } from "@/app/types/project_awards"
 import { ProjectFileExtended } from "@/app/types/project_files"
@@ -208,7 +208,7 @@ const EditProjectFormSection = ({
                 {errors.short_description && (
                     <p className="text-red-500 text-sm mt-1">{errors.short_description.message}</p>
                 )}
-                <WordCounter control={control} />
+                <WordCounter control={control} fieldName="short_description" limit={200}/>
             </div>
             <div className="flex flex-col w-full">
                 <label className="event_input_label">Choose your award</label>

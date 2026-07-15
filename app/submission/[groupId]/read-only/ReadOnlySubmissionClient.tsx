@@ -219,14 +219,14 @@ export default function ReadOnlySubmissionClient({
               {/* Header Title & Status */}
               <ReadOnlySubmissionHeader
                 breadcrumbs={[
-                  "Events",
-                  groupInfo?.events?.title ?? activeSubmission.group_challenge?.groups?.events?.title ?? "Event",
+                  groupInfo?.events?.title ?? "Event",
+                  groupInfo?.group_name ?? "Group",
                   "Submissions",
                   activeSubmission.title ?? "Project",
                 ]}
                 title={activeSubmission.title ?? "Node_Untitled"}
                 tagline={activeSubmission.short_description ?? "No synopsis parameters mapped."}
-                groupName={groupInfo?.group_name ?? activeSubmission.group_challenge?.groups?.group_name ?? "Cluster Node"}
+                groupName={groupInfo?.group_name  ?? "Cluster Node"}
                 createdAt={activeSubmission.created_at}
               />
 

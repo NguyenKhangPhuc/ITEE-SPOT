@@ -144,3 +144,29 @@ export interface GroupWithChallenge {
         event_challenges: EventChallengeInsert | null;
     }[];
 }
+
+
+export type UserGroupsWithEvent = {
+    created_at: string;
+    event_id: string | null;
+    group_name: string | null;
+    id: string;
+    short_description: string | null;
+    poster_path: string | null;
+    group_members: {
+        member_id: string | null;
+    }[];
+    group_challenge: {
+        id: string | null;
+        challenge_id: string | null;
+        event_challenges: {
+            company_name: string | null;
+            title: string | null;
+        } | null;
+    }[];
+    events: EventWithAwards | null;
+    all_members: {
+        member_id: string | null;
+        profiles: Profile | null;
+    }[];
+}
