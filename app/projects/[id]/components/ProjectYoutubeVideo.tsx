@@ -1,29 +1,41 @@
-'use client'
-
-import { useState } from "react"
-import { motion } from "framer-motion"
-
-interface ReadOnlyYoutubeVideoProps {
-  embeddedUrl: string | null
-}
-
 /**
  * PURPOSE:
  * Renders a premium YouTube video showcase. In its initial state, it displays a themed
- * placeholder thumbnail with a bright mint play overlay and a system filename caption
- * underneath. Clicking the play button dynamically swaps it to render the interactive
+ * placeholder button with a play overlay. Clicking the button swaps it to render the interactive
  * YouTube iframe.
  *
  * CONTEXT/PARENT FILE:
- * Placed in 'app/submission/[groupId]/read-only/components/ReadOnlyYoutubeVideo.tsx'
- * to match the visual showcase preview design.
+ * Extracted from 'app/projects/[id]/SingleProjectClient.tsx' to modularize the video display block.
  *
  * INPUTS / PARAMETERS:
  * - embeddedUrl (string | null, Required): Fully qualified YouTube embed URL.
+ * - title (string, Required): Caption title for the showcase video.
  */
-export default function ReadOnlyYoutubeVideo({ embeddedUrl }: ReadOnlyYoutubeVideoProps) {
+
+'use client'
+
+import { useState } from "react"
+
+interface ProjectYoutubeVideoProps {
+  embeddedUrl: string | null
+  title: string
+}
+
+export default function ProjectYoutubeVideo({ embeddedUrl, title }: ProjectYoutubeVideoProps) {
   const [isPlaying, setIsPlaying] = useState<boolean>(false)
 
+  /**
+   * BEHAVIORAL MECHANISM:
+   * The component conditionally renders either a playable iframe or a placeholder button.
+   * If isPlaying is true, it displays the YouTube iframe with autoplay enabled.
+   * Otherwise, it displays a terminal-themed preview box with a play arrow icon.
+   *
+   * PARAMETERS:
+   * - props (ProjectYoutubeVideoProps): Component props including the embed URL and video title.
+   *
+   * RETURNS:
+   * - React.JSX.Element | null: The video player element or null if no embeddedUrl is provided.
+   */
   if (!embeddedUrl) return null
 
   return (
@@ -56,7 +68,7 @@ export default function ReadOnlyYoutubeVideo({ embeddedUrl }: ReadOnlyYoutubeVid
           </div>
 
           <span className="text-[8px] font-mono text-[#83958d] uppercase tracking-wider mt-4 block z-10 group-hover:text-[#e8e1df] transition-colors">
-            01_SHOWCASE_PREVIEW_V1.MP4
+            {title.toUpperCase().replace(/[^A-Z0-9]/g, '_')}_SHOWCASE_PREVIEW.MP4
           </span>
         </button>
       )}

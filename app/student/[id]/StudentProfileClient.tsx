@@ -6,7 +6,6 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import SchoolIcon from '@mui/icons-material/School';
 import { DEGREE } from "@/app/types/enum";
 import { ProjectsSummaryExtended } from "@/app/types/projects";
-import ProjectsSection from "@/app/projects/ProjectsSection";
 
 
 
@@ -144,8 +143,6 @@ const StudentProfileClient = ({ user, userProjects }: { user: ProfileInsert, use
 
             <div className="w-full flex flex-col gap-5">
 
-                {userProjects.length != 0 ? <ProjectsSection projects={userProjects} title={`${user.full_name}'s Projects`} /> :
-                    <div className="text-white/70 text-sm">No publish projects yet.</div>}
             </div>
         </div>
     )
