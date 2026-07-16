@@ -28,7 +28,9 @@ export async function sendInvitations(invitation: InvitationInsert) {
 export async function getUserInvitations(userEmail: string) {
     const supabase = await createClient();
 
-    const { data, error } = await supabase.from('invitation').select('*, groups (short_description, group_name, event_id, events (*))').eq('member_email', userEmail.toLowerCase().trim())
+    const { data, error } = await supabase.from('invitation').select('*, groups (short_description, group_name, event_id, events (*))')
+    .eq('member_email', userEmail.toLowerCase().trim())
+    .order('created_at', {ascending: false})
 
     return { data, error }
 }

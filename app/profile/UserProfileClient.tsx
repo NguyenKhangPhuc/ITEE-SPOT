@@ -86,13 +86,11 @@ export default function UserProfileClient({ user }: { user: Profile }) {
         {/* System Header with action button */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-white/5 pb-8 mb-4 select-none">
           <div className="flex flex-col gap-2">
-            <h1 className="text-2xl md:text-3xl font-extrabold text-[#e8e1df] tracking-tight uppercase leading-tight font-mono">
+            <h1 className="text-2xl md:text-3xl font-extrabold text-[#00e0b3] tracking-tight uppercase leading-tight font-mono">
               SYSTEM REGISTRY // EDIT PROFILE
             </h1>
             <div className="text-[9px] font-mono text-[#83958d] uppercase tracking-widest flex flex-wrap gap-x-4 gap-y-1">
               <span>USER_ID: {user.id.slice(0, 8).toUpperCase()}-ITEE-{user.id.slice(-4).toUpperCase()}</span>
-              <span>|</span>
-              <span>LAST_SYNC: {user.updated_at ? new Date(user.updated_at).toISOString().replace("T", " ").slice(0, 19) : "2026-07-16 10:00:00"}Z</span>
             </div>
           </div>
 
