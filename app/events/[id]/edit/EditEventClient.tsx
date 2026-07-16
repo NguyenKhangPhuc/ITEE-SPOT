@@ -24,13 +24,15 @@ import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
 import { createClient } from "@/app/utils/supabase/client"
 import { tw } from "@/app/constants/design-tokens"
+import { EventAwardsInsert } from "@/app/types/event_awards"
 import BasicInfoSection from "./components/BasicInfoSection"
 import ChallengeSection from "./components/ChallengeSection"
 import CriteriaSection from "./components/CriteriaSection"
+import AwardManagementSection from "./components/AwardManagementSection"
 
 type ConfigPage = "basic" | "challenge" | "criteria" | "awards"
 
-export default function EditEventClient({ event }: { event: EventWithChallenges }) {
+export default function EditEventClient({ event, awards }: { event: EventWithChallenges; awards: Array<EventAwardsInsert> }) {
   const supabase = createClient()
   const { showNotification } = useNotification()
   const { setIsOpenLoader } = useLoader()
@@ -161,16 +163,16 @@ export default function EditEventClient({ event }: { event: EventWithChallenges 
             EVENT_POSTER_IMAGE
           </div>
           
-          <div className={`${tw.bg.surfaceContainerLow} ${tw.border.whiteSubtle} border rounded-sm p-5 flex flex-col items-center justify-center`}>
+          <div className={`${tw.bg.surfaceContainerLow} ${tw.border.whiteSubtle} border rounded-sm p-2 flex flex-col items-center justify-center`}>
             {/* Square crop box container */}
-            <div className="relative w-64 h-64 sm:w-72 sm:h-72 border border-dashed border-white/10 hover:border-[#00e0b3]/50 transition-colors bg-white/5 flex items-center justify-center cursor-pointer rounded-sm overflow-hidden group">
+            <div className="relative w-full aspect-square border border-dashed border-white/10 hover:border-[#00e0b3]/50 transition-colors bg-white/5 flex items-center justify-center cursor-pointer rounded-sm overflow-hidden group">
               {previewUrl ? (
                 <>
                   <Image
                     src={previewUrl}
                     alt="Event Poster"
                     fill
-                    sizes="(max-width: 768px) 288px, 288px"
+                    sizes="(max-width: 768px) 100vw, 288px"
                     className="object-cover"
                   />
                   {/* Hover overlay text info */}
@@ -282,15 +284,11 @@ export default function EditEventClient({ event }: { event: EventWithChallenges 
                   />
                 )}
                 {currentPage === "awards" && (
-                  <div className={`${tw.bg.surfaceContainerLow} ${tw.border.whiteSubtle} border rounded-sm p-8 text-center select-none`}>
-                    <span className="material-symbols-outlined text-3xl text-[#00e0b3] mb-2">military_tech</span>
-                    <h3 className="font-mono text-xs font-bold text-[#e8e1df] uppercase tracking-wider mb-1">
-                      AWARDS_REGISTRY_NODE
-                    </h3>
-                    <p className="text-[9px] font-mono text-[#83958d] uppercase tracking-widest leading-relaxed">
-                      Registry data parameters currently under development.
-                    </p>
-                  </div>
+                  <AwardManagementSection
+                    receivedAwards={awards}
+                    eventId={event.id}
+                    page={currentPage}
+                  />
                 )}
               </motion.div>
             </AnimatePresence>

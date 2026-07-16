@@ -11,6 +11,7 @@
  */
 
 import { getSingleEvent } from "@/app/actions/events"
+import { getAwardsByEventId } from "@/app/actions/event_awards"
 import EditEventClient from "./EditEventClient"
 
 interface PageProps {
@@ -20,6 +21,7 @@ interface PageProps {
 export default async function Home({ params }: PageProps) {
   const { id } = await params
   const { data: event, error: eventError } = await getSingleEvent(id)
+  const { data: awards } = await getAwardsByEventId(id)
 
   if (eventError) {
     return (
@@ -32,7 +34,7 @@ export default async function Home({ params }: PageProps) {
   return (
     <div className="w-full min-h-screen bg-[#151312] text-[#e8e1df] font-mono px-6 md:px-16 py-24">
       <div className="max-w-7xl mx-auto flex flex-col">
-        <EditEventClient event={event!} />
+        <EditEventClient event={event!} awards={awards ?? []} />
       </div>
     </div>
   )

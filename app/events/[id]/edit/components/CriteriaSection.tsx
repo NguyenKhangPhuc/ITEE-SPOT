@@ -219,7 +219,7 @@ export default function CriteriaSection({
                   className="bg-[#151312] text-[#e8e1df] border border-white/5 font-mono text-xs p-3 pr-8 rounded-sm outline-none focus:border-[#00e0b3]/50 transition-colors w-full appearance-none cursor-pointer"
                   {...register("type", { required: "Type is required" })}
                 >
-                  <option value="" disabled selected>
+                  <option value="" disabled defaultValue={CRITERIA_TYPE.NORMAL}>
                     CHOOSE TYPE
                   </option>
                   <option value={CRITERIA_TYPE.NORMAL}>NORMAL</option>
