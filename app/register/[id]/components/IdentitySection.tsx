@@ -82,13 +82,14 @@ export default function IdentitySection({
               maxLength: {
                 value: SHORT_DESCRIPTION_LENGTH,
                 message: `Maximum ${SHORT_DESCRIPTION_LENGTH} characters`,
-              }
+              },
+               required: "Group description is required"
             })}
           />
           {/* Isolated character counter — only this re-renders on typing */}
           <WordCounter control={control} fieldName="short_description" limit={SHORT_DESCRIPTION_LENGTH} />
           {errors.short_description && (
-            <p className="text-red-400 text-[10px] font-mono mt-0.5">{errors.short_description.message}</p>
+            <p className="text-red-400 text-[10px] font-mono ">{errors.short_description.message}</p>
           )}
         </div>
 

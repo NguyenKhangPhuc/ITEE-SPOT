@@ -25,6 +25,7 @@ import { useNotification } from "@/app/context/NotificationContext"
 import { createClient } from "@/app/utils/supabase/client"
 import { tw } from "@/app/constants/design-tokens"
 import { EventAwardsInsert } from "@/app/types/event_awards"
+import BackButton from "@/app/components/BackButton"
 import BasicInfoSection from "./components/BasicInfoSection"
 import ChallengeSection from "./components/ChallengeSection"
 import CriteriaSection from "./components/CriteriaSection"
@@ -134,6 +135,9 @@ export default function EditEventClient({ event, awards }: { event: EventWithCha
 
   return (
     <div className="w-full flex flex-col gap-8">
+      {/* Back button */}
+      <BackButton />
+
       {/* Page Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-white/5 pb-8 select-none">
         <div className="flex gap-4 items-stretch">
