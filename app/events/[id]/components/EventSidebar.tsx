@@ -126,6 +126,12 @@ export default function EventSidebar({ event, user, fmtDate, fmtTime }: EventSid
             >
               Results Overview
             </Link>
+            <Link
+              href={`/events/${event.id}/edit`}
+              className={`${tw.bg.surfaceContainerLow} ${tw.border.whiteSubtle} border text-[#b9cbc2] hover:border-[#00e0b3]/30 hover:text-[#00e0b3] font-mono text-[10px] uppercase font-bold tracking-widest py-3 text-center transition-all duration-300 rounded-sm`}
+            >
+              Edit Event
+            </Link>
           </>
         )}
 
