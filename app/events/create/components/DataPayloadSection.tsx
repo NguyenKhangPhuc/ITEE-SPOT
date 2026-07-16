@@ -20,11 +20,12 @@ import { EventInsert } from "@/app/types/event"
 import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor"
 import { EVENT_CREATED_DESCRIPTION } from "@/app/constants"
 import { tw } from "@/app/constants/design-tokens"
+import { SetStateAction } from "react"
 
 interface DataPayloadSectionProps {
   register: UseFormRegister<EventInsert>
   errors: FieldErrors<EventInsert>
-  setEditorValue: (editor: Editor | null) => void
+  setEditorValue: React.Dispatch<SetStateAction<Editor | null >>
 }
 
 export default function DataPayloadSection({ register, errors, setEditorValue }: DataPayloadSectionProps) {

@@ -1,6 +1,7 @@
 'use client'
 
 import Link from "next/link"
+import Image from "next/image"
 
 /**
  * PURPOSE:
@@ -19,8 +20,14 @@ export default function FooterSection() {
       <div className="max-w-7xl mx-auto px-6 md:px-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           <div className="col-span-1 md:col-span-2">
-            <div className="text-2xl font-bold text-[#00e0b3] mb-6 tracking-tighter uppercase">
-              ITEE SPOT
+            <div className="mb-4">
+              <Image
+                src="/assets/iteespot_logo.png"
+                alt="ITEE SPOT"
+                width={112}
+                height={32}
+                className="object-contain"
+              />
             </div>
             <p className="text-sm text-[#b9cbc2] opacity-60 max-w-sm mb-8 leading-relaxed">
               Student-led technological excellence. Providing spot-on solutions for tomorrow&apos;s complex challenges.

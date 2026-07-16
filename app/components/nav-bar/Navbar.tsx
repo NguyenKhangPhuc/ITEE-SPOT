@@ -1,5 +1,6 @@
 'use client'
 import Link from "next/link"
+import Image from "next/image"
 
 import React, { useState } from "react"
 import { usePathname } from "next/navigation"
@@ -74,13 +75,17 @@ const NavBar = ({ initialUser }: { initialUser: ProfileInsert | null }) => {
     return (
         <nav className="fixed left-0 top-0 h-screen w-72 bg-[#151312]/95 backdrop-blur-xl border-r border-white/5 z-50 flex flex-col p-8 transition-transform duration-300 overflow-y-auto hidden xl:flex font-montserrat">
             {/* Logo Section */}
-            <div className="mb-12">
-                <Link href="/" className="inline-block">
-                    <div className="text-2xl font-bold tracking-tighter text-[#00e0b3] mb-1 font-montserrat">
-                        ITEE SPOT
-                    </div>
+            <div className="mb-12 flex justify-center items-center">
+                <Link href="/" className="relative w-28 h-8 flex items-center mb-2 justify-start">
+                    <Image
+                        src="/assets/iteespot_logo.png"
+                        alt="ITEE SPOT"
+                        width={100}
+                        height={32}
+                        className="object-contain"
+                        priority
+                    />
                 </Link>
-                <div className="text-white/20 text-[10px] font-mono uppercase tracking-[0.3em]">System.v2.0_Stable</div>
             </div>
 
             {/* Navigation Links */}

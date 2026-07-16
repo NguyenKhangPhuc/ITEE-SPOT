@@ -111,7 +111,7 @@ const SubmitShowcaseProjectSection = ({ groupsWithEvents, page }: { groupsWithEv
                         className="event_input outline-none w-full h-[40px] bg-white border border-gray-300 rounded px-2 disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                         <option value="">Pick an option</option>
-                        {selectedGroup?.group_challenge.map((gc) => (
+                        {selectedGroup?.challenges.map((gc) => (
                             <option key={gc.id ?? ""} value={gc.id ?? ""}>
                                 {gc.event_challenges?.title ?? "Unnamed Challenge"}
                             </option>

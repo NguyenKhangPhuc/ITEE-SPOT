@@ -91,9 +91,15 @@ export default function NavbarMobile({ initialUser }: { initialUser: ProfileInse
       {/* Fixed top bar */}
       <header className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-6 bg-[#151312]/95 backdrop-blur-xl border-b border-white/5 xl:hidden h-18 select-none">
         
-        {/* Brand Link */}
-        <Link href="/" className="text-xl font-bold tracking-tighter text-[#00e0b3] font-montserrat z-10">
-          ITEE SPOT
+        <Link href="/" className="relative w-24 h-6 flex items-center justify-start z-10">
+          <Image
+            src="/assets/iteespot_logo.png"
+            alt="ITEE SPOT"
+            width={70}
+            height={24}
+            className="object-contain"
+            priority
+          />
         </Link>
 
         {/* Co-funding EU & IKAPO Logos */}

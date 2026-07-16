@@ -1,5 +1,6 @@
 'use client'
 
+import Image from "next/image"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { useEffect, useState } from "react"
@@ -116,7 +117,7 @@ export default function HeroSection() {
             }
           }
         }}
-        className="relative z-10 text-center max-w-4xl mx-auto py-20"
+        className="relative z-10 text-center max-w-4xl mx-auto py-20 animate-fade-in flex flex-col items-center"
       >
         <motion.div
           variants={{
@@ -135,15 +136,21 @@ export default function HeroSection() {
           </span>
         </motion.div>
 
-        <motion.h1
+        <motion.div
           variants={{
             hidden: { opacity: 0, y: 20 },
             visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
           }}
-          className="text-5xl sm:text-6xl md:text-[88px] leading-none mb-6 tracking-tight font-extrabold select-none"
+          className="relative w-[400px] h-26 sm:w-[480px] sm:h-44 mb-8"
         >
-          ITEE <span className="text-[#00e0b3]">SPOT</span>
-        </motion.h1>
+          <Image
+            src="/assets/iteespot_logo.png"
+            alt="ITEE SPOT Logo"
+            fill
+            className="object-contain"
+            priority
+          />
+        </motion.div>
 
         <motion.div
           variants={{

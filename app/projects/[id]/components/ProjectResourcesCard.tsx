@@ -108,7 +108,7 @@ export default function ProjectResourcesCard({
                 <button
                   key={file.id}
                   type="button"
-                  onClick={() => handleDownloadFile(file.storage_path)}
+                  onClick={() => handleDownloadFile(file?.storage_path ?? null)}
                   className="w-full flex items-center justify-between border border-white/5 bg-[#151312]/40 px-4 py-3 rounded-sm hover:border-[#00e0b3]/20 transition-colors text-left cursor-pointer group"
                 >
                   <div className="flex items-center gap-3 min-w-0">

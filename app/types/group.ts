@@ -1,51 +1,52 @@
 import { Database } from "./database.types";
 import { UNIVERSITY, YEAR } from "./enum";
 import { Event, EventInsert, EventWithAwards } from "./event";
+import { EventAwardsInsert } from "./event_awards";
 import { EventChallengeInsert } from "./event_challenges";
-import { Profile } from "./profile";
+import { Profile, ProfileInsert } from "./profile";
 
 export type Group = Database["public"]["Tables"]["groups"]["Row"]
 
 export type GroupInsert = Database["public"]["Tables"]["groups"]["Insert"]
 
 export interface UnifiedGroupMember {
-  member_id: string | null
-  profiles: {
-    full_name: string | null
-    email: string | null
-    degree: string | null
-    programme: string | null
-  } | null
+    member_id: string | null
+    profiles: {
+        full_name: string | null
+        email: string | null
+        degree: string | null
+        programme: string | null
+    } | null
 }
 
 export interface UnifiedGroupChallenge {
-  id: string
-  challenge_id: string | null
-  event_challenges: {
-    company_name: string | null
-    title: string | null
-  } | null
+    id: string
+    challenge_id: string | null
+    event_challenges: {
+        company_name: string | null
+        title: string | null
+    } | null
 }
 
 export interface UnifiedGroupEventAward {
-  id: string
-  award_title: string | null
-  award_type: string | null
-  award_priority: number | null
+    id: string
+    award_title: string | null
+    award_type: string | null
+    award_priority: number | null
 }
 
 export interface UnifiedGroup {
-  id: string
-  group_name: string | null
-  short_description: string | null
-  poster_path: string | null
-  created_at: string
-  events: {
-    title: string | null
-    event_awards?: UnifiedGroupEventAward[]
-  } | null
-  members: UnifiedGroupMember[]
-  challenges: UnifiedGroupChallenge[]
+    id: string
+    group_name: string | null
+    short_description: string | null
+    poster_path: string | null
+    created_at: string
+    events: {
+        title: string | null
+        event_awards?: UnifiedGroupEventAward[]
+    } | null
+    members: UnifiedGroupMember[]
+    challenges: UnifiedGroupChallenge[]
 }
 
 export type GroupInfo = {
@@ -147,26 +148,35 @@ export interface GroupWithChallenge {
 
 
 export type UserGroupsWithEvent = {
-    created_at: string;
-    event_id: string | null;
-    group_name: string | null;
     id: string;
+    group_name: string | null;
     short_description: string | null;
     poster_path: string | null;
-    group_members: {
+    created_at: string;
+    event_id: string | null;
+    events: {
+        title: string | null;
+        event_awards: EventAwardsInsert[];
+    } | null;
+    members: {
         member_id: string | null;
+        profiles: {
+            full_name: string | null;
+            email: string | null;
+            degree: "Bachelor" | "Master" | "Ph.D" | null;
+            programme: | "Information Processing Science"
+            | "Electronics and Communications Engineering"
+            | "Computer Science and Engineering"
+            | "Biomedical Engineering"
+            | null;
+        } | null;
     }[];
-    group_challenge: {
-        id: string | null;
+    challenges: {
+        id: string;
         challenge_id: string | null;
         event_challenges: {
             company_name: string | null;
             title: string | null;
         } | null;
-    }[];
-    events: EventWithAwards | null;
-    all_members: {
-        member_id: string | null;
-        profiles: Profile | null;
     }[];
 }

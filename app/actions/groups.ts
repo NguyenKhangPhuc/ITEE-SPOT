@@ -20,6 +20,7 @@ export async function getUserGroups() {
         short_description,
         poster_path,
         created_at,
+        event_id,
         events (title, event_awards (*)),
         members:group_members!inner (
             member_id, 
