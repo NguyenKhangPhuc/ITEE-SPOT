@@ -4,10 +4,10 @@ import { Montserrat, Inter, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import NotificationCard from "./components/Notification";
 import { NotificationProvider } from "./context/NotificationContext";
-import NavbarServer from "./components/NavbarServer";
 import Loader from "./components/Loader";
 import { LoaderProvider } from "./context/LoaderContext";
 import FooterSection from "./components/FooterSection";
+import NavbarServer from "./components/nav-bar/NavbarServer";
 
 const robotoMono = Roboto_Mono({
   subsets: ["latin"],
@@ -45,10 +45,10 @@ export default function RootLayout({
       <LoaderProvider>
         <NotificationProvider>
           <body
-            className={`${robotoMono.variable} ${montserrat.variable} ${inter.variable} antialiased min-h-screen bg-[#151312] text-[#e8e1df] flex flex-col 2xl:flex-row`}
+            className={`${robotoMono.variable} ${montserrat.variable} ${inter.variable} antialiased min-h-screen bg-[#151312] text-[#e8e1df] flex flex-col xl:flex-row`}
           >
             <NavbarServer />
-            <div className="flex-grow flex flex-col min-w-0 2xl:pl-72 transition-all duration-300">
+            <div className="flex-grow flex flex-col min-w-0 pt-18 xl:pt-0 xl:pl-72 transition-all duration-300">
               <NotificationCard />
               <Loader />
               <main className="flex-1 flex flex-col"> {children}</main>

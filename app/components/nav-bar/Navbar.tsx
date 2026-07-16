@@ -1,22 +1,19 @@
 'use client'
 import Link from "next/link"
-import { signout } from "../actions/authentication"
-import { useNotification } from "../context/NotificationContext"
-import { useEffect, useState } from "react"
-import { NAVIGATION_BAR } from "../constants"
-import { ProfileInsert } from "../types/profile"
-import { PROFILE_ROLE } from "../types/enum"
-import React from "react"
+
+import React, { useState } from "react"
 import { usePathname } from "next/navigation"
+import { signout } from "@/app/actions/authentication"
+import { NAVIGATION_BAR } from "@/app/constants"
+import { useNotification } from "@/app/context/NotificationContext"
+import { PROFILE_ROLE } from "@/app/types/enum"
+import { ProfileInsert } from "@/app/types/profile"
 
 const NavBar = ({ initialUser }: { initialUser: ProfileInsert | null }) => {
     const { showNotification } = useNotification()
     const [user, setUser] = useState(initialUser)
     const pathname = usePathname()
 
-    useEffect(() => {
-        setUser(initialUser)
-    }, [initialUser])
 
     const handleLogout = async () => {
         try {
@@ -75,7 +72,7 @@ const NavBar = ({ initialUser }: { initialUser: ProfileInsert | null }) => {
     )
 
     return (
-        <nav className="fixed left-0 top-0 h-screen w-72 bg-[#151312]/95 backdrop-blur-xl border-r border-white/5 z-50 flex flex-col p-8 transition-transform duration-300 overflow-y-auto hidden 2xl:flex font-montserrat">
+        <nav className="fixed left-0 top-0 h-screen w-72 bg-[#151312]/95 backdrop-blur-xl border-r border-white/5 z-50 flex flex-col p-8 transition-transform duration-300 overflow-y-auto hidden xl:flex font-montserrat">
             {/* Logo Section */}
             <div className="mb-12">
                 <Link href="/" className="inline-block">
