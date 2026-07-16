@@ -220,6 +220,7 @@ export async function getUserSubmittedProjects({ userId, status, ascending }: { 
                 group_name, 
                 short_description, 
                 event_id, 
+                poster_path,
                 events (*),
                 group_members!inner (member_id, profiles (*))
             )

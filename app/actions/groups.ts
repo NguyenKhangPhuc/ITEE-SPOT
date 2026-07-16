@@ -12,21 +12,27 @@ export async function getUserGroups() {
         return { data: null, error: { message: 'Fail to verify user' } }
     }
 
-    const { data, error } = await supabase.from('groups')
+    const { data, error } = await supabase
+        .from('groups')
         .select(`
-            id,
-            group_name,
-            short_description,
-            poster_path,
-            created_at,
-            events (title, event_awards (*)),
-            members:group_members (member_id, profiles (full_name, email, degree, programme)),
-            challenges:group_challenge (id, challenge_id, event_challenges (company_name, title)),
-            group_members!inner (member_id)
-        `)
-        .eq('group_members.member_id', user.user.id)
-        .returns<UnifiedGroup[]>()
-
+        id,
+        group_name,
+        short_description,
+        poster_path,
+        created_at,
+        events (title, event_awards (*)),
+        members:group_members!inner (
+            member_id, 
+            profiles (full_name, email, degree, programme)
+        ),
+        challenges:group_challenge (
+            id, 
+            challenge_id, 
+            event_challenges (company_name, title)
+        )
+    `)
+        // Sử dụng ALIAS 'members' ở đây thay vì 'group_members'
+        .eq('members.member_id', user.user.id)
     if (error || !data) {
         return { data: null, error: error ? { message: error.message } : null }
     }
