@@ -37,7 +37,7 @@ export default function HeroSection() {
     const lines = [
       "// BOOTSTRAPPING PLATFORM CORE 0x01",
       "import { api } from '@/lib/api-client';",
-      "console.log('Establishing secure session...');",
+      "// console.log('Establishing secure session...');",
       "// SESSION ESTABLISHED (handshake: 12ms)",
       "async function fetchSpotlightProjects() {",
       "  const res = await api.get('/projects', {",

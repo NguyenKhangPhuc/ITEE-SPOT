@@ -37,7 +37,7 @@ export default function PastProjectsSection({ projects }: { projects: ProjectsSu
   }
 
   const displayedProjects = projects ? projects.slice(0, 4) : []
-  console.log(projects)
+  // console.log(projects)
   return (
     <section className="py-24 max-w-7xl mx-auto px-6 md:px-16">
       <motion.div 

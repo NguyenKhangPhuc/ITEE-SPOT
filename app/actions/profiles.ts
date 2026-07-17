@@ -108,7 +108,7 @@ export async function getAllUsers() {
 export async function updateUserRoleByUserId(userId: string, role: PROFILE_ROLE) {
     const supabase = await createClient()
     const { data, error } = await supabase.from('profiles').update({ role: role }).eq('id', userId)
-    console.log(error)
+    // console.log(error)
     if (error){
         return {error: 'Fail to update user profile'}
     }

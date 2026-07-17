@@ -52,7 +52,7 @@ export async function getUserGroups() {
     if (error || !data) {
         return { data: null, error: error ? { message: error.message } : null }
     }
-    console.log(data[0].group_members)
+    // console.log(data[0].group_members)
 
     return { data, error: null }
 }
@@ -135,7 +135,7 @@ export async function getAllGroups() {
     const supabase = await createClient();
     const { data, error } = await supabase.from('groups').select('*, events (*), group_members (*, profiles (*)), group_challenge (*, event_challenges (*))')
     if (error) {
-        console.log(error)
+        // console.log(error)
         return { error: 'Failed to get all groups' }
     }
     return { data, error }
