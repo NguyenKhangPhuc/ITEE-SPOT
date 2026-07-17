@@ -3,7 +3,7 @@ import { getSingleEvent } from "@/app/actions/events";
 import { getUser } from "@/app/actions/authentication";
 import { getUserProfile } from "@/app/actions/profiles";
 import { getSingleProject } from "@/app/actions/projects";
-import SingleProjectPendingClient from "./SingleProjectPendingClient";
+import SingleProjectClient from "../SingleProjectClient";
 
 interface PageProps {
     params: Promise<{ id: string }>;
@@ -19,7 +19,7 @@ export default async function Home({ params }: PageProps) {
     return (
         <div className="w-full min-h-screen screen-bg font-roboto-mono">
             <div className="max-w-7xl mx-auto px-6 flex flex-col p-5 ">
-                <SingleProjectPendingClient project={project!} />
+                <SingleProjectClient project={project!} />
             </div>
         </div>
     );

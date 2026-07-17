@@ -14,12 +14,7 @@ export async function getAllProjectsBasedOnStatus({ status, ascending }: { statu
     let query = supabase
         .from('projects_with_priority')
         .select(`
-            id, 
-            group_id,
-            group_challenge_id,
-            project_title, 
-            project_status, 
-            top_priority,
+            *,
             project_awards (
                 *, 
                 event_awards (*)
@@ -27,6 +22,7 @@ export async function getAllProjectsBasedOnStatus({ status, ascending }: { statu
             groups (
                 group_name, 
                 short_description, 
+                poster_path,
                 event_id, 
                 events (*),
                 group_members (member_id, profiles (*))
@@ -36,6 +32,7 @@ export async function getAllProjectsBasedOnStatus({ status, ascending }: { statu
             referencedTable: 'project_awards',
             ascending: true
         })
+        .order('top_priority', { ascending: true })
         .order('created_at', { ascending: ascending })
     if (status) {
         query = query.eq('project_status', status);
@@ -54,7 +51,7 @@ export async function getAllProjects() {
 
     const { data, error } = await supabase
         .from('projects')
-        .select('id, group_id, group_challenge_id, project_title,project_status, groups (group_name, short_description, event_id, events (*), group_members (member_id, profiles (*)))')
+        .select('*, groups (group_name, short_description,poster_path, event_id, events (*), group_members (member_id, profiles (*)))')
         .order('created_at', { ascending: false })
 
     if (error) {
@@ -223,6 +220,7 @@ export async function getUserSubmittedProjects({ userId, status, ascending }: { 
                 group_name, 
                 short_description, 
                 event_id, 
+                poster_path,
                 events (*),
                 group_members!inner (member_id, profiles (*))
             )

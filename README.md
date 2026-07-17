@@ -1,36 +1,83 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ITEE SPOT
 
-## Getting Started
+ITEE SPOT is a centralized portal developed for the IKAPO project in Oulu, Finland, designed to showcase student project solutions. The platform supports event creation, group formation, project submission, and grading evaluations, ensuring that student work is highlighted and graded systematically.
 
-First, run the development server:
+## Project Structure
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+The project is built using the Next.js App Router. The directory structure within the app folder is organized as follows:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+* app/actions: Server Actions managing database queries, authentication updates, and grading.
+* app/auth: Callback routes handling redirect verification and user sessions.
+* app/components: Reusable layout and UI elements, including navigation and loading states.
+* app/constants: Configuration settings such as pagination limits.
+* app/context: Context providers managing global authentication state.
+* app/events: Pages for displaying event lists, event details, creation forms, and event grading.
+* app/groups: Group detail pages, group management, and user invitations.
+* app/middleware: Access control sub-middleware components for route safety checks.
+* app/profile: Pages allowing authenticated users to manage their profiles, upload posters, and edit bios.
+* app/projects: Main dashboard for listing, filtering, and managing project submissions.
+* app/student: Public-facing routes rendering student portfolios and accepted projects.
+* app/submission: Forms and dashboards for challenge submissions, feedback, and grading.
+* app/types: Shared TypeScript types and database interfaces.
+* app/utils: Supabase client-side and server-side connection initializations.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Logic and Flow
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 1. Unified Route Protection
+Global route security is handled via a centralized proxy pattern. A root-level proxy.ts script catches requests and processes them sequentially through checks in the app/middleware directory. This controls access to admin panels, student profiles, grading screens, and redirects unauthorized traffic.
 
-## Learn More
+### 2. Database Security
+Database queries are processed using server actions. Row-Level Security policies are implemented in Supabase to restrict access. Users can only modify their own profiles, group leaders manage their own teams, and students view only their active challenge submissions, while administrators retain full access for grading and management.
 
-To learn more about Next.js, take a look at the following resources:
+## Features and Capabilities
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+* User Authentication: Integration with Supabase Auth for user registrations, login, and password recoveries.
+* Event Hosting: Facilities to create, edit, and organize events and hackathons.
+* Team Coordination: Group creation, member invitation mechanics, and project sharing.
+* Project Discovery Gallery: Dynamic project listings with advanced search, categorizations, and filters.
+* Grading Rubrics: Evaluations based on configurable criteria, rating sliders, and final score calculations.
+* Peer Interaction: Comment sections, reactions, and feedback tables on submissions.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Tech Stack and Prerequisites
 
-## Deploy on Vercel
+* Core Framework: Next.js (version 16.1.6)
+* Library: React (version 19.2.3)
+* Database and Auth: Supabase (via supabase-js and ssr)
+* Styling: Tailwind CSS (version 4) and Sass
+* Component Libraries: Emotion, Radix UI, Material UI Icons
+* Form Handling: React Hook Form
+* Rich Text Editing: Tiptap Editor
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Completed Work and Solved Problems
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+* Student Profile Portfolios: Implemented public routes (/student/[id]) displaying personal details and accepted projects.
+* Cover Poster Uploads: Added file storage and server actions allowing students to upload and display cover images.
+* Robust Error Handling for Empty Awards: Fixed frontend rendering crashes on events and projects lacking defined awards.
+* Middleware Restructuring: Modularized route checking to prevent cross-profile modifications.
+* Database Schema Upgrades: Added biography columns to profile tables and updated database triggers to sync authentication data.
+
+## Installation and Setup Instructions
+
+1. Install project dependencies:
+   npm install
+
+2. Configure environment variables by creating a .env.local file in the root directory:
+   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_supabase_anon_key
+
+3. Run the application in development mode:
+   npm run dev
+
+4. Build the application for production:
+   npm run build
+
+## Usage Examples and API Endpoints
+
+* Accessing the Landing Page: Home route (/) displays the spot-on solution showcase introduction.
+* Event Overview: Browse to /events to check current challenges.
+* Public Profile View: Browse to /student/[id] to check a student's public portfolio.
+* Project Management: Browse to /projects/admins to manage and review project submissions.
+
+## License
+
+This project is proprietary.

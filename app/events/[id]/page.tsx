@@ -7,26 +7,46 @@ interface PageProps {
     params: Promise<{ id: string }>;
 }
 
-export default async function Home({ params }: PageProps) {
+/**
+ * PURPOSE:
+ * Server component that resolves the event ID from the URL, fetches the event record and
+ * the currently authenticated user's profile, then delegates rendering to SingleEventClient.
+ *
+ * CONTEXT/PARENT FILE:
+ * Next.js dynamic route at 'app/events/[id]/page.tsx'.
+ *
+ * INPUTS / PARAMETERS:
+ * - params (Promise<{ id: string }>, Required): Dynamic route parameter from Next.js.
+ */
+export default async function SingleEventPage({ params }: PageProps) {
     const { id } = await params;
+
     const { data: event, error } = await getSingleEvent(id)
-    if (error) {
-        return <div className="w-full flex items-center justify-center text-red-500">Something went wrong:  {error.message}</div>;
-    }
-    const { data, error: ussrError } = await getUser();
-    if (error || data.user == null) {
-        return <div className="w-full flex items-center justify-center text-red-500">Something went wrong:  {ussrError?.message ? ussrError.message : 'Unknown Error'}</div>;
+    if (error || !event) {
+        return (
+            <div className="w-full min-h-screen bg-[#151312] flex items-center justify-center font-mono text-red-400 text-sm">
+                {error?.message ?? 'Event not found.'}
+            </div>
+        );
     }
 
-    const { data: user, error: userProfileError } = await getUserProfile(data.user!.id)
-    if (userProfileError) {
-        return <div className="w-full flex items-center justify-center text-red-500">Something went wrong:  {userProfileError?.message}</div>;
-    }
-    return (
-        <div className="w-full min-h-screen screen-bg font-roboto-mono">
-            <div className="max-w-7xl mx-auto px-6 flex flex-col p-5 ">
-                <SingleEventClient event={event!} user={user!} />
+    const { data, error: userError } = await getUser();
+    if (userError || !data?.user) {
+        return (
+            <div className="w-full min-h-screen bg-[#151312] flex items-center justify-center font-mono text-red-400 text-sm">
+                {userError?.message ?? 'Authentication required.'}
             </div>
-        </div>
-    );
+        );
+    }
+
+    const { data: user, error: userProfileError } = await getUserProfile(data.user.id)
+    if (userProfileError || !user) {
+        return (
+            <div className="w-full min-h-screen bg-[#151312] flex items-center justify-center font-mono text-red-400 text-sm">
+                {userProfileError?.message ?? 'Profile not found.'}
+            </div>
+        );
+    }
+
+    return <SingleEventClient event={event} user={user} />;
 }

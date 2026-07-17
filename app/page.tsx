@@ -1,43 +1,43 @@
-import Image from "next/image";
-import Link from "next/link";
+import HomePage from "./HomePage"
+import { getAllProjectsBasedOnStatus } from "./actions/projects"
+import { ProjectsSummaryExtended } from "./types/projects"
+import { PROJECT_STATUS } from "./types/enum"
 
-export default function Home() {
-  return (
-    <div className="h-screen w-full flex flex-col items-center justify-center layout px-4 text-center">
+/**
+ * PURPOSE:
+ * This is the server entrypoint page for the Home route. It fetches accepted spotlight projects
+ * from the database server-side and passes them as props to the client-side HomePage component.
+ *
+ * CONTEXT/PARENT FILE:
+ * Extracted from a monolithic page.tsx layout to support server-side rendering of project data
+ * and separation of interactive client components.
+ *
+ * INPUTS / PARAMETERS:
+ * None.
+ */
+export default async function Home() {
+  /**
+   * BEHAVIORAL MECHANISM:
+   * During server-side rendering, this function invokes the `getAllProjectsBasedOnStatus` server action
+   * with accepted status to query database projects. The queried data is typed and forwarded as a prop
+   * to the child `HomePage` client component. If database operations fail, null is passed to ensure
+   * page rendering handles it gracefully.
+   *
+   * PARAMETERS:
+   * None.
+   *
+   * RETURNS:
+   * A JSX element rendering the client HomePage with server-fetched project data.
+   */
+  let initialProjects: ProjectsSummaryExtended[] | null = null
+  try {
+    const { data } = await getAllProjectsBasedOnStatus({ status: PROJECT_STATUS.ACCEPTED, ascending: true })
+    if (data) {
+      initialProjects = data as unknown as ProjectsSummaryExtended[]
+    }
+  } catch (error) {
+    console.error("Failed to load projects on server:", error)
+  }
 
-      <div className="flex flex-col items-center max-w-3xl">
-
-
-        <h1 className="text-5xl md:text-7xl font-extrabold text-white tracking-tighter mb-2">
-          ITEE SPOT
-        </h1>
-
-
-        <p className="text-white/80 text-sm md:text-lg font-medium tracking-wide mb-8">
-          powered by <span className="font-bold text-white">IKAPO project</span>
-        </p>
-
-
-        <p className="text-gray-300 text-lg md:text-xl leading-relaxed italic mb-10">
-          Students&apos; <span className="text-white font-semibold">spot-on solutions</span>,
-          in the  <span className="text-white font-semibold">spotlight</span>
-        </p>
-
-
-        <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-          <Link href={'/login'} className="cursor-pointer px-8 py-3 bg-white text-black font-bold rounded-full hover:bg-gray-200 transition-all duration-300 shadow-lg shadow-white/5">
-            Explore our event
-          </Link>
-
-          <Link href={'/login'} className="px-8 py-3 bg-white/20 text-white font-bold rounded-full border border-white/10 hover:bg-white/30 backdrop-blur-sm transition-all duration-300">
-            Sign in
-          </Link>
-        </div>
-      </div>
-
-      <div className="absolute bottom-10 text-white/80 font-mono text-xs uppercase tracking-[0.5em]">
-        Oulu City • Finland
-      </div>
-    </div>
-  );
+  return <HomePage initialProjects={initialProjects} />
 }

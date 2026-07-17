@@ -21,8 +21,8 @@ export default async function Home({ params }: PageProps) {
         return <div className="w-full flex items-center justify-center text-red-500">Something went wrong:  {userProjectsError}</div>;
     }
     return (
-        <div className="w-full min-h-screen screen-bg font-roboto-mono">
-            <div className="max-w-7xl mx-auto px-6 flex flex-col p-5 ">
+        <div className="w-full min-h-screen bg-[#151312] text-[#e8e1df] font-mono px-6 md:px-16 py-24">
+            <div className="max-w-7xl mx-auto flex flex-col">
                 <StudentProfileClient user={user!} userProjects={userProjects ?? []} />
             </div>
         </div>

@@ -1,4 +1,3 @@
-import Link from "next/link"
 import { getAllEvents } from "../actions/events"
 import { getAllProjectsBasedOnStatus } from "../actions/projects";
 import ProjectsClient from "./ProjectsClient";
@@ -17,9 +16,8 @@ const Home = async () => {
     }
 
     return (
-        <div className="w-full min-h-screen screen-bg font-roboto-mono">
-            <div className="max-w-7xl mx-auto px-6 flex flex-col p-5 ">
-                <div className="text-2xl font-bold text-color">Our Excellent Student Projects</div>
+        <div className="w-full min-h-screen bg-[#151312] text-[#e8e1df] font-mono">
+            <div className="max-w-7xl mx-auto px-6 md:px-16 py-24 flex flex-col gap-6">
                 <ProjectsClient projects={projects ?? []} events={allEvents ?? []} />
             </div>
         </div>

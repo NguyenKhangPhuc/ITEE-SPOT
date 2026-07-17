@@ -73,9 +73,10 @@ import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils"
 // --- Styles ---
 import "@/components/tiptap-templates/simple/simple-editor.scss"
 
-import content from "@/components/tiptap-templates/simple/data/content.json"
 import { CharacterCount } from '@tiptap/extensions'
 import WordCounter from "./word-counter"
+
+const content = `<h2><strong>Project: NextGen Realty — Revolutionizing Lead Generation with AI &amp; VR</strong></h2><p>In the digital era, reaching the right target audience and optimizing conversion rates is a survival game for businesses, especially in <strong>Real Estate</strong>. <strong>NextGen Realty</strong> is a pioneering solution that seamlessly fuses <strong>Intelligent AI Agents</strong> and <strong>Virtual Reality (VR)</strong> to redefine how businesses discover, engage, and convert high-potential leads.</p><h3><strong>The Power of Our Dual-Tech Solution</strong></h3><ul><li><p><strong>Immersive VR Experience:</strong> Allows prospective buyers to "step inside" and explore properties in hyper-realistic 3D from anywhere in the world. By removing geographical barriers, VR builds an instant, high-fidelity emotional connection with the property.</p></li><li><p><strong>Autonomous AI Agents:</strong> Far beyond basic chatbots, our AI Agents act as digital sales consultants. They track real-time user behavior during the VR tour, answer complex inquiries 24/7, and automatically score leads to identify and hand off only the most qualified prospects to your sales team.</p></li></ul><h3><strong>Key Benefits for Your Business</strong></h3><ul><li><p><strong>High-Precision Lead Generation:</strong> Filter out cold leads and empower your sales team to focus 100% of their energy on high-intent buyers.</p></li><li><p><strong>Accelerated Sales Cycles:</strong> Shorten the decision-making process by delivering personalized, instant, and visually stunning information.</p></li><li><p><strong>Global Reach, Zero Friction:</strong> Effortlessly capture and nurture busy local buyers, out-of-state investors, or international clients.</p></li></ul><blockquote><p><strong>NextGen Realty</strong> is not just a tool—it is the future of property technology. Where VR opens the door to immersive spaces, our AI Agent unlocks the path to closed deals.</p></blockquote><p></p>`
 
 const MainToolbarContent = ({
   onHighlighterClick,

@@ -1,64 +1,90 @@
-import HttpsIcon from '@mui/icons-material/Https';
-import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
-import { register } from 'module';
-import { UseFormRegister, FieldErrors } from 'react-hook-form';
-import { LoginForm } from '../types/form_data';
-interface LoginMainInfoSection {
-    register: UseFormRegister<LoginForm>,
-    errors: FieldErrors<LoginForm>,
-}
-const LoginMainInfoSection = ({ register, errors }: LoginMainInfoSection) => {
-    return (
-        <>
-            <div className="flex flex-col">
-                <label className="text-[#151717] mb-1 font-semibold">Email</label>
-                <div className="border border-gray-200 rounded-xl h-12 flex items-center px-2 focus-within:border-blue-600 transition text-black/50">
-                    <AlternateEmailIcon />
-                    <input
-                        type="text"
-                        placeholder="Enter your Email"
-                        className="flex-1 h-full border-none outline-none px-2 placeholder-gray-400  text-black "
-                        {...register("email", {
-                            required: "Email is required",
-                            pattern: {
-                                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                                message: "Invalid Email"
-                            }
-                        })}
-                    />
-                </div>
-                {errors.email && (
-                    <p className="text-red-500 text-sm mt-1">
-                        {errors.email.message}
-                    </p>
-                )}
-            </div>
+/**
+ * PURPOSE:
+ * Renders the primary form input fields (Email and Password) for the Login portal,
+ * styled using dark terminal design tokens with focus glow transitions and error handling.
+ *
+ * CONTEXT/PARENT FILE:
+ * Mounted inside 'app/login/page.tsx'.
+ *
+ * INPUTS / PARAMETERS:
+ * - register (UseFormRegister<LoginForm>, Required): React Hook Form register function.
+ * - errors (FieldErrors<LoginForm>, Required): React Hook Form field validation errors object.
+ */
 
-            <div className="flex flex-col mt-4">
-                <label className="text-[#151717] font-semibold mb-1">Password</label>
-                <div className="border border-gray-200 rounded-xl h-12 flex items-center px-2 focus-within:border-blue-600 transition text-black/50">
-                    <HttpsIcon />
-                    <input
-                        type="password"
-                        placeholder="Enter your Password"
-                        className="flex-1 h-full border-none outline-none px-2 placeholder-gray-400"
-                        {...register("password", {
-                            required: "Password is required",
-                            minLength: {
-                                value: 8,
-                                message: "Password must above 8 characters"
-                            }
-                        })}
-                    />
-                </div>
-                {errors.password && (
-                    <p className="text-red-500 text-sm mt-1">
-                        {errors.password.message}
-                    </p>
-                )}
-            </div>
-        </>
-    )
+import HttpsIcon from '@mui/icons-material/Https'
+import AlternateEmailIcon from '@mui/icons-material/AlternateEmail'
+import { UseFormRegister, FieldErrors } from 'react-hook-form'
+import { LoginForm } from '../types/form_data'
+
+interface LoginMainInfoSectionProps {
+  register: UseFormRegister<LoginForm>
+  errors: FieldErrors<LoginForm>
+}
+
+const LoginMainInfoSection = ({ register, errors }: LoginMainInfoSectionProps) => {
+  return (
+    <>
+      {/* Email Input Field */}
+      <div className="flex flex-col">
+        <label className="text-[9px] font-mono text-[#83958d] uppercase tracking-widest font-bold mb-1.5 flex items-center justify-between">
+          <span>Email Address</span>
+          <span className="text-[#00e0b3]">*</span>
+        </label>
+        <div className="relative flex items-center w-full bg-[#151312] border border-white/5 rounded-sm focus-within:border-[#00e0b3]/50 transition-all text-[#e8e1df]">
+          <span className="pl-3 text-[#83958d] flex items-center shrink-0">
+            <AlternateEmailIcon fontSize="small" />
+          </span>
+          <input
+            type="text"
+            placeholder="Enter your email address"
+            className="w-full bg-transparent text-[#e8e1df] placeholder-[#83958d]/40 font-mono text-xs p-3 outline-none border-none"
+            {...register("email", {
+              required: "Email is required",
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: "Invalid Email",
+              },
+            })}
+          />
+        </div>
+        {errors.email && (
+          <p className="text-red-400 font-mono text-[9px] mt-1 uppercase tracking-wider">
+            {errors.email.message}
+          </p>
+        )}
+      </div>
+
+      {/* Password Input Field */}
+      <div className="flex flex-col mt-4">
+        <label className="text-[9px] font-mono text-[#83958d] uppercase tracking-widest font-bold mb-1.5 flex items-center justify-between">
+          <span>Password</span>
+          <span className="text-[#00e0b3]">*</span>
+        </label>
+        <div className="relative flex items-center w-full bg-[#151312] border border-white/5 rounded-sm focus-within:border-[#00e0b3]/50 transition-all text-[#e8e1df]">
+          <span className="pl-3 text-[#83958d] flex items-center shrink-0">
+            <HttpsIcon fontSize="small" />
+          </span>
+          <input
+            type="password"
+            placeholder="Enter your password"
+            className="w-full bg-transparent text-[#e8e1df] placeholder-[#83958d]/40 font-mono text-xs p-3 outline-none border-none"
+            {...register("password", {
+              required: "Password is required",
+              minLength: {
+                value: 8,
+                message: "Password must above 8 characters",
+              },
+            })}
+          />
+        </div>
+        {errors.password && (
+          <p className="text-red-400 font-mono text-[9px] mt-1 uppercase tracking-wider">
+            {errors.password.message}
+          </p>
+        )}
+      </div>
+    </>
+  )
 }
 
 export default LoginMainInfoSection
