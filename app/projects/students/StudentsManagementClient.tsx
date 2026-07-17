@@ -1,47 +1,50 @@
 /**
  * PURPOSE:
- * Client Component for the Admin Projects Management Dashboard.
- * Manages active navigation tabs (Create Showcase Project vs Managing Projects)
- * and loads all showcase projects from the database on-demand.
+ * Client Component for the Student Projects Management Dashboard.
+ * Manages active configurations tabs (Create/Edit Project vs Managing Projects)
+ * and loads user submitted projects on-demand from the database.
  *
  * CONTEXT/PARENT FILE:
- * Mounted in 'app/projects/admins/page.tsx'.
+ * Mounted in 'app/projects/students/page.tsx'.
  *
  * INPUTS / PARAMETERS:
- * - eventsWithGroupsAndAwards (EventWithGroupsAndAward[], Required): Event specifications, group lists, and award types.
+ * - groupsWithEvents (UserGroupsWithEvent[], Required): List of groups user participated in.
+ * - userId (string, Required): The authenticated user ID.
  */
 
 'use client'
 
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { ProjectsSummary } from "@/app/types/projects"
-import { EventWithGroupsAndAward } from "@/app/types/event"
-import { getAllProjects } from "@/app/actions/projects"
+import { ProjectsSummaryExtended } from "@/app/types/projects"
+import { UserGroupsWithEvent } from "@/app/types/group"
+import { getUserSubmittedProjects } from "@/app/actions/projects"
 import { useNotification } from "@/app/context/NotificationContext"
 import BackButton from "@/app/components/BackButton"
-import CreateShowCaseProjectSection from "./components/CreateShowCaseProjectSection"
-import AdminProjectManageSection from "./components/AdminProjectManageSection"
+import SubmitShowcaseProjectSection from "./components/SubmitShowcaseProjectSection"
+import ManageProjectsSection from "./components/ManageProjectsSection"
 
 type PageType = "create" | "manage"
 
-interface ProjectsAdminClientProps {
-  eventsWithGroupsAndAwards: Array<EventWithGroupsAndAward>
+interface StudentsManagementClientProps {
+  groupsWithEvents: Array<UserGroupsWithEvent>
+  userId: string
 }
 
-export default function ProjectsAdminClient({
-  eventsWithGroupsAndAwards,
-}: ProjectsAdminClientProps) {
+export default function StudentsManagementClient({
+  groupsWithEvents,
+  userId,
+}: StudentsManagementClientProps) {
   const { showNotification } = useNotification()
   const [currentPage, setCurrentPage] = useState<PageType>("create")
-  const [currentProjects, setCurrentProjects] = useState<Array<ProjectsSummary>>([])
+  const [userProjects, setUserProjects] = useState<Array<ProjectsSummaryExtended>>([])
   const [hasLoadedProjects, setHasLoadedProjects] = useState<boolean>(false)
   const [isLoadingProjects, setIsLoadingProjects] = useState<boolean>(false)
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Handles switching tabs. If the target tab is 'manage' and project registry
-   * data has not been fetched yet, triggers getAllProjects server action
+   * Handles switching tabs. If the target tab is 'manage' and user projects
+   * have not been fetched yet, triggers getUserSubmittedProjects server action
    * with loading states.
    *
    * PARAMETERS:
@@ -55,17 +58,21 @@ export default function ProjectsAdminClient({
     if (tab === "manage" && !hasLoadedProjects) {
       setIsLoadingProjects(true)
       try {
-        const { data, error } = await getAllProjects()
+        const { data, error } = await getUserSubmittedProjects({
+          userId,
+          status: null,
+          ascending: false,
+        })
         if (error) {
           throw new Error(error)
         }
-        setCurrentProjects(data ?? [])
+        setUserProjects(data ?? [])
         setHasLoadedProjects(true)
       } catch (error) {
         if (error instanceof Error) {
           showNotification(error.message)
         } else {
-          showNotification("Failed to fetch showcase projects registry.")
+          showNotification("Failed to fetch submitted projects registry.")
         }
       } finally {
         setIsLoadingProjects(false)
@@ -84,16 +91,16 @@ export default function ProjectsAdminClient({
           <div className="w-[3px] bg-[#00e0b3]" />
           <div className="flex flex-col gap-1.5">
             <span className="text-[8px] font-mono text-[#83958d] uppercase tracking-widest">
-              ADMIN_PORTAL // SHOWCASE_PROJECTS
+              SYSTEM_REGISTRY // PROJECT_SUBMISSION
             </span>
             <h1 className="text-3xl font-extrabold text-[#e8e1df] tracking-tight uppercase leading-tight font-mono">
-              MANAGE_SHOWCASE_PROJECTS
+              MANAGE_SUBMISSIONS
             </h1>
           </div>
         </div>
 
         <div className="text-[8px] font-mono text-[#00e0b3] border border-[#00e0b3]/20 bg-[#00e0b3]/5 px-3 py-1 rounded-sm tracking-widest font-bold uppercase select-none">
-          [ADMIN_NODE_ACTIVE]
+          [SUBMISSION_NODE_ACTIVE]
         </div>
       </div>
 
@@ -112,7 +119,7 @@ export default function ProjectsAdminClient({
             >
               {isActive && (
                 <motion.div
-                  layoutId="adminProjectsTabActiveIndicator"
+                  layoutId="studentProjectsTabActiveIndicator"
                   className="absolute inset-0 bg-[#00e0b3] rounded-sm z-0"
                   transition={{ type: "spring", stiffness: 380, damping: 30 }}
                 />
@@ -137,9 +144,9 @@ export default function ProjectsAdminClient({
             className="w-full"
           >
             {currentPage === "create" && (
-              <CreateShowCaseProjectSection
+              <SubmitShowcaseProjectSection
+                groupsWithEvents={groupsWithEvents}
                 page={currentPage}
-                eventsWithGroupsAndAwards={eventsWithGroupsAndAwards}
               />
             )}
             {currentPage === "manage" && (
@@ -152,10 +159,11 @@ export default function ProjectsAdminClient({
                     </span>
                   </div>
                 ) : (
-                  <AdminProjectManageSection
+                  <ManageProjectsSection
                     page={currentPage}
-                    currentProjects={currentProjects}
-                    setCurrentProjects={setCurrentProjects}
+                    userProjects={userProjects}
+                    setUserProjects={setUserProjects}
+                    userId={userId}
                   />
                 )}
               </div>

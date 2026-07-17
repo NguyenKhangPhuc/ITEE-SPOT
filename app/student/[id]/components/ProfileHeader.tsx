@@ -182,7 +182,7 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
                 ACADEMIC REGISTRY
               </span>
               <p className="text-xs font-mono text-[#b9cbc2] leading-relaxed mt-1">
-                {user.degree && degreeLabel[user.degree as DEGREE] ? degreeLabel[user.degree as DEGREE] : "B.Sc."} in {user.programme || "UNASSIGNED_SECTOR"}
+                {user.degree && degreeLabel[user.degree as DEGREE] && degreeLabel[user.degree as DEGREE]} in {user.programme || "UNASSIGNED_SECTOR"}
                 <br />
                 {user.university || "UNASSIGNED_SECTOR"},  {user.year || "UNASSIGNED_SECTOR"}
               </p>

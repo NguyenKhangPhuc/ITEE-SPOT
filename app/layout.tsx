@@ -30,6 +30,9 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "ITEE SPOT",
   description: "ITEE SPOT is a collaboration platform to manage the events and boost the connection between students and SMEs in Oulu, the platform is developed and maintained by IKAPO project which is co-funded by the European Union",
+  icons: {
+    icon: "/assets/iteespot_logo.png",
+  },
 };
 
 export default function RootLayout({
@@ -40,6 +43,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <link rel="icon" href="/assets/iteespot_logo.png" />
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
       </head>
       <LoaderProvider>

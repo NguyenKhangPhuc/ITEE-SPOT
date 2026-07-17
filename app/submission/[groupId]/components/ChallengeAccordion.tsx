@@ -24,7 +24,7 @@ import {
 import SubmissionFormFields from "./SubmissionFormFields"
 import SubmissionPreview from "./SubmissionPreview"
 import { tw } from "@/app/constants/design-tokens"
-import SubmissionFileSection from "./SubmissionFileSection"
+import SubmissionFileSection from "@/app/components/file-management/SubmissionFileSection"
 
 interface ChallengeAccordionProps {
   challenge: EventChallenge
