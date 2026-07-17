@@ -8,7 +8,7 @@
  * Mounted via 'app/components/NavbarServer.tsx' for viewports narrower than 2xl (1536px).
  *
  * INPUTS / PARAMETERS:
- * - initialUser (ProfileInsert | null, Required): The authenticated user profile passed from the server wrapper.
+ * - initialUser (ProfileInsert | null, Required): The authenticated initialUser profile passed from the server wrapper.
  */
 
 'use client'
@@ -30,13 +30,12 @@ export default function NavbarMobile({ initialUser }: { initialUser: ProfileInse
   const pathname = usePathname()
   const { showNotification } = useNotification()
   
-  // State variables for drawer open toggle and authenticated user payload
+  // State variables for drawer open toggle and authenticated initialUser payload
   const [isOpen, setIsOpen] = useState<boolean>(false)
-  const [user] = useState<ProfileInsert | null>(initialUser)
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Triggers the user logout authentication action, closes the mobile drawer, and reports errors.
+   * Triggers the initialUser logout authentication action, closes the mobile drawer, and reports errors.
    *
    * PARAMETERS:
    * None.
@@ -57,7 +56,7 @@ export default function NavbarMobile({ initialUser }: { initialUser: ProfileInse
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Validates if a navigation section is authorized based on the user's role.
+   * Validates if a navigation section is authorized based on the initialUser's role.
    *
    * PARAMETERS:
    * - navRole (PROFILE_ROLE | null): The role required to access the navigation category.
@@ -66,22 +65,22 @@ export default function NavbarMobile({ initialUser }: { initialUser: ProfileInse
    * - boolean: True if authorized, otherwise false.
    */
   const handleGetNavigation = (navRole: PROFILE_ROLE | null): boolean => {
-    if (user == null) {
+    if (initialUser == null) {
       return false
     }
-    if (navRole != null && user.role === PROFILE_ROLE.JUDGES) {
+    if (navRole != null && initialUser.role === PROFILE_ROLE.JUDGES) {
       return navRole !== PROFILE_ROLE.ADMIN
     }
-    if (navRole != null && user.role === PROFILE_ROLE.ADMIN) {
+    if (navRole != null && initialUser.role === PROFILE_ROLE.ADMIN) {
       return true
     }
-    if (navRole != null && navRole === user.role) {
-      return navRole === user.role
+    if (navRole != null && navRole === initialUser.role) {
+      return navRole === initialUser.role
     }
     return false
   }
 
-  // Filtered categories according to user roles
+  // Filtered categories according to initialUser roles
   const visibleCategories = NAVIGATION_BAR.filter(
     (nav) => nav.role === null || handleGetNavigation(nav.role)
   )
@@ -175,7 +174,7 @@ export default function NavbarMobile({ initialUser }: { initialUser: ProfileInse
       <MobileMenuDrawer
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
-        user={user}
+        user={initialUser}
         pathname={pathname}
         visibleCategories={visibleCategories}
         handleLogout={handleLogout}

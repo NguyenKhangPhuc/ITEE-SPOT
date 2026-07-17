@@ -12,7 +12,6 @@ import { ProfileInsert } from "@/app/types/profile"
 
 const NavBar = ({ initialUser }: { initialUser: ProfileInsert | null }) => {
     const { showNotification } = useNotification()
-    const [user, setUser] = useState(initialUser)
     const pathname = usePathname()
 
 
@@ -27,17 +26,17 @@ const NavBar = ({ initialUser }: { initialUser: ProfileInsert | null }) => {
     }
 
     const handleGetNavigation = (navRole: PROFILE_ROLE | null) => {
-        if (user == null) {
+        if (initialUser == null) {
             return false
         }
-        if (navRole != null && user.role == PROFILE_ROLE.JUDGES) {
+        if (navRole != null && initialUser.role == PROFILE_ROLE.JUDGES) {
             return navRole != PROFILE_ROLE.ADMIN
         }
-        if (navRole != null && user.role == PROFILE_ROLE.ADMIN) {
+        if (navRole != null && initialUser.role == PROFILE_ROLE.ADMIN) {
             return true
         }
-        if (navRole != null && navRole == user.role) {
-            return navRole == user.role
+        if (navRole != null && navRole == initialUser.role) {
+            return navRole == initialUser.role
         }
         return false
     }
@@ -56,7 +55,7 @@ const NavBar = ({ initialUser }: { initialUser: ProfileInsert | null }) => {
             case 'groups':
             case 'group management':
                 return 'group';
-            case 'user management':
+            case 'initialUser management':
                 return 'manage_accounts';
             case 'profiles':
             case 'profile':
@@ -124,9 +123,9 @@ const NavBar = ({ initialUser }: { initialUser: ProfileInsert | null }) => {
 
             </div>
 
-            {/* User & Auth Status Section */}
+            {/* initialUser & Auth Status Section */}
             <div className="mt-auto pt-8 border-t border-white/5">
-                {user ? (
+                {initialUser ? (
                     <button
                         onClick={handleLogout}
                         className="w-full bg-red-500/10 text-red-400 border border-red-500/20 px-6 py-3 rounded-sm font-semibold text-sm hover:bg-red-500 hover:text-white transition-all uppercase tracking-widest flex items-center justify-center gap-2 cursor-pointer"
@@ -145,8 +144,8 @@ const NavBar = ({ initialUser }: { initialUser: ProfileInsert | null }) => {
                 )}
 
                 <div className="mt-6 flex items-center gap-3 text-[10px] font-mono text-[#83958d]">
-                    <div className={`w-2 h-2 rounded-full animate-pulse ${user ? 'bg-[#00e0b3]' : 'bg-red-500'}`}></div>
-                    {user ? `Auth: ${user?.role!.toUpperCase()}` : 'Auth: Offline'}
+                    <div className={`w-2 h-2 rounded-full animate-pulse ${initialUser ? 'bg-[#00e0b3]' : 'bg-red-500'}`}></div>
+                    {initialUser ? `Auth: ${initialUser?.role!.toUpperCase()}` : 'Auth: Offline'}
                 </div>
             </div>
         </nav>
