@@ -187,5 +187,5 @@ export type UserGroupsWithEvent = {
 export interface AdminGroups extends GroupInsert {
     group_members: AdminGroupMember[],
     events: EventInsert | null,
-    group_challenges: AdminGroupChallenge[]
+    group_challenge: AdminGroupChallenge[]
 }

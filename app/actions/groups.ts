@@ -117,8 +117,9 @@ export async function updateGroupPosterPath({ groupId, avatarFile, originalPath 
 
 export async function getAllGroups(){
     const supabase = await createClient();
-    const {data, error} = await supabase.from('groups').select('*, events (*), group_members (*, profiles (*)), group_challenges (*, event_challenges (*))')
+    const {data, error} = await supabase.from('groups').select('*, events (*), group_members (*, profiles (*)), group_challenge (*, event_challenges (*))')
     if (error){
+        console.log(error)
         return {error: 'Failed to get all groups'}
     }
     return {data, error}

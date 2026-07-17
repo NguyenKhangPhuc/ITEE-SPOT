@@ -71,7 +71,10 @@ export default function MobileMenuDrawer({
       case 'projects management':
         return 'account_tree'
       case 'groups':
+      case 'group management':
         return 'group'
+      case 'user management':
+        return 'manage_accounts'
       case 'profiles':
       case 'profile':
       case 'invitations':

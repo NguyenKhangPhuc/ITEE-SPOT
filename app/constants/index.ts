@@ -50,6 +50,8 @@ export const NAVIGATION_BAR = [
         category: 'Admin', items: [
             { title: 'Create Events', link: '/events/create' },
             { title: 'Projects Management', link: '/projects/admins' },
+            { title: 'User Management', link: '/user-management' },
+            { title: 'Group Management', link: '/group-management' },
         ],
         role: PROFILE_ROLE.ADMIN
     },
