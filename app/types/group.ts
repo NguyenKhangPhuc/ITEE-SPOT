@@ -47,7 +47,7 @@ export interface UnifiedGroup {
         title: string | null
         event_awards?: UnifiedGroupEventAward[]
     } | null
-    members: UnifiedGroupMember[]
+    group_members: UnifiedGroupMember[]
     challenges: UnifiedGroupChallenge[]
 }
 

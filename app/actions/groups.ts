@@ -11,32 +11,48 @@ export async function getUserGroups() {
     if (!user || userError) {
         return { data: null, error: { message: 'Fail to verify user' } }
     }
+    const { data: myGroupIds, error: groupIdsError } = await supabase
+        .from('group_members')
+        .select('group_id')
+        .eq('member_id', user.user.id);
 
+    if (groupIdsError || !myGroupIds) {
+        return { data: null, error: { message: groupIdsError?.message ?? 'Fail to fetch group ids' } };
+    }
+
+    const groupIds = myGroupIds.map(g => g.group_id ?? "");
+
+    if (groupIds.length === 0) {
+        return { data: [], error: null };
+    }
+    
     const { data, error } = await supabase
         .from('groups')
         .select(`
-        id,
-        group_name,
-        short_description,
-        poster_path,
-        created_at,
-        event_id,
-        events (title, event_awards (*)),
-        members:group_members!inner (
-            member_id, 
-            profiles (full_name, email, degree, programme)
-        ),
-        challenges:group_challenge (
-            id, 
-            challenge_id, 
-            event_challenges (company_name, title)
-        )
-    `)
-        // Sử dụng ALIAS 'members' ở đây thay vì 'group_members'
-        .eq('members.member_id', user.user.id)
+            id,
+            group_name,
+            short_description,
+            poster_path,
+            created_at,
+            event_id,
+            events (title, event_awards (*)),
+            group_members (
+                member_id, 
+                profiles (full_name, email, degree, programme)
+            ),
+            challenges:group_challenge (
+                id, 
+                challenge_id, 
+                event_challenges (company_name, title)
+            )
+        `)
+        .in('id', groupIds); // Lọc theo group_id thay vì lọc theo members.member_id
+
+
     if (error || !data) {
         return { data: null, error: error ? { message: error.message } : null }
     }
+    console.log(data[0].group_members)
 
     return { data, error: null }
 }
@@ -70,7 +86,7 @@ export async function getEventGroups(eventId: string) {
             poster_path,
             created_at,
             events (title),
-            members:group_members (member_id, profiles (full_name, email, degree, programme)),
+            group_members (member_id, profiles (full_name, email, degree, programme)),
             challenges:group_challenge (id, challenge_id, event_challenges (company_name, title))
         `)
         .eq('event_id', eventId)
@@ -115,12 +131,12 @@ export async function updateGroupPosterPath({ groupId, avatarFile, originalPath 
     return { data, error }
 }
 
-export async function getAllGroups(){
+export async function getAllGroups() {
     const supabase = await createClient();
-    const {data, error} = await supabase.from('groups').select('*, events (*), group_members (*, profiles (*)), group_challenge (*, event_challenges (*))')
-    if (error){
+    const { data, error } = await supabase.from('groups').select('*, events (*), group_members (*, profiles (*)), group_challenge (*, event_challenges (*))')
+    if (error) {
         console.log(error)
-        return {error: 'Failed to get all groups'}
+        return { error: 'Failed to get all groups' }
     }
-    return {data, error}
+    return { data, error }
 }

@@ -229,10 +229,10 @@ export default function SingleGroupClient({
    * RETURNS:
    * - Promise<void>
    */
-  const handleRemoveStudentSelf = async () => {
+  const handleRemoveStudentSelf = async (groupId: string) => {
     setIsOpenLoader(true)
     try {
-      const { error } = await removeStudentsThemselveFromGroupById()
+      const { error } = await removeStudentsThemselveFromGroupById(groupId)
       if (error) throw new Error(error)
       setIsOpenLoader(false)
       showNotification("Removed from group successfully")

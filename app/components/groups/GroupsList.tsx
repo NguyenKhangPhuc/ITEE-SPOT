@@ -113,9 +113,9 @@ export default function GroupsList({ groups, actionType }: GroupsListProps) {
                         Core Operatives
                       </span>
                     </div>
-                    {group.members.length > 0 ? (
+                    {group.group_members.length > 0 ? (
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                        {group.members.map((m, idx) => (
+                        {group.group_members.map((m, idx) => (
                           <div key={idx} className="flex items-center gap-2.5 min-w-0">
                             <div className="w-7 h-7 rounded-full border border-white/10 bg-white/5 flex items-center justify-center shrink-0">
                               <span className="material-symbols-outlined text-xs text-[#83958d]">

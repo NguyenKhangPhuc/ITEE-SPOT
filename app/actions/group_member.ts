@@ -81,26 +81,26 @@ export async function insertGroupMembers(registerGroupMemberData: RegisterGroupM
     return { createdGroup, error: groupError }
 }
 
-export async function removeStudentsThemselveFromGroupById() {
+export async function removeStudentsThemselveFromGroupById(groupId: string) {
     const supabase = await createClient()
 
-    const {data: student} = await supabase.auth.getUser()
-    if (student.user == null){
-        return {error: 'You are not signed in'}
+    const { data: student } = await supabase.auth.getUser()
+    if (student.user == null) {
+        return { error: 'You are not signed in' }
     }
-    const { data, error } = await supabase.from('group_members').delete().eq('member_id', student.user.id);
+    const { data, error } = await supabase.from('group_members').delete().eq('member_id', student.user.id).eq('group_id', groupId);
     if (error) {
         return { error: 'Fail to remove yourself from the group' }
     }
     return { data, error }
 }
 
-export async function deleteGroupMemberById(id: string){
+export async function deleteGroupMemberById(id: string) {
     const supabase = await createClient();
-    const {data, error} = await supabase.from('group_members').delete().eq('id', id)
-    if (error){
-        return {error: 'Fail to delete the group member'}
+    const { data, error } = await supabase.from('group_members').delete().eq('id', id)
+    if (error) {
+        return { error: 'Fail to delete the group member' }
     }
-    return {data, error}
+    return { data, error }
 }
 

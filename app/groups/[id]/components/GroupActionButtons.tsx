@@ -24,7 +24,7 @@ import { DynamicModal } from "@/app/components/DynamicModal"
 interface GroupActionButtonsProps {
   groupId: string
   groupName?: string
-  handleRemoveStudentSelf: () => Promise<void>
+  handleRemoveStudentSelf: (groupId: string) => Promise<void>
 }
 
 export default function GroupActionButtons({
@@ -46,7 +46,7 @@ export default function GroupActionButtons({
    */
   const handleConfirmSelfExclusion = async (): Promise<void> => {
     setIsConfirmModalOpen(false)
-    await handleRemoveStudentSelf()
+    await handleRemoveStudentSelf(groupId)
   }
 
   const targetGroupName = groupName && groupName.trim() !== "" ? groupName : "this group"
