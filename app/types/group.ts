@@ -3,6 +3,8 @@ import { UNIVERSITY, YEAR } from "./enum";
 import { Event, EventInsert, EventWithAwards } from "./event";
 import { EventAwardsInsert } from "./event_awards";
 import { EventChallengeInsert } from "./event_challenges";
+import { AdminGroupChallenge } from "./group_challenge";
+import { AdminGroupMember } from "./group_member";
 import { Profile, ProfileInsert } from "./profile";
 
 export type Group = Database["public"]["Tables"]["groups"]["Row"]
@@ -179,4 +181,11 @@ export type UserGroupsWithEvent = {
             title: string | null;
         } | null;
     }[];
+}
+
+
+export interface AdminGroups extends GroupInsert {
+    group_members: AdminGroupMember[],
+    events: EventInsert | null,
+    group_challenges: AdminGroupChallenge[]
 }

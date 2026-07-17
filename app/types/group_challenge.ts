@@ -1,4 +1,5 @@
 import { Database } from "./database.types";
+import { EventChallengeInsert } from "./event_challenges";
 
 export type GroupChallengeRelation = Database["public"]["Tables"]["group_challenge"]["Row"]
 
@@ -18,3 +19,7 @@ export type GroupChallengeWithGroupAndChallenge = {
         title: string | null;
     } | null;
 }[] | null
+
+export interface AdminGroupChallenge extends GroupChallengeRelationInsert{
+    event_challenges: EventChallengeInsert | null
+}
