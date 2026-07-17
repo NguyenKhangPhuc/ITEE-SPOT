@@ -16,17 +16,18 @@ import Image from "next/image"
  */
 export default function TeamSection() {
   const teamMembers = [
-    { name: "Hanna", role: "Development Manager", image: "/team/hanna.jpg" },
-    { name: "Kiyoko", role: "Project Specialist", image: "/team/kiyoko.png" },
-    { name: "Phuc", role: "Trainee", image: "/team/phuc.png" },
-    { name: "Marina", role: "Trainee", image: "/team/marina.png" }
+    { name: "Hanna Saarela", role: "Development Manager", image: "/team/hanna.jpg" },
+    { name: "Kiyoko Uematsu-Ervasti", role: "Project Specialist", image: "/team/kiyoko.png" },
+    { name: "Phuc Nguyen", role: "Trainee", image: "/team/phuc.png" },
+    { name: "Marina Saksa", role: "Trainee", image: "/team/marina.png" },
+    // { name: "Vy Nguyen", role: "AI Specialist", image: "/team/vivi.png" },
   ]
 
   return (
     <section className="py-24 bg-[#100e0d] border-y border-white/5 relative overflow-hidden">
       <div className="absolute right-0 top-0 w-1/3 h-full bg-[linear-gradient(to_right,rgba(0,224,179,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,224,179,0.05)_1px,transparent_1px)] bg-[size:40px_40px] opacity-10 pointer-events-none"></div>
       <div className="max-w-7xl mx-auto px-6 md:px-16">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -45,7 +46,7 @@ export default function TeamSection() {
           </p>
         </motion.div>
 
-        <motion.div 
+        <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
@@ -61,7 +62,7 @@ export default function TeamSection() {
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12"
         >
           {teamMembers.map((member) => (
-            <motion.div 
+            <motion.div
               key={member.name}
               variants={{
                 hidden: { opacity: 0, y: 20 },

@@ -62,12 +62,12 @@ export default function EventGroupsClient({ event, eventGroups }: EventGroupsCli
         const matchDegree =
           data.degrees.length === 0
             ? true
-            : group.members.some((m) => data.degrees.includes(m.profiles?.degree ?? ""))
+            : group.group_members.some((m) => data.degrees.includes(m.profiles?.degree ?? ""))
 
         const matchProgramme =
           data.programmes.length === 0
             ? true
-            : group.members.some((m) => data.programmes.includes(m.profiles?.programme ?? ""))
+            : group.group_members.some((m) => data.programmes.includes(m.profiles?.programme ?? ""))
 
         return matchChallenge && matchDegree && matchProgramme
       })

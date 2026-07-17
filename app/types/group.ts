@@ -160,7 +160,7 @@ export type UserGroupsWithEvent = {
         title: string | null;
         event_awards: EventAwardsInsert[];
     } | null;
-    members: {
+    group_members: {
         member_id: string | null;
         profiles: {
             full_name: string | null;
