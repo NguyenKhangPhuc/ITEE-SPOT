@@ -216,6 +216,13 @@ export type Database = {
             foreignKeyName: "fun_facts_submission_id_fkey"
             columns: ["submission_id"]
             isOneToOne: false
+            referencedRelation: "submission_final_scores"
+            referencedColumns: ["submission_id"]
+          },
+          {
+            foreignKeyName: "fun_facts_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
             referencedRelation: "submissions"
             referencedColumns: ["id"]
           },
@@ -265,6 +272,13 @@ export type Database = {
             referencedRelation: "groups"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "group_challenge_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "submission_final_scores"
+            referencedColumns: ["group_id"]
+          },
         ]
       }
       group_members: {
@@ -293,6 +307,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "groups"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_members_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "submission_final_scores"
+            referencedColumns: ["group_id"]
           },
           {
             foreignKeyName: "group_members_member_id_fkey"
@@ -373,6 +394,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "groups"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invitation_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "submission_final_scores"
+            referencedColumns: ["group_id"]
           },
           {
             foreignKeyName: "invitation_member_email_fkey"
@@ -520,6 +548,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "project_files_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "submission_final_scores"
+            referencedColumns: ["group_id"]
+          },
+          {
             foreignKeyName: "project_files_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
@@ -587,6 +622,13 @@ export type Database = {
             referencedRelation: "groups"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "projects_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "submission_final_scores"
+            referencedColumns: ["group_id"]
+          },
         ]
       }
       submission_comments: {
@@ -615,6 +657,13 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "submission_comments_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "submission_final_scores"
+            referencedColumns: ["submission_id"]
+          },
           {
             foreignKeyName: "submission_comments_submission_id_fkey"
             columns: ["submission_id"]
@@ -657,6 +706,13 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "submission_feedbacks_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "submission_final_scores"
+            referencedColumns: ["submission_id"]
+          },
           {
             foreignKeyName: "submission_feedbacks_submission_id_fkey"
             columns: ["submission_id"]
@@ -713,6 +769,20 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "submission_files_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "submission_final_scores"
+            referencedColumns: ["group_id"]
+          },
+          {
+            foreignKeyName: "submission_files_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "submission_final_scores"
+            referencedColumns: ["submission_id"]
+          },
+          {
             foreignKeyName: "submission_files_submission_id_fkey"
             columns: ["submission_id"]
             isOneToOne: false
@@ -753,6 +823,41 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "event_grading_criteria"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "submission_grading_event_criteria_id_fkey"
+            columns: ["event_criteria_id"]
+            isOneToOne: false
+            referencedRelation: "submission_criteria_user_grades"
+            referencedColumns: ["criteria_id"]
+          },
+          {
+            foreignKeyName: "submission_grading_event_criteria_id_fkey"
+            columns: ["event_criteria_id"]
+            isOneToOne: false
+            referencedRelation: "submission_normal_criteria_cells"
+            referencedColumns: ["criteria_id"]
+          },
+          {
+            foreignKeyName: "submission_grading_event_criteria_id_fkey"
+            columns: ["event_criteria_id"]
+            isOneToOne: false
+            referencedRelation: "submission_specific_criteria_cells"
+            referencedColumns: ["criteria_id"]
+          },
+          {
+            foreignKeyName: "submission_grading_event_criteria_id_fkey"
+            columns: ["event_criteria_id"]
+            isOneToOne: false
+            referencedRelation: "submission_specific_criteria_user_grades"
+            referencedColumns: ["criteria_id"]
+          },
+          {
+            foreignKeyName: "submission_grading_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "submission_final_scores"
+            referencedColumns: ["submission_id"]
           },
           {
             foreignKeyName: "submission_grading_submission_id_fkey"
@@ -797,6 +902,13 @@ export type Database = {
             foreignKeyName: "submission_rating_submission_id_fkey"
             columns: ["submission_id"]
             isOneToOne: false
+            referencedRelation: "submission_final_scores"
+            referencedColumns: ["submission_id"]
+          },
+          {
+            foreignKeyName: "submission_rating_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
             referencedRelation: "submissions"
             referencedColumns: ["id"]
           },
@@ -829,6 +941,13 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "submission_reactions_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "submission_final_scores"
+            referencedColumns: ["submission_id"]
+          },
           {
             foreignKeyName: "submission_reactions_submission_id_fkey"
             columns: ["submission_id"]
@@ -894,6 +1013,13 @@ export type Database = {
             referencedRelation: "groups"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "submissions_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "submission_final_scores"
+            referencedColumns: ["group_id"]
+          },
         ]
       }
     }
@@ -953,20 +1079,232 @@ export type Database = {
             referencedRelation: "groups"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "projects_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "submission_final_scores"
+            referencedColumns: ["group_id"]
+          },
         ]
       }
-      submission_final_scores: {
+      submission_criteria_user_grades: {
         Row: {
-          final_average_score: number | null
+          criteria_id: string | null
+          criteria_name: string | null
+          grade: number | null
+          percentage: number | null
           submission_id: string | null
-          total_graders: number | null
+          user_id: string | null
+          user_name: string | null
+          weighted_score: number | null
         }
         Relationships: [
           {
             foreignKeyName: "submission_grading_submission_id_fkey"
             columns: ["submission_id"]
             isOneToOne: false
+            referencedRelation: "submission_final_scores"
+            referencedColumns: ["submission_id"]
+          },
+          {
+            foreignKeyName: "submission_grading_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
             referencedRelation: "submissions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "submission_grading_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      submission_final_cell: {
+        Row: {
+          final_avg_score: number | null
+          submission_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "submission_grading_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "submission_final_scores"
+            referencedColumns: ["submission_id"]
+          },
+          {
+            foreignKeyName: "submission_grading_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      submission_final_scores: {
+        Row: {
+          avg_rating: number | null
+          event_id: string | null
+          final_avg_score: number | null
+          group_id: string | null
+          group_name: string | null
+          normal_criteria: Json | null
+          raters: Json | null
+          specific_criteria: Json | null
+          submission_id: string | null
+          submission_title: string | null
+          total_raters: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "groups_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      submission_normal_criteria_cells: {
+        Row: {
+          avg_score: number | null
+          criteria_id: string | null
+          criteria_name: string | null
+          graders: Json | null
+          submission_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "submission_grading_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "submission_final_scores"
+            referencedColumns: ["submission_id"]
+          },
+          {
+            foreignKeyName: "submission_grading_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      submission_ratings_cell: {
+        Row: {
+          avg_rating: number | null
+          raters: Json | null
+          submission_id: string | null
+          total_raters: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "submission_rating_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "submission_final_scores"
+            referencedColumns: ["submission_id"]
+          },
+          {
+            foreignKeyName: "submission_rating_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      submission_specific_criteria_cells: {
+        Row: {
+          avg_score: number | null
+          criteria_id: string | null
+          criteria_name: string | null
+          graders: Json | null
+          submission_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "submission_grading_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "submission_final_scores"
+            referencedColumns: ["submission_id"]
+          },
+          {
+            foreignKeyName: "submission_grading_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      submission_specific_criteria_user_grades: {
+        Row: {
+          criteria_id: string | null
+          criteria_name: string | null
+          grade: number | null
+          percentage: number | null
+          submission_id: string | null
+          user_id: string | null
+          user_name: string | null
+          weighted_score: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "submission_grading_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "submission_final_scores"
+            referencedColumns: ["submission_id"]
+          },
+          {
+            foreignKeyName: "submission_grading_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "submissions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "submission_grading_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      submission_user_final_points: {
+        Row: {
+          submission_id: string | null
+          user_id: string | null
+          user_name: string | null
+          user_total: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "submission_grading_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "submission_final_scores"
+            referencedColumns: ["submission_id"]
+          },
+          {
+            foreignKeyName: "submission_grading_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "submissions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "submission_grading_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]

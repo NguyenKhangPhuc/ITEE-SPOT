@@ -11,27 +11,33 @@ import { v4 as uuidv4 } from 'uuid';
 import { EventChallengeInsert } from '../types/event_challenges'
 import { EventCriteriaInsert } from '../types/event_criteria'
 
-export async function createEvent({ event, challenges, avatarFile, criteria }:
-    { event: EventInsert, challenges: Array<EventInsert>, avatarFile: File | null, criteria: Array<EventCriteriaInsert> }) {
+export async function createEvent({ event, 
+    // challenges, avatarFile, criteria 
+}:
+    {
+        event: EventInsert,
+        // challenges: Array<EventInsert>, avatarFile: File | null, criteria: Array<EventCriteriaInsert>
+    }
+) {
     const supabase = await createClient();
 
     const { data: user } = await supabase.auth.getUser()
-    const eventId: string = uuidv4()
-    let avatarUrlPath = null
-    if (avatarFile != null) {
-        avatarUrlPath = `${eventId}/${Date.now()}-${avatarFile.name}`;
-        if (avatarUrlPath) {
-            const { error: storageError } = await supabase.storage.from('attachments').upload(avatarUrlPath, avatarFile);
-            if (storageError) {
-                return { error: "Failed to upload to storage" }
-            }
-        }
-    }
+    // const eventId: string = uuidv4()
+    // let avatarUrlPath = null
+    // if (avatarFile != null) {
+    //     avatarUrlPath = `${eventId}/${Date.now()}-${avatarFile.name}`;
+    //     if (avatarUrlPath) {
+    //         const { error: storageError } = await supabase.storage.from('attachments').upload(avatarUrlPath, avatarFile);
+    //         if (storageError) {
+    //             return { error: "Failed to upload to storage" }
+    //         }
+    //     }
+    // }
     const { data, error }: { data: Event | null, error: PostgrestError | null } = await supabase.from("events").insert(
         {
-            id: eventId,
+            // id: eventId,
             title: event.title,
-            poster_path: avatarUrlPath,
+            // poster_path: avatarUrlPath,
             short_description: event.short_description,
             content: event.content,
             location: event.location,
@@ -49,24 +55,24 @@ export async function createEvent({ event, challenges, avatarFile, criteria }:
     }
 
 
-    const updatedChallenges = challenges.map(challenge => ({
-        ...challenge,
-        event_id: data?.id
-    }));
+    // const updatedChallenges = challenges.map(challenge => ({
+    //     ...challenge,
+    //     event_id: data?.id
+    // }));
 
-    const { error: challengeError } = await supabase.from("event_challenges").insert(updatedChallenges)
+    // const { error: challengeError } = await supabase.from("event_challenges").insert(updatedChallenges)
 
-    if (challengeError) {
-        return { error: "Fail to create the event challenges, please contact staffs" }
-    }
+    // if (challengeError) {
+    //     return { error: "Fail to create the event challenges, please contact staffs" }
+    // }
 
-    const updatedCriteria = criteria.map(cri => ({ ...cri, event_id: data?.id }))
+    // const updatedCriteria = criteria.map(cri => ({ ...cri, event_id: data?.id }))
 
-    const { error: criteriaError } = await supabase.from('event_grading_criteria').insert(updatedCriteria)
-    if (criteriaError) {
-        return { error: "Fail to create the event criteria, please contact staffs" }
-    }
-    revalidatePath('/events');
+    // const { error: criteriaError } = await supabase.from('event_grading_criteria').insert(updatedCriteria)
+    // if (criteriaError) {
+    //     return { error: "Fail to create the event criteria, please contact staffs" }
+    // }
+    // revalidatePath('/events');
     return { data, error: null }
 }
 

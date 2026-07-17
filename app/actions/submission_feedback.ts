@@ -17,6 +17,9 @@ export async function updateSubmissionFeedback({ submissionFeedback }: { submiss
 export async function getSubmissionFeedBackByUserIdAndSubmissionId({ userId, submissionId }: { userId: string, submissionId: string }) {
     const supabase = await createClient();
     const { data, error } = await supabase.from('submission_feedbacks').select('*').eq('user_id', userId).eq('submission_id', submissionId).maybeSingle()
+    if (error){
+        return {error: "Failed to get the feedbacks"}
+    }
     return { data, error }
 }
 

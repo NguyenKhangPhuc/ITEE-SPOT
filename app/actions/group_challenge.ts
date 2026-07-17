@@ -11,3 +11,13 @@ export async function getGroupChallenges({ groupId }: { groupId: string }) {
 
     return { data, error }
 }
+
+
+export async function deleteGroupChallengeById(groupChallengeId: string){
+    const supabase = await createClient()
+    const {data, error} = await supabase.from('group_challenge').delete().eq('id', groupChallengeId)
+    if (error) {
+        return {error: 'Failed to delete the group_challenge'}
+    }
+    return {data,error}
+}

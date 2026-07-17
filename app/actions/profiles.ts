@@ -1,5 +1,6 @@
 'use server'
 
+import { PROFILE_ROLE } from "../types/enum";
 import { ResetPasswordForm, VerifyAccountForm } from "../types/form_data";
 import { ProfileInsert } from "../types/profile";
 import { createClient } from "../utils/supabase/server";
@@ -92,4 +93,24 @@ export async function updateProfileAvatar({ userId, posterFile, originalPath }: 
         return { error: "Failed to update image, please contact staff" }
     }
     return { error }
+}
+
+export async function getAllUsers() {
+    const supabase = await createClient()
+    const { data, error } = await supabase.from('profiles').select('*')
+    if (error) {
+        return { error: 'Fail to fetch all user information' }
+    }
+
+    return { data, error }
+}
+
+export async function updateUserRoleByUserId(userId: string, role: PROFILE_ROLE) {
+    const supabase = await createClient()
+    const { data, error } = await supabase.from('profiles').update({ role: role }).eq('id', userId)
+    // console.log(error)
+    if (error){
+        return {error: 'Fail to update user profile'}
+    }
+    return {data, error}
 }

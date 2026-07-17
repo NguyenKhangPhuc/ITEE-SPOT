@@ -1,37 +1,66 @@
-import { getUser } from "@/app/actions/authentication";
-import { getEventChallenges } from "@/app/actions/event_challenges";
-import { getSingleEvent } from "@/app/actions/events";
-import { getGroupChallenges } from "@/app/actions/group_challenge";
-
-import ReadOnlySubmission from "./ReadOnlySubmission";
-import { getSubmissionByGroupId } from "@/app/actions/submissions";
-import { getUserProfile } from "@/app/actions/profiles";
-
+import { getUser } from "@/app/actions/authentication"
+import { getSubmissionByGroupId } from "@/app/actions/submissions"
+import { getUserProfile } from "@/app/actions/profiles"
+import { getSingleGroup } from "@/app/actions/groups"
+import ReadOnlySubmissionClient from "./ReadOnlySubmissionClient"
 
 interface PageProps {
-    params: Promise<{ groupId: string }>;
+  params: Promise<{ groupId: string }>
 }
 
-export default async function Home({ params }: PageProps) {
-    const { groupId } = await params;
-    const { data, error } = await getSubmissionByGroupId({ groupId })
-    if (error) {
-        return <div className="w-full flex items-center justify-center text-red-500">Something went wrong:  {error?.message}</div>;
-    }
-    const { data: userInfo, error: userError } = await getUser()
-    if (userError) {
-        return <div className="w-full flex items-center justify-center text-red-500">Something went wrong:  {userError?.message}</div>;
-    }
-    const { data: userProfile, error: profileError } = await getUserProfile(userInfo.user?.id ?? "")
-    if (profileError) {
-        return <div className="w-full flex items-center justify-center text-red-500">Something went wrong:  {profileError?.message}</div>;
-    }
+/**
+ * PURPOSE:
+ * Server Component that acts as the entry point for the read-only submission details page.
+ * It resolves the group ID, queries the group's submissions, queries the group details and parent event,
+ * queries the authenticated user profile, and delegates rendering to ReadOnlySubmissionClient.
+ *
+ * CONTEXT/PARENT FILE:
+ * Next.js dynamic route at 'app/submission/[groupId]/read-only/page.tsx'.
+ *
+ * INPUTS / PARAMETERS:
+ * - params (Promise<{ groupId: string }>, Required): Next.js dynamic route parameters.
+ */
+export default async function ReadOnlySubmissionPage({ params }: PageProps) {
+  const { groupId } = await params
+
+  // 1. Fetch group submissions
+  const { data: submissions, error: subError } = await getSubmissionByGroupId({ groupId })
+  if (subError || !submissions) {
     return (
-        <div className="w-full min-h-screen screen-bg font-roboto-mono">
-            <div className="max-w-7xl mx-auto px-6 flex flex-col p-5 ">
-                <div className="text-2xl font-bold text-color">Read Only Submission</div>
-                <ReadOnlySubmission groupSubmissions={data} user={userProfile!} />
-            </div>
-        </div>
-    );
+      <div className="w-full min-h-screen bg-[#151312] flex items-center justify-center font-mono text-red-400 text-sm">
+        {subError?.message ?? "Submissions not found."}
+      </div>
+    )
+  }
+
+  // 2. Fetch group and event metadata
+  const { data: groupInfo } = await getSingleGroup({ groupId })
+
+  // 3. Fetch authenticated user session
+  const { data: userData, error: userError } = await getUser()
+  if (userError || !userData?.user) {
+    return (
+      <div className="w-full min-h-screen bg-[#151312] flex items-center justify-center font-mono text-red-400 text-sm">
+        {userError?.message ?? "Authentication required."}
+      </div>
+    )
+  }
+
+  // 4. Fetch user profile role and information
+  const { data: userProfile, error: profileError } = await getUserProfile(userData.user.id)
+  if (profileError || !userProfile) {
+    return (
+      <div className="w-full min-h-screen bg-[#151312] flex items-center justify-center font-mono text-red-400 text-sm">
+        {profileError?.message ?? "Profile metadata not found."}
+      </div>
+    )
+  }
+
+  return (
+    <ReadOnlySubmissionClient
+      groupSubmissions={submissions}
+      user={userProfile}
+      groupInfo={groupInfo}
+    />
+  )
 }

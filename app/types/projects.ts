@@ -11,16 +11,24 @@ export type ProjectsInsert = Database["public"]["Tables"]["projects"]["Insert"]
 
 
 export interface ProjectsSummary {
-    id: string | null;
+    created_at: string | null;
+    description: string | null;
+    github_link: string | null;
+    group_challenge_id: string | null;
     group_id: string | null;
-    group_challenge_id: string | null
-    project_title: string | null;
+    id: string | null;
     project_status: "pending" | "rejected" | "accepted" | null;
+    project_title: string | null;
+    short_description: string | null;
+    top_priority?: number | null;
+    youtube_link: string | null;
+
     groups: {
         group_name: string | null;
         short_description: string | null;
         event_id: string | null;
         events: EventInsert | null;
+        poster_path: string | null;
         group_members: {
             member_id: string | null,
             profiles: ProfileInsert | null

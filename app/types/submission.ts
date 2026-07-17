@@ -13,6 +13,7 @@ export type GroupSubmissions = {
     id: string;
     short_description: string | null;
     youtube_link: string | null;
+    title: string | null
     group_challenge: {
         id: string;
         event_challenges: {
@@ -103,39 +104,4 @@ export type SubmissionFinalScoreRating = {
             id: string
         }[];
     };
-}[] | null
-
-export type SubmissionFinalScore = {
-    final_average_score: number | null;
-    submission_id: string | null;
-    total_graders: number | null;
-    submissions: {
-        created_at: string;
-        description: string | null;
-        github_link: string | null;
-        group_challenge_id: string | null;
-        group_id: string | null;
-        id: string;
-        short_description: string | null;
-        title: string | null;
-        youtube_link: string | null;
-        groups: {
-            id: string;
-            group_name: string | null;
-            event_id: string | null;
-        };
-        submission_grading: {
-            created_at: string;
-            event_criteria_id: string | null;
-            grade: number | null;
-            id: string;
-            submission_id: string | null;
-            user_id: string | null;
-            event_grading_criteria: {
-                percentage: number | null
-                type: 'specific' | 'normal' | null
-
-            } | null
-        }[];
-    } | null;
 }[] | null

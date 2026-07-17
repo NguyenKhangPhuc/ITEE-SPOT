@@ -1,30 +1,47 @@
-import Link from "next/link"
-import StudentManagementClient from "./StudentsMagementClient"
-import { getUserGroups } from "@/app/actions/groups";
-import { getUser } from "@/app/actions/authentication";
-import { getUserSubmittedProjects } from "@/app/actions/projects";
-const Home = async () => {
-    const { data: groupsWithOtherInfo, error, } = await getUserGroups();
-    const { data: user, error: userError } = await getUser();
-    if (userError) {
-        return <div className="w-full flex items-center justify-center text-red-500">Something went wrong:  {userError.message}</div>;
-    }
-    const { data: userProjects, error: userProjectsError } = await getUserSubmittedProjects({ userId: user.user!.id, status: null, ascending: false })
-    if (userProjectsError) {
-        return <div className="w-full flex items-center justify-center text-red-500">Something went wrong:  {userProjectsError}</div>;
-    }
+/**
+ * PURPOSE:
+ * Server Component representing the Student Projects Management page.
+ * Fetches the user session and user groups, and renders the StudentManagementClient dashboard.
+ *
+ * CONTEXT/PARENT FILE:
+ * Mounted at 'app/projects/students/page.tsx'.
+ *
+ * INPUTS / PARAMETERS:
+ * None.
+ */
 
-    if (error) {
-        return <div className="w-full flex items-center justify-center text-red-500">Something went wrong:  {error.message}</div>;
-    }
+import StudentManagementClient from "./StudentsManagementClient"
+import { getUserGroups } from "@/app/actions/groups"
+import { getUser } from "@/app/actions/authentication"
+
+export default async function Home() {
+  const { data: groupsWithOtherInfo, error } = await getUserGroups()
+  const { data: user, error: userError } = await getUser()
+
+  if (userError) {
     return (
-        <div className="w-full min-h-screen screen-bg font-roboto-mono">
-            <div className="max-w-7xl mx-auto px-6 flex flex-col p-5 ">
-                <div className="text-2xl font-bold text-color">Uploading your projects</div>
-                <StudentManagementClient groupsWithEvents={groupsWithOtherInfo ?? []} initialUserProjects={userProjects ?? []} />
-            </div>
-        </div>
+      <div className="w-full min-h-screen bg-[#151312] text-red-500 flex items-center justify-center font-mono select-none">
+        [!] AUTHENTICATION_ERROR: {userError.message}
+      </div>
     )
-}
+  }
 
-export default Home
+  if (error) {
+    return (
+      <div className="w-full min-h-screen bg-[#151312] text-red-500 flex items-center justify-center font-mono select-none">
+        [!] REGISTRY_ERROR: {error.message}
+      </div>
+    )
+  }
+
+  return (
+    <div className="w-full min-h-screen bg-[#151312] text-[#e8e1df] font-mono px-6 md:px-16 py-24">
+      <div className="max-w-7xl mx-auto flex flex-col">
+        <StudentManagementClient
+          groupsWithEvents={groupsWithOtherInfo ?? []}
+          userId={user.user!.id}
+        />
+      </div>
+    </div>
+  )
+}

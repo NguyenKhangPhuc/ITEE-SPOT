@@ -105,3 +105,229 @@ body,
     color: red;
   }
 }
+
+/* Dark theme overrides for the ReadOnlyEditor on the Event Detail page.
+   Scoped to .event-detail-editor so it does not affect the main editor UI. */
+.event-detail-editor {
+  .tiptap.ProseMirror {
+    color: #b9cbc2;
+    font-family: 'Inter', 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    line-height: 1.75;
+    padding: 0;
+
+    h1, h2, h3, h4, h5, h6 {
+      color: #e8e1df;
+      font-weight: 700;
+      margin-top: 1.5rem;
+      margin-bottom: 0.5rem;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    h1 { font-size: 1.5rem; }
+    h2 { font-size: 1.25rem; }
+    h3 { font-size: 1.1rem; }
+
+    p {
+      color: #b9cbc2;
+      margin-bottom: 0.75rem;
+    }
+
+    a {
+      color: #00e0b3;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+
+      &:hover {
+        color: #24ffcd;
+      }
+    }
+
+    strong {
+      color: #e8e1df;
+    }
+
+    em {
+      color: #b9cbc2;
+    }
+
+    blockquote {
+      border-left: 3px solid #00e0b3;
+      margin: 1rem 0;
+      padding: 0.5rem 1rem;
+      background-color: rgba(0, 224, 179, 0.05);
+      color: #b9cbc2;
+      font-style: italic;
+      border-radius: 0 2px 2px 0;
+    }
+
+    code {
+      background-color: #1d1b1a;
+      color: #00e0b3;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 3px;
+      padding: 0.1rem 0.4rem;
+      font-size: 0.8rem;
+      font-family: 'Roboto Mono', monospace;
+    }
+
+    pre {
+      background-color: #1d1b1a;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 4px;
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+
+      code {
+        background: transparent;
+        border: none;
+        padding: 0;
+        color: #00e0b3;
+      }
+    }
+
+    ul, ol {
+      padding-left: 1.5rem;
+      margin-bottom: 0.75rem;
+
+      li {
+        color: #b9cbc2;
+        margin-bottom: 0.25rem;
+
+        &::marker {
+          color: #00e0b3;
+        }
+      }
+    }
+
+    hr {
+      border-color: rgba(255, 255, 255, 0.06);
+      margin: 1.5rem 0;
+    }
+
+    mark {
+      background-color: rgba(0, 224, 179, 0.2);
+      color: #e8e1df;
+      padding: 0 0.2rem;
+      border-radius: 2px;
+    }
+  }
+}
+
+/* Global simple-editor-wrapper retheming for dark terminal view */
+.simple-editor-wrapper {
+  height: auto !important;
+  background-color: #151312 !important;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  /* Retheme the toolbar container */
+  .sticky.bg-white {
+    background-color: #1d1b1a !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+    padding: 0.25rem 0.5rem !important;
+  }
+
+  /* Retheme toolbar buttons and icons */
+  button {
+    color: #b9cbc2 !important;
+
+    svg {
+      fill: #b9cbc2 !important;
+      color: #b9cbc2 !important;
+    }
+
+    &:hover {
+      background-color: rgba(0, 224, 179, 0.1) !important;
+      color: #00e0b3 !important;
+
+      svg {
+        fill: #00e0b3 !important;
+        color: #00e0b3 !important;
+      }
+    }
+
+    &[data-active="true"] {
+      background-color: rgba(0, 224, 179, 0.15) !important;
+      color: #00e0b3 !important;
+
+      svg {
+        fill: #00e0b3 !important;
+        color: #00e0b3 !important;
+      }
+    }
+  }
+
+  /* Retheme the editor input container */
+  .simple-editor-content {
+    background-color: #151312 !important;
+    min-height: 200px;
+    max-height: 400px;
+    overflow-y: auto;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+
+    .tiptap.ProseMirror.simple-editor {
+      min-height: 180px;
+      padding: 1.5rem !important;
+      outline: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: #b9cbc2;
+      background-color: #151312 !important;
+      text-align: left;
+
+      p {
+        margin-bottom: 0.5rem;
+        color: #b9cbc2;
+      }
+
+      h1, h2, h3, h4, h5, h6 {
+        color: #e8e1df;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 700;
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
+      }
+
+      blockquote {
+        border-left: 3px solid #00e0b3;
+        margin: 1rem 0;
+        padding: 0.5rem 1rem;
+        background-color: rgba(0, 224, 179, 0.05);
+        color: #b9cbc2;
+        font-style: italic;
+      }
+
+      code {
+        background-color: #1d1b1a;
+        color: #00e0b3;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 3px;
+        padding: 0.1rem 0.3rem;
+        font-family: 'Roboto Mono', monospace;
+      }
+    }
+  }
+
+  /* Retheme the word/character counter at the bottom */
+  .character-count {
+    background-color: #1d1b1a !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    color: #83958d !important;
+    padding: 0.5rem 1rem !important;
+    position: static !important;
+    display: flex;
+    justify-content: flex-end;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 10px;
+
+    svg {
+      color: #00e0b3 !important;
+    }
+  }
+}
+

@@ -7,7 +7,7 @@ export const PAGE_SIZE_PROJECT = 4
 
 export const SHORT_DESCRIPTION_LENGTH = 200
 
-export const STUDENT_SUBMISSION_DESCRIPTION = 1500
+export const STUDENT_SUBMISSION_DESCRIPTION = 2000
 
 export const EVENT_CREATED_DESCRIPTION = 7000
 
@@ -50,6 +50,8 @@ export const NAVIGATION_BAR = [
         category: 'Admin', items: [
             { title: 'Create Events', link: '/events/create' },
             { title: 'Projects Management', link: '/projects/admins' },
+            { title: 'User Management', link: '/user-management' },
+            { title: 'Group Management', link: '/group-management' },
         ],
         role: PROFILE_ROLE.ADMIN
     },
