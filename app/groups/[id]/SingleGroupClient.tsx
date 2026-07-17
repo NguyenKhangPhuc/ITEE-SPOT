@@ -308,6 +308,7 @@ export default function SingleGroupClient({
 
             <GroupActionButtons
               groupId={groupInfo?.id ?? ""}
+              groupName={groupInfo?.group_name ?? ""}
               handleRemoveStudentSelf={handleRemoveStudentSelf}
             />
           </div>
