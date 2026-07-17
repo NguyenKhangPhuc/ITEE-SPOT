@@ -78,3 +78,23 @@ export const getPendingGroupInvitationsById = async (groupId: string) => {
     }
     return { data, error }
 }
+
+
+export async function getAllGroups(){
+    const supabase = await createClient();
+    const {data, error} = await supabase.from('groups').select('*, events (*), group_members (*, profiles (*)), group_challenges (*, event_challenges (*))')
+    if (error){
+        return {error: 'Failed to get all groups'}
+    }
+    return {data, error}
+}
+
+export async function deleteGroupByGroupId(groupId: string){
+    const supabase = await createClient();
+    const {data, error} = await supabase.from('groups').delete().eq('id', groupId)
+    if (error){
+        return {error: 'Fail to delete the group'}
+    }
+    return {data, error}
+}
+

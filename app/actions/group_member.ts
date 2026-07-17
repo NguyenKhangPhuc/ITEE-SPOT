@@ -94,3 +94,13 @@ export async function removeStudentsThemselveFromGroupById() {
     }
     return { data, error }
 }
+
+export async function deleteGroupMemberById(id: string){
+    const supabase = await createClient();
+    const {data, error} = await supabase.from('group_members').delete().eq('id', id)
+    if (error){
+        return {error: 'Fail to delete the group member'}
+    }
+    return {data, error}
+}
+

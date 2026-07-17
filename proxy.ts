@@ -60,8 +60,8 @@ export async function proxy(request: NextRequest) {
     if (editEventRouteCheck.status !== 200) return editEventRouteCheck
     const submissionGradingRouteCheck = await submissionGradingRoute({ request, user: user.user })
     if (submissionGradingRouteCheck.status !== 200) return submissionGradingRouteCheck
-    const eventSubmissionGrading = await eventSubmissionGradingRoute({ request, user: user.user })
-    if (eventSubmissionGrading.status !== 200) return eventSubmissionGrading
+    // const eventSubmissionGrading = await eventSubmissionGradingRoute({ request, user: user.user })
+    // if (eventSubmissionGrading.status !== 200) return eventSubmissionGrading
     const projectManageRouteCheck = await projectsManageRoute({ request, user: user.user })
     if (projectManageRouteCheck.status !== 200) return projectManageRouteCheck
     const projectDetailsPendingRouteCheck = await projectDetailsPendingRoute({ request, user: user.user })
