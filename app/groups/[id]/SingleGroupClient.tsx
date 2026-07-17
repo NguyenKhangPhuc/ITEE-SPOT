@@ -238,7 +238,7 @@ export default function SingleGroupClient({
       showNotification("Removed from group successfully")
       const eventId = groupInfo?.event_id
       if (eventId) {
-        router.push(`/events/${eventId}`)
+        router.push(`/groups`)
       } else {
         router.push("/events")
       }

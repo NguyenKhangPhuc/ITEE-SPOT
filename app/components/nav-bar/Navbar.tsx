@@ -122,24 +122,6 @@ const NavBar = ({ initialUser }: { initialUser: ProfileInsert | null }) => {
                     </div>
                 ))}
 
-                {/* Operations Section */}
-                <div className="mt-4 flex flex-col gap-2">
-                    <div className="text-[10px] font-mono text-[#83958d]/40 uppercase tracking-widest mb-2 px-4">
-                        System_Operations
-                    </div>
-                    <div className="px-4">
-                        <div className="relative">
-                            <input
-                                className="bg-[#2c2928] border border-[#3a4a44]/30 rounded-sm px-4 py-2 text-[12px] font-semibold text-[#e8e1df] focus:ring-1 focus:ring-[#00e0b3] focus:border-[#00e0b3] w-full placeholder-[#83958d]/50 outline-none"
-                                placeholder="Search logs..."
-                                type="text"
-                            />
-                            <span className="material-symbols-outlined absolute right-3 top-2 text-[#83958d]/50 scale-75">
-                                search
-                            </span>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             {/* User & Auth Status Section */}
