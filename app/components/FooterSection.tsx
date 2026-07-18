@@ -39,18 +39,18 @@ export default function FooterSection() {
             </h4>
             <ul className="space-y-4 text-[#b9cbc2] text-sm">
               <li>
-                <Link href="/" className="hover:text-[#00e0b3] transition-colors">
+                <Link href="/about" className="hover:text-[#00e0b3] transition-colors">
                   Platform Overview
                 </Link>
               </li>
               <li>
                 <Link href="/events" className="hover:text-[#00e0b3] transition-colors">
-                  Active Nodes
+                  Events
                 </Link>
               </li>
               <li>
                 <Link href="/projects" className="hover:text-[#00e0b3] transition-colors">
-                  Contribution Guide
+                  Contributions
                 </Link>
               </li>
             </ul>
@@ -73,7 +73,7 @@ export default function FooterSection() {
                   href="/privacy-policy"
                   className="hover:text-[#00e0b3] transition-colors"
                 >
-                  Privacy Framework
+                  Privacy Policy
                 </Link>
               </li>
             </ul>

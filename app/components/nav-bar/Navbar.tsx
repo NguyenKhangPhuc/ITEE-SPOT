@@ -45,6 +45,8 @@ const NavBar = ({ initialUser }: { initialUser: ProfileInsert | null }) => {
         switch (title.toLowerCase()) {
             case 'home':
                 return 'home';
+            case 'about itee spot':
+                return 'info';
             case 'events':
             case 'create events':
             case 'event management':
