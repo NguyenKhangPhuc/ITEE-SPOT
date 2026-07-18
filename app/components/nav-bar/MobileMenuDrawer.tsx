@@ -65,6 +65,7 @@ export default function MobileMenuDrawer({
         return 'home'
       case 'events':
       case 'create events':
+      case 'event management':
         return 'event'
       case 'past projects':
       case 'showcase projects':

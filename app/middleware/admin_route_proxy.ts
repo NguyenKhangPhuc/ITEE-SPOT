@@ -31,7 +31,7 @@ export async function adminRouteProxy({ request, user }: { request: NextRequest,
     )
     const pathname = request.nextUrl.pathname;
     if (
-        pathname.startsWith('/user-management') || pathname.startsWith('/group-management')
+        pathname.startsWith('/user-management') || pathname.startsWith('/group-management') || pathname.startsWith('/events-management')
     ) {
         if (user == null) {
             const url = request.nextUrl.clone()

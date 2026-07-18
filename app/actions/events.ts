@@ -166,3 +166,21 @@ export async function updateEventInfo({ event }: { event: EventInsert }) {
     }
     return { data, error }
 }
+
+export async function updateEventStatus(eventId: string, eventStatus: EVENT_STATUS){
+    const supabase= await createClient()
+    const {data, error} = await supabase.from('events').update({status: eventStatus}).eq('id', eventId)
+    if (error){
+        return {error: 'Fail to update event status'}
+    }
+    return {data, error}
+}
+
+export async function updateEventRegistrationStatus(eventId: string, registrationStatus: EVENT_STATUS){
+    const supabase= await createClient()
+    const {data, error} = await supabase.from('events').update({registration_status: registrationStatus}).eq('id', eventId)
+    if (error){
+        return {error: 'Fail to update event registration status'}
+    }
+    return {data, error}
+}

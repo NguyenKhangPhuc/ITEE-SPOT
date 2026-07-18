@@ -47,6 +47,7 @@ const NavBar = ({ initialUser }: { initialUser: ProfileInsert | null }) => {
                 return 'home';
             case 'events':
             case 'create events':
+            case 'event management':
                 return 'event';
             case 'past projects':
             case 'showcase projects':
@@ -55,7 +56,8 @@ const NavBar = ({ initialUser }: { initialUser: ProfileInsert | null }) => {
             case 'groups':
             case 'group management':
                 return 'group';
-            case 'initialUser management':
+            case 'user management':
+            case 'initialuser management':
                 return 'manage_accounts';
             case 'profiles':
             case 'profile':
