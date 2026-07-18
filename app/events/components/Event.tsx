@@ -28,6 +28,7 @@ interface EventCardProp {
  */
 export default function EventCard({ event, handleGetUrl }: EventCardProp) {
   const isOngoing = event.status === EVENT_STATUS.ONGOING
+  const isRegistrationOngoing = event.registration_status === EVENT_STATUS.ONGOING
 
   /**
    * BEHAVIORAL MECHANISM:
@@ -104,7 +105,7 @@ export default function EventCard({ event, handleGetUrl }: EventCardProp) {
               ? 'bg-[#00e0b3]/10 border-[#00e0b3]/30 text-[#00e0b3]' 
               : 'bg-white/5 border-white/10 text-[#83958d]'
           }`}>
-            {isOngoing ? '[ ACTIVE ]' : '[ CLOSED ]'}
+            {isOngoing ? '[ ACTIVE ]' : '[ COMPLETED ]'}
           </div>
 
           {event.poster_path ? (
@@ -196,7 +197,7 @@ export default function EventCard({ event, handleGetUrl }: EventCardProp) {
 
             {/* Card Button */}
             <div className="mt-auto">
-              {isOngoing ? (
+              {isRegistrationOngoing ? (
                 <span className="block border border-[#00e0b3]/40 text-[#00e0b3] bg-transparent group-hover:bg-[#00e0b3]/10 font-mono text-[9px] uppercase font-bold py-2.5 w-full text-center transition-all duration-300 tracking-widest rounded-sm">
                   Initialize Application
                 </span>

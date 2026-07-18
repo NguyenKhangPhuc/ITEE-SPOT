@@ -147,6 +147,9 @@ export type Database = {
           organized_date: string | null
           owner_id: string | null
           poster_path: string | null
+          registration_status:
+            | Database["public"]["Enums"]["EVENT_STATUS"]
+            | null
           short_description: string | null
           start_date: string | null
           status: Database["public"]["Enums"]["EVENT_STATUS"] | null
@@ -162,6 +165,9 @@ export type Database = {
           organized_date?: string | null
           owner_id?: string | null
           poster_path?: string | null
+          registration_status?:
+            | Database["public"]["Enums"]["EVENT_STATUS"]
+            | null
           short_description?: string | null
           start_date?: string | null
           status?: Database["public"]["Enums"]["EVENT_STATUS"] | null
@@ -177,6 +183,9 @@ export type Database = {
           organized_date?: string | null
           owner_id?: string | null
           poster_path?: string | null
+          registration_status?:
+            | Database["public"]["Enums"]["EVENT_STATUS"]
+            | null
           short_description?: string | null
           start_date?: string | null
           status?: Database["public"]["Enums"]["EVENT_STATUS"] | null

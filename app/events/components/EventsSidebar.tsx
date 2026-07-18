@@ -8,15 +8,15 @@ interface EventsSidebarProp {
   onStatusToggle: (status: string) => void
   selectedSchedule: string
   onScheduleChange: (schedule: string) => void
-  selectedAvailability: string | null
-  onAvailabilityChange: (availability: string | null) => void
+  selectedRegistrationStatuses: string[]
+  onRegistrationStatusToggle: (status: string) => void
 }
 
 /**
  * PURPOSE:
  * This component renders the left-hand filters sidebar for the events listing.
- * It allows the user to filter events by active/closed status, date ranges, and availability
- * button tags. It also features a decorative Node Uptime progress bar.
+ * It allows the user to filter events by event status (Ongoing/Finished), schedule date ranges,
+ * and registration status (Ongoing/Finished).
  *
  * CONTEXT/PARENT FILE:
  * Extracted from 'EventsClient.tsx' and placed in 'app/events/components/EventsSidebar.tsx'
@@ -24,19 +24,19 @@ interface EventsSidebarProp {
  *
  * INPUTS / PARAMETERS:
  * - selectedStatuses (string[], Required): Array of currently checked event statuses.
- * - onStatusToggle ((status: string) => void, Required): Callback to toggle checked status.
+ * - onStatusToggle ((status: string) => void, Required): Callback to toggle checked event status.
  * - selectedSchedule (string, Required): The currently selected schedule range key.
  * - onScheduleChange ((schedule: string) => void, Required): Callback when dropdown changes.
- * - selectedAvailability (string | null, Required): The active availability button choice.
- * - onAvailabilityChange ((availability: string | null) => void, Required): Callback to toggle availability tag.
+ * - selectedRegistrationStatuses (string[], Required): Array of currently checked registration statuses.
+ * - onRegistrationStatusToggle ((status: string) => void, Required): Callback to toggle checked registration status.
  */
 export default function EventsSidebar({
   selectedStatuses,
   onStatusToggle,
   selectedSchedule,
   onScheduleChange,
-  selectedAvailability,
-  onAvailabilityChange
+  selectedRegistrationStatuses,
+  onRegistrationStatusToggle
 }: EventsSidebarProp) {
   return (
     <motion.div
@@ -57,7 +57,7 @@ export default function EventsSidebar({
         {/* STATUS Filter */}
         <div>
           <label className="text-[10px] font-mono uppercase tracking-widest text-[#83958d] mb-3 block">
-            Status
+            Event Status
           </label>
           <div className="flex flex-col gap-3">
             <label className="flex items-center gap-3 cursor-pointer group text-sm select-none">
@@ -103,32 +103,34 @@ export default function EventsSidebar({
           </select>
         </div>
 
-        {/* AVAILABILITY Filter */}
+        {/* REGISTRATION STATUS Filter */}
         <div>
           <label className="text-[10px] font-mono uppercase tracking-widest text-[#83958d] mb-3 block">
-            Availability
+            Registration Status
           </label>
-          <div className="flex flex-wrap gap-2">
-            {[
-              { id: "open", label: "Open" },
-              { id: "waitlist", label: "Waitlist" },
-              { id: "invite", label: "Invite Only" }
-            ].map((tag) => {
-              const isActive = selectedAvailability === tag.id
-              return (
-                <button
-                  key={tag.id}
-                  onClick={() => onAvailabilityChange(isActive ? null : tag.id)}
-                  className={`text-[9px] font-mono uppercase tracking-wider py-1 px-3 border rounded-sm transition-all duration-300 ${
-                    isActive
-                      ? "border-[#00e0b3] text-[#00e0b3] bg-[#00e0b3]/10"
-                      : "border-white/5 text-[#83958d] bg-white/5 hover:border-[#83958d]/30"
-                  }`}
-                >
-                  {tag.label}
-                </button>
-              )
-            })}
+          <div className="flex flex-col gap-3">
+            <label className="flex items-center gap-3 cursor-pointer group text-sm select-none">
+              <input
+                type="checkbox"
+                checked={selectedRegistrationStatuses.includes("ongoing")}
+                onChange={() => onRegistrationStatusToggle("ongoing")}
+                className="w-4 h-4 border border-[#3a4a44] bg-[#151312] text-[#00e0b3] rounded-sm focus:ring-0 focus:ring-offset-0 cursor-pointer accent-[#00e0b3]"
+              />
+              <span className={`${selectedRegistrationStatuses.includes("ongoing") ? "text-[#00e0b3]" : "text-[#b9cbc2]"} group-hover:text-[#00e0b3] transition-colors`}>
+                Ongoing
+              </span>
+            </label>
+            <label className="flex items-center gap-3 cursor-pointer group text-sm select-none">
+              <input
+                type="checkbox"
+                checked={selectedRegistrationStatuses.includes("finished")}
+                onChange={() => onRegistrationStatusToggle("finished")}
+                className="w-4 h-4 border border-[#3a4a44] bg-[#151312] text-[#00e0b3] rounded-sm focus:ring-0 focus:ring-offset-0 cursor-pointer accent-[#00e0b3]"
+              />
+              <span className={`${selectedRegistrationStatuses.includes("finished") ? "text-[#00e0b3]" : "text-[#b9cbc2]"} group-hover:text-[#00e0b3] transition-colors`}>
+                Finished
+              </span>
+            </label>
           </div>
         </div>
 

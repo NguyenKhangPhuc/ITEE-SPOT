@@ -30,7 +30,7 @@ export default function EventsClient({ events }: { events: EventInsert[] }) {
   // Filter States
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([])
   const [selectedSchedule, setSelectedSchedule] = useState<string>("all")
-  const [selectedAvailability, setSelectedAvailability] = useState<string | null>(null)
+  const [selectedRegistrationStatuses, setSelectedRegistrationStatuses] = useState<string[]>([])
   
   // Sorting State
   const [sortBy, setSortBy] = useState<string>("date_desc")
@@ -56,7 +56,7 @@ export default function EventsClient({ events }: { events: EventInsert[] }) {
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Toggles checkboxes inside the filter sidebar.
+   * Toggles status checkboxes inside the filter sidebar.
    *
    * PARAMETERS:
    * - status (string): The status value to toggle.
@@ -66,6 +66,25 @@ export default function EventsClient({ events }: { events: EventInsert[] }) {
    */
   const handleStatusToggle = (status: string) => {
     setSelectedStatuses((prev) =>
+      prev.includes(status)
+        ? prev.filter((s) => s !== status)
+        : [...prev, status]
+    )
+    setCurrentPage(1)
+  }
+
+  /**
+   * BEHAVIORAL MECHANISM:
+   * Toggles registration status checkboxes inside the filter sidebar.
+   *
+   * PARAMETERS:
+   * - status (string): The registration status value to toggle.
+   *
+   * RETURNS:
+   * - void
+   */
+  const handleRegistrationStatusToggle = (status: string) => {
+    setSelectedRegistrationStatuses((prev) =>
       prev.includes(status)
         ? prev.filter((s) => s !== status)
         : [...prev, status]
@@ -114,15 +133,10 @@ export default function EventsClient({ events }: { events: EventInsert[] }) {
         }
       }
 
-      // 3. Availability Filter
-      if (selectedAvailability) {
-        if (selectedAvailability === "open") {
-          if (event.status !== EVENT_STATUS.ONGOING) return false
-        } else if (selectedAvailability === "invite") {
-          if (event.status !== EVENT_STATUS.FINISHED) return false
-        } else if (selectedAvailability === "waitlist") {
-          return false // Waitlist has no matching database records
-        }
+      // 3. Registration Status Filter
+      if (selectedRegistrationStatuses.length > 0) {
+        const matchesRegStatus = event.registration_status && selectedRegistrationStatuses.includes(event.registration_status.toLowerCase())
+        if (!matchesRegStatus) return false
       }
 
       return true
@@ -147,7 +161,7 @@ export default function EventsClient({ events }: { events: EventInsert[] }) {
     })
 
     return result
-  }, [events, selectedStatuses, selectedSchedule, selectedAvailability, sortBy])
+  }, [events, selectedStatuses, selectedSchedule, selectedRegistrationStatuses, sortBy])
 
   // Paginated Events
   const paginatedEvents = useMemo(() => {
@@ -176,8 +190,8 @@ export default function EventsClient({ events }: { events: EventInsert[] }) {
           onStatusToggle={handleStatusToggle}
           selectedSchedule={selectedSchedule}
           onScheduleChange={setSelectedSchedule}
-          selectedAvailability={selectedAvailability}
-          onAvailabilityChange={setSelectedAvailability}
+          selectedRegistrationStatuses={selectedRegistrationStatuses}
+          onRegistrationStatusToggle={handleRegistrationStatusToggle}
         />
 
         {/* Right Results Listing Column */}

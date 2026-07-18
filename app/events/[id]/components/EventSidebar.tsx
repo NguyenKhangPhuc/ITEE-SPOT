@@ -32,6 +32,7 @@ interface EventSidebarProps {
  */
 export default function EventSidebar({ event, user, fmtDate, fmtTime }: EventSidebarProps) {
   const isOngoing = event.status === EVENT_STATUS.ONGOING
+  const isRegistrationOngoing = event.registration_status === EVENT_STATUS.ONGOING
   const isAdminOrJudge = user?.role === PROFILE_ROLE.JUDGES || user?.role === PROFILE_ROLE.ADMIN
 
   return (
@@ -136,7 +137,7 @@ export default function EventSidebar({ event, user, fmtDate, fmtTime }: EventSid
         )}
 
         {/* Register / Locked — visible to all */}
-        {isOngoing ? (
+        {isRegistrationOngoing ? (
           <Link
             href={`/register/${event.id}`}
             className="border border-[#00e0b3] text-[#00e0b3] hover:bg-[#00e0b3] hover:text-[#00382b] font-mono text-[10px] uppercase font-bold tracking-widest py-3 text-center transition-all duration-300 rounded-sm"

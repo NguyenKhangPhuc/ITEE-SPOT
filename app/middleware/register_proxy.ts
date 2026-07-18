@@ -40,6 +40,19 @@ export async function registerRoute({ request, user }: { request: NextRequest, u
         }
         const id = pathname.split('/')[2]
 
+        // Check if event registration_status has ended or is locked
+        const { data: eventData } = await supabase
+            .from('events')
+            .select('registration_status')
+            .eq('id', id)
+            .maybeSingle()
+
+        if (!eventData || eventData.registration_status !== 'ongoing') {
+            const url = request.nextUrl.clone()
+            url.pathname = '/events'
+            return NextResponse.redirect(url)
+        }
+
 
         const { data, error } = await supabase
             .from('group_members')
