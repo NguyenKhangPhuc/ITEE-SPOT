@@ -42,7 +42,7 @@ export default function TeamSection() {
           </h2>
           <div className="w-12 h-0.5 bg-[#00e0b3] mx-auto mb-8"></div>
           <p className="text-sm md:text-base text-[#b9cbc2] max-w-xl mx-auto opacity-70 leading-relaxed">
-            A multidisciplinary unit dedicated to bridging the architectural gap between potential and production.
+            A multidisciplinary team dedicated to enhance the collaboration between students and SMEs
           </p>
         </motion.div>
 

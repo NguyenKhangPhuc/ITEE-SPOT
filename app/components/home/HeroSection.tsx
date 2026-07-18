@@ -167,9 +167,8 @@ export default function HeroSection() {
           }}
           className="text-lg md:text-2xl text-[#b9cbc2] max-w-2xl mx-auto mb-12 font-medium opacity-80 leading-relaxed"
         >
-          Architecting student-led excellence. Solutions delivered with precision.
+          Exploring <span className="text-[#00e0b3]">student&apos;s spot on solutions</span> in the <span className="text-[#00e0b3]">spotlight</span>
         </motion.p>
-
         <motion.div
           variants={{
             hidden: { opacity: 0, y: 20 },
