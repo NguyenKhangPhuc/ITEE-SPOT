@@ -1,0 +1,9 @@
+ALTER VIEW submission_criteria_user_grades SET (security_invoker = true);
+ALTER VIEW submission_normal_criteria_cells SET (security_invoker = true);
+ALTER VIEW submission_user_final_points SET (security_invoker = true);
+ALTER VIEW submission_final_cell SET (security_invoker = true);
+ALTER VIEW submission_specific_criteria_user_grades SET (security_invoker = true);
+ALTER VIEW submission_specific_criteria_cells SET (security_invoker = true);
+ALTER VIEW submission_ratings_cell SET (security_invoker = true);
+ALTER VIEW submission_final_scores SET (security_invoker = true);
+ALTER VIEW projects_with_priority SET (security_invoker = true);
