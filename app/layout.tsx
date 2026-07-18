@@ -32,6 +32,8 @@ export const metadata: Metadata = {
   description: "ITEE SPOT is a collaboration platform to manage the events and boost the connection between students and SMEs in Oulu, the platform is developed and maintained by IKAPO project which is co-funded by the European Union",
   icons: {
     icon: "/assets/iteespot_logo.png",
+    shortcut: "/assets/iteespot_logo.png",
+    apple: "/assets/iteespot_logo.png"
   },
 };
 
