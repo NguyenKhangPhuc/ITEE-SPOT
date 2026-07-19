@@ -329,19 +329,30 @@ export default function ReadOnlySubmissionClient({
                         )}
                       </div>
 
-                      {/* Active Challenge Tags */}
-                      {activeSubmission.group_challenge?.event_challenges && (
-                        <div className="flex flex-col gap-2 pt-2 border-t border-white/5">
-                          <span className="text-[8px] font-mono text-[#83958d] uppercase tracking-wider">
-                            Active_Challenges
-                          </span>
+                      {/* Active Challenge Tags & Student Feedback Link */}
+                      <div className="flex flex-col gap-2 pt-2 border-t border-white/5">
+                        <span className="text-[8px] font-mono text-[#83958d] uppercase tracking-wider">
+                          Active_Challenges
+                        </span>
+                        {activeSubmission.group_challenge?.event_challenges && (
                           <div className="flex flex-wrap gap-2">
                             <span className="px-2 py-1 text-[8px] font-mono font-bold border border-[#00e0b3]/30 bg-[#00e0b3]/10 text-[#00e0b3] rounded-sm select-none">
                               {activeSubmission.group_challenge.event_challenges.title?.toUpperCase().replace(" ", "_")}
                             </span>
                           </div>
-                        </div>
-                      )}
+                        )}
+
+                        {/* See Submission Feedback Button (STUDENT role only) */}
+                        {user.role === PROFILE_ROLE.STUDENT && activeSubmission.id && (
+                          <Link
+                            href={`/submission/feedback/${activeSubmission.id}`}
+                            className="w-full mt-2 flex items-center justify-center gap-2 border border-[#00e0b3] bg-[#00e0b3]/10 hover:bg-[#00e0b3] hover:text-[#00382b] text-[#00e0b3] font-mono text-xs uppercase font-bold tracking-widest py-2.5 px-4 transition-all duration-300 rounded-sm cursor-pointer"
+                          >
+                            <span className="material-symbols-outlined text-sm">forum</span>
+                            <span>See your submission feedback</span>
+                          </Link>
+                        )}
+                      </div>
                     </div>
                   </div>
 
