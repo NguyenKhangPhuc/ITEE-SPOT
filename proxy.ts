@@ -14,6 +14,7 @@ import { projectsManageRoute } from "./app/middleware/project_admin_manage_proxy
 import { projectDetailsPendingRoute } from "./app/middleware/project_details_pending_proxy"
 import { studentRoute } from "./app/middleware/student_profile"
 import { adminRouteProxy } from "./app/middleware/admin_route_proxy"
+import { submissionFeedBack } from "./app/middleware/submission_feedback"
 
 
 export async function proxy(request: NextRequest) {
@@ -50,6 +51,9 @@ export async function proxy(request: NextRequest) {
 
         const submissionResult = await submissionRoute({ request, user, supabase })
         if (submissionResult.status !== 200) return submissionResult
+
+        const submissionFeedBackResult = await submissionFeedBack({ request, user, supabase })
+        if (submissionFeedBackResult.status !== 200) return submissionFeedBackResult
 
     } else if (pathname.startsWith('/events/')) {
         // All /events/:id/* sub-routes and /events/create live here.
