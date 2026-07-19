@@ -18,7 +18,7 @@ export async function submissionFeedBack({
     if (
         pathname.startsWith('/submission/') &&
         pathnameSplitted.length === 4 &&
-        pathnameSplitted[2] =='feedback'
+        pathnameSplitted[2] == 'feedback'
     ) {
         if (user == null) {
             const url = request.nextUrl.clone()
@@ -26,7 +26,7 @@ export async function submissionFeedBack({
             return NextResponse.redirect(url)
         }
 
-        const groupId = pathname.split('/')[3]
+        const submissionId = pathname.split('/')[3]
 
         const { data: userRole, error: userRoleError } = await supabase
             .from('profiles')
@@ -41,12 +41,18 @@ export async function submissionFeedBack({
         }
 
         const { data, error } = await supabase
-            .from('groups')
-            .select('id, group_members!inner (member_id)')
-            .eq('group_members.member_id', user.id)
-            .eq('id', groupId)
+            .from('submissions')
+            .select(`
+                id,
+                groups!inner (
+                id,
+                group_members!inner (member_id)
+                )
+            `)
+            .eq('id', submissionId)
+            .eq('groups.group_members.member_id', user.id)
             .maybeSingle()
-
+            
         if (error) {
             const url = request.nextUrl.clone()
             url.pathname = '/groups'

@@ -129,7 +129,7 @@ export async function getSubmissionById(submissionId: string) {
     const { data, error } = await supabase
         .from('submissions')
         .select('*, groups (event_id)').eq('id', submissionId).maybeSingle()
-
+    console.log(data)
     return { data, error }
 
 }
