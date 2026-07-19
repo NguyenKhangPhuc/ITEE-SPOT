@@ -1,7 +1,6 @@
 'use client'
 
-// Trigger rebuild to update constants
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import Link from "next/link"
 import { useForm } from "react-hook-form"
 import { motion, AnimatePresence } from "framer-motion"
@@ -65,6 +64,9 @@ export default function ChallengeAccordion({
   const { showNotification } = useNotification()
   const { setIsOpenLoader } = useLoader()
 
+  // Component-level fetching loader state
+  const [isFetching, setIsFetching] = useState<boolean>(false)
+
   // Form States (isolated per challenge accordion)
   const [initialEditorContent, setInitialEditorContent] = useState<string | null>(null)
   const [editorValue, setEditorValue] = useState<Editor | null>(null)
@@ -76,7 +78,6 @@ export default function ChallengeAccordion({
     reset,
     control,
     formState: { errors },
-
   } = useForm<SubmissionInsert>()
 
   /**
@@ -98,41 +99,58 @@ export default function ChallengeAccordion({
     return "hub"
   }
 
-  // Fetch submission data when this accordion expands
-  useEffect(() => {
-    if (isOpen && !isLocked && groupChallengeRelation) {
-      const fetchSubmission = async () => {
-        try {
-          const { data, error } = await getGoupChallengeSubmission({
-            groupChallengeId: groupChallengeRelation.id,
-            groupId,
-          })
-          if (error) throw new Error(error)
+  /**
+   * BEHAVIORAL MECHANISM:
+   * Handles user interaction to expand/collapse the challenge accordion.
+   * On expansion of an active challenge, triggers component-level fetching of submission data
+   * while maintaining local mint loader state.
+   *
+   * PARAMETERS:
+   * None.
+   *
+   * RETURNS:
+   * - Promise<void>
+   */
+  const handleExpandChallenge = async (): Promise<void> => {
+    if (isLocked || !groupChallengeRelation) return
 
-          if (data) {
-            reset(data)
-            setInitialEditorContent(data.description)
-            setSubmittedFiles(data.submission_files ?? [])
-          } else {
-            reset({
-              id: undefined,
-              github_link: "",
-              youtube_link: "",
-              short_description: "",
-              group_challenge_id: undefined,
-              group_id: undefined,
-              created_at: undefined,
-            })
-            setInitialEditorContent(null)
-            setSubmittedFiles([])
-          }
-        } catch (error) {
-          if (error instanceof Error) showNotification(error.message)
+    // Trigger toggle in parent state
+    onToggle()
+
+    // If expanding (was closed, now opening), fetch submission data
+    if (!isOpen) {
+      setIsFetching(true)
+      try {
+        const { data, error } = await getGoupChallengeSubmission({
+          groupChallengeId: groupChallengeRelation.id,
+          groupId,
+        })
+        if (error) throw new Error(error)
+
+        if (data) {
+          reset(data)
+          setInitialEditorContent(data.description)
+          setSubmittedFiles(data.submission_files ?? [])
+        } else {
+          reset({
+            id: undefined,
+            github_link: "",
+            youtube_link: "",
+            short_description: "",
+            group_challenge_id: undefined,
+            group_id: undefined,
+            created_at: undefined,
+          })
+          setInitialEditorContent(null)
+          setSubmittedFiles([])
         }
+      } catch (error) {
+        if (error instanceof Error) showNotification(error.message)
+      } finally {
+        setIsFetching(false)
       }
-      fetchSubmission()
     }
-  }, [isOpen, isLocked, groupChallengeRelation, groupId, reset, showNotification])
+  }
 
   /**
    * BEHAVIORAL MECHANISM:
@@ -243,7 +261,7 @@ export default function ChallengeAccordion({
       <button
         type="button"
         disabled={isLocked}
-        onClick={onToggle}
+        onClick={handleExpandChallenge}
         className={`w-full flex items-center justify-between px-6 py-4 transition-colors font-mono select-none ${isLocked
             ? "bg-[#151312]/20 opacity-50 cursor-not-allowed"
             : "hover:bg-[#1d1b1a]/50 cursor-pointer"
@@ -261,6 +279,15 @@ export default function ChallengeAccordion({
         {isLocked ? (
           <div className="text-[8px] font-mono font-bold uppercase tracking-widest px-2 py-0.5 border border-white/10 bg-white/5 text-[#83958d] rounded-sm">
             LOCKED
+          </div>
+        ) : isFetching ? (
+          <div className="flex items-center gap-2 text-[#00e0b3]">
+            <span className="material-symbols-outlined text-sm animate-spin">
+              progress_activity
+            </span>
+            <span className="text-[8px] font-mono font-bold uppercase tracking-widest">
+              FETCHING...
+            </span>
           </div>
         ) : (
           <motion.span
@@ -283,99 +310,110 @@ export default function ChallengeAccordion({
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="overflow-hidden border-t border-white/5"
           >
-            <form onSubmit={handleSubmit(handleSaveSubmission)} className="p-6 flex flex-col gap-6">
-              {/* Form Input Grid */}
-              <SubmissionFormFields register={register} errors={errors} control={control} />
+            {isFetching ? (
+              <div className="p-12 flex flex-col items-center justify-center gap-3 select-none">
+                <span className="material-symbols-outlined text-2xl text-[#00e0b3] animate-spin">
+                  progress_activity
+                </span>
+                <span className="text-[9px] font-mono text-[#83958d] uppercase tracking-widest">
+                  FETCHING_SUBMISSION_DATA...
+                </span>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit(handleSaveSubmission)} className="p-6 flex flex-col gap-6">
+                {/* Form Input Grid */}
+                <SubmissionFormFields register={register} errors={errors} control={control} />
 
-              {/* dashed Dropzone */}
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[8px] font-mono text-[#83958d] uppercase tracking-widest block">
-                  Node_Payload: File_Uploader
-                </label>
-                <div className="relative w-full h-32 border border-dashed border-white/10 rounded-sm flex flex-col items-center justify-center hover:border-[#00e0b3]/30 transition-colors group">
-                  <div className="text-center flex flex-col items-center justify-center gap-1.5 pointer-events-none">
-                    <span className="material-symbols-outlined text-xl text-[#83958d] group-hover:text-[#00e0b3] transition-colors">
-                      cloud_upload
-                    </span>
-                    <p className="text-[10px] font-mono text-[#83958d] uppercase tracking-wider">
-                      Drag & Drop project archive or{" "}
-                      <span className="text-[#00e0b3] font-semibold underline decoration-dotted">
-                        browse filesystem
+                {/* dashed Dropzone */}
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[8px] font-mono text-[#83958d] uppercase tracking-widest block">
+                    Node_Payload: File_Uploader
+                  </label>
+                  <div className="relative w-full h-32 border border-dashed border-white/10 rounded-sm flex flex-col items-center justify-center hover:border-[#00e0b3]/30 transition-colors group">
+                    <div className="text-center flex flex-col items-center justify-center gap-1.5 pointer-events-none">
+                      <span className="material-symbols-outlined text-xl text-[#83958d] group-hover:text-[#00e0b3] transition-colors">
+                        cloud_upload
                       </span>
-                    </p>
-                    <p className="text-[8px] font-mono text-[#83958d]/50 uppercase">
-                      MAX_PAYLOAD: 5MB | FORMATS: .PDF, .DOCX, .PPTX
-                    </p>
-                  </div>
-                  <input
-                    type="file"
-                    multiple
-                    className="absolute inset-0 opacity-0 cursor-pointer"
-                    accept=".pdf, .doc, .docx, .ppt, .pptx"
-                    onChange={(e) => {
-                      const files = e.target.files
-                      if (files && files.length > 0) handleCatchFiles(files[0])
-                    }}
-                  />
-                </div>
-              </div>
-
-              {/* Uploaded File Grid */}
-              <SubmissionFileSection
-                submittedFiles={submittedFiles}
-                handleCatchFiles={handleCatchFiles}
-                handleDeleteFiles={handleDeleteFiles}
-                handleDownloadFile={handleDownloadFile}
-              />
-
-              {/* Example Description */}
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[8px] font-mono text-[#83958d] uppercase tracking-widest block">
-                  Example Submission Description
-                </label>
-                <div className="border border-white/5 rounded-sm p-4 bg-[#151312]/30 max-h-40 overflow-y-auto">
-                  <ReadOnlyEditor content={EXAMPLE_PROJECT_SUMMANRY} />
-                </div>
-              </div>
-
-              {/* Editor + Live Preview */}
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[8px] font-mono text-[#83958d] uppercase tracking-widest block">
-                  Node_Context: Rich_Description
-                </label>
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-                  {/* Left: TipTap Editor */}
-                  <div className="lg:col-span-8 border border-white/10 rounded-sm overflow-hidden bg-[#151312]">
-                    <SimpleEditor
-                      initialContent={initialEditorContent}
-                      onEditorReady={setEditorValue}
-                      limit={STUDENT_SUBMISSION_DESCRIPTION}
+                      <p className="text-[10px] font-mono text-[#83958d] uppercase tracking-wider">
+                        Drag & Drop project archive or{" "}
+                        <span className="text-[#00e0b3] font-semibold underline decoration-dotted">
+                          browse filesystem
+                        </span>
+                      </p>
+                      <p className="text-[8px] font-mono text-[#83958d]/50 uppercase">
+                        MAX_PAYLOAD: 5MB | FORMATS: .PDF, .DOCX, .PPTX
+                      </p>
+                    </div>
+                    <input
+                      type="file"
+                      multiple
+                      className="absolute inset-0 opacity-0 cursor-pointer"
+                      accept=".pdf, .doc, .docx, .ppt, .pptx"
+                      onChange={(e) => {
+                        const files = e.target.files
+                        if (files && files.length > 0) handleCatchFiles(files[0])
+                      }}
                     />
                   </div>
-                  {/* Right: Live Preview Panel */}
-                  <div className="lg:col-span-4">
-                    <SubmissionPreview control={control} />
+                </div>
+
+                {/* Uploaded File Grid */}
+                <SubmissionFileSection
+                  submittedFiles={submittedFiles}
+                  handleCatchFiles={handleCatchFiles}
+                  handleDeleteFiles={handleDeleteFiles}
+                  handleDownloadFile={handleDownloadFile}
+                />
+
+                {/* Example Description */}
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[8px] font-mono text-[#83958d] uppercase tracking-widest block">
+                    Example Submission Description
+                  </label>
+                  <div className="border border-white/5 rounded-sm p-4 bg-[#151312]/30 max-h-40 overflow-y-auto">
+                    <ReadOnlyEditor content={EXAMPLE_PROJECT_SUMMANRY} />
                   </div>
                 </div>
-              </div>
 
-              {/* Submit Buttons */}
-              <div className="flex flex-col sm:flex-row gap-3 mt-4">
-                <button
-                  type="submit"
-                  className="flex-1 flex items-center justify-center gap-2 border border-[#00e0b3] bg-[#00e0b3]/10 hover:bg-[#00e0b3] hover:text-[#00382b] text-[#00e0b3] font-mono text-xs uppercase font-bold tracking-widest py-3.5 transition-all duration-300 rounded-sm cursor-pointer"
-                >
-                  <span className="material-symbols-outlined text-sm">cloud_sync</span>
-                  Commit_Submission_Pack
-                </button>
-                <Link
-                  href={`/submission/${groupId}/read-only`}
-                  className={`${tw.bg.surfaceContainerHigh} border border-white/10 text-[#b9cbc2] hover:border-white/20 hover:text-white font-mono text-xs uppercase font-bold tracking-widest py-3.5 px-8 text-center transition-all duration-300 rounded-sm cursor-pointer flex items-center justify-center`}
-                >
-                  See your submission
-                </Link>
-              </div>
-            </form>
+                {/* Editor + Live Preview */}
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[8px] font-mono text-[#83958d] uppercase tracking-widest block">
+                    Node_Context: Rich_Description
+                  </label>
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                    {/* Left: TipTap Editor */}
+                    <div className="lg:col-span-8 border border-white/10 rounded-sm overflow-hidden bg-[#151312]">
+                      <SimpleEditor
+                        initialContent={initialEditorContent}
+                        onEditorReady={setEditorValue}
+                        limit={STUDENT_SUBMISSION_DESCRIPTION}
+                      />
+                    </div>
+                    {/* Right: Live Preview Panel */}
+                    <div className="lg:col-span-4">
+                      <SubmissionPreview control={control} />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Submit Buttons */}
+                <div className="flex flex-col sm:flex-row gap-3 mt-4">
+                  <button
+                    type="submit"
+                    className="flex-1 flex items-center justify-center gap-2 border border-[#00e0b3] bg-[#00e0b3]/10 hover:bg-[#00e0b3] hover:text-[#00382b] text-[#00e0b3] font-mono text-xs uppercase font-bold tracking-widest py-3.5 transition-all duration-300 rounded-sm cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-sm">cloud_sync</span>
+                    Commit_Submission_Pack
+                  </button>
+                  <Link
+                    href={`/submission/${groupId}/read-only`}
+                    className={`${tw.bg.surfaceContainerHigh} border border-white/10 text-[#b9cbc2] hover:border-white/20 hover:text-white font-mono text-xs uppercase font-bold tracking-widest py-3.5 px-8 text-center transition-all duration-300 rounded-sm cursor-pointer flex items-center justify-center`}
+                  >
+                    See your submission
+                  </Link>
+                </div>
+              </form>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
