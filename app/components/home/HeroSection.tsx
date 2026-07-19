@@ -165,7 +165,7 @@ export default function HeroSection() {
             hidden: { opacity: 0, y: 20 },
             visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
           }}
-          className="text-lg md:text-2xl text-[#b9cbc2] max-w-2xl mx-auto mb-12 font-medium opacity-80 leading-relaxed"
+          className="text-lg md:text-2xl text-[#b9cbc2] sm:max-w-2xl max-w-2/3 mx-auto mb-12 font-medium opacity-80 leading-relaxed"
         >
           Exploring <span className="text-[#00e0b3]">student&apos;s spot on solutions</span> in the <span className="text-[#00e0b3]">spotlight</span>
         </motion.p>
@@ -189,7 +189,7 @@ export default function HeroSection() {
             href="/login"
             className="w-full sm:w-auto border border-[#3a4a44] bg-transparent text-[#e8e1df] font-bold text-sm px-10 py-4 rounded-sm hover:bg-white/5 transition-all text-center uppercase tracking-widest duration-300"
           >
-            Pitch a Project
+            Showcase Project
           </Link>
         </motion.div>
       </motion.div>

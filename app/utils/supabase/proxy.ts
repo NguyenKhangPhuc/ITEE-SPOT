@@ -53,6 +53,7 @@ export async function updateSession(request: NextRequest) {
         !pathname.startsWith('/reset-password') &&
         !pathname.startsWith('/terms-and-conditions') &&
         !pathname.startsWith('/privacy-policy') &&
+        !pathname.startsWith('/about') &&
         !isAccessingProjectSystem &&
         pathname !== '/'
     ) {
