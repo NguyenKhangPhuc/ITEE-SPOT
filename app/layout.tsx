@@ -29,7 +29,14 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "ITEE SPOT",
-  description: "ITEE SPOT is a collaboration platform to manage the events and boost the connection between students and SMEs in Oulu, the platform is developed and maintained by IKAPO project which is co-funded by the European Union"
+  description: "ITEE SPOT is a collaboration platform to manage the events and boost the connection between students and SMEs in Oulu, the platform is developed and maintained by IKAPO project which is co-funded by the European Union",
+  icons: [
+    {
+      url: '/favicon.ico',
+      sizes: '48x48',
+      type: 'image/png',
+    },
+  ],
 };
 
 export const dynamic = 'force-dynamic';
@@ -55,7 +62,7 @@ export default function RootLayout({
               <NotificationCard />
               <Loader />
               <main className="flex-1 flex flex-col"> {children}</main>
-              <FooterSection/>
+              <FooterSection />
             </div>
           </body>
         </NotificationProvider>
