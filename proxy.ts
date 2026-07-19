@@ -8,8 +8,6 @@ import { userGroupRoute } from "./app/middleware/user_group"
 import { submissionReadOnlyRoute } from "./app/middleware/submission_read_only"
 import { editEventRoute } from "./app/middleware/edit_event_proxy"
 import { submissionGradingRoute } from "./app/middleware/submission_grading"
-import { Database } from "./app/types/database.types"
-import { createServerClient } from "@supabase/ssr"
 import { eventSubmissionGradingRoute } from "./app/middleware/submission_evaluation_all"
 import { maintenanceModeCheck } from "./app/middleware/maintenance"
 import { projectsManageRoute } from "./app/middleware/project_admin_manage_proxy"
@@ -19,58 +17,77 @@ import { adminRouteProxy } from "./app/middleware/admin_route_proxy"
 
 
 export async function proxy(request: NextRequest) {
+    // 1. Maintenance gate — synchronous, no DB involved.
     const maintenanceResponse = maintenanceModeCheck(request)
     if (maintenanceResponse.status !== 200) return maintenanceResponse
-    const updateSessionResponse = await updateSession(request)
-    if (updateSessionResponse.status !== 200) return updateSessionResponse
-    let supabaseResponse = NextResponse.next({
-        request,
-    })
-    const supabase = createServerClient<Database>(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
-        {
-            cookies: {
-                getAll() {
-                    return request.cookies.getAll()
-                },
-                setAll(cookiesToSet) {
-                    cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
-                    supabaseResponse = NextResponse.next({
-                        request,
-                    })
-                    cookiesToSet.forEach(({ name, value, options }) => supabaseResponse.cookies.set(name, value, options))
-                },
-            },
-        }
-    )
-    const { data: user } = await supabase.auth.getUser()
-    const registerRouteCheck = await registerRoute({ request, user: user.user })
-    if (registerRouteCheck.status !== 200) return registerRouteCheck
-    const submissionRouteCheck = await submissionRoute({ request, user: user.user })
-    if (submissionRouteCheck.status !== 200) return submissionRouteCheck
-    const createEventRouteCheck = await createEventRoute({ request, user: user.user })
-    if (createEventRouteCheck.status !== 200) return createEventRouteCheck
-    const viewAllGroupsEventCheck = await viewAllGroups({ request, user: user.user })
-    if (viewAllGroupsEventCheck.status !== 200) return viewAllGroupsEventCheck
-    const checkUserInGroup = await userGroupRoute({ request, user: user.user })
-    if (checkUserInGroup.status !== 200) return checkUserInGroup
-    const submissionReadOnlyRouteCheck = await submissionReadOnlyRoute({ request, user: user.user })
-    if (submissionReadOnlyRouteCheck.status !== 200) return submissionReadOnlyRouteCheck
-    const editEventRouteCheck = await editEventRoute({ request, user: user.user })
-    if (editEventRouteCheck.status !== 200) return editEventRouteCheck
-    const submissionGradingRouteCheck = await submissionGradingRoute({ request, user: user.user })
-    if (submissionGradingRouteCheck.status !== 200) return submissionGradingRouteCheck
-    const eventSubmissionGrading = await eventSubmissionGradingRoute({ request, user: user.user })
-    if (eventSubmissionGrading.status !== 200) return eventSubmissionGrading
-    const projectManageRouteCheck = await projectsManageRoute({ request, user: user.user })
-    if (projectManageRouteCheck.status !== 200) return projectManageRouteCheck
-    const projectDetailsPendingRouteCheck = await projectDetailsPendingRoute({ request, user: user.user })
-    if (projectDetailsPendingRouteCheck.status !== 200) return projectDetailsPendingRouteCheck
-    const studentRouteCheck = await studentRoute({ request, user: user.user })
-    if (studentRouteCheck.status !== 200) return studentRouteCheck
-    const adminRoute = await adminRouteProxy({ request, user: user.user })
-    if (adminRoute.status !== 200) return adminRoute
+
+    // 2. Session refresh + shared Supabase client.
+    //    updateSession creates the client ONCE and handles auth redirects.
+    //    All downstream handlers receive this same client — no re-instantiation.
+    const { supabaseResponse, supabase } = await updateSession(request)
+    if (supabaseResponse.status !== 200) return supabaseResponse
+
+    // 3. Resolve the authenticated user ONCE using the shared client.
+    //    getUser() makes a single network call to Supabase Auth.
+    const { data: { user } } = await supabase.auth.getUser()
+
+    // 4. Path-based dispatch.
+    //    Each branch only invokes handlers whose route patterns could possibly match,
+    //    eliminating the prior sequential await-waterfall across all 13 handlers.
+    const pathname = request.nextUrl.pathname
+
+    if (pathname.startsWith('/register/')) {
+        const result = await registerRoute({ request, user, supabase })
+        if (result.status !== 200) return result
+
+    } else if (pathname.startsWith('/submission/')) {
+        // Order matters: most-specific patterns checked first.
+        const gradingResult = await submissionGradingRoute({ request, user, supabase })
+        if (gradingResult.status !== 200) return gradingResult
+
+        const readOnlyResult = await submissionReadOnlyRoute({ request, user, supabase })
+        if (readOnlyResult.status !== 200) return readOnlyResult
+
+        const submissionResult = await submissionRoute({ request, user, supabase })
+        if (submissionResult.status !== 200) return submissionResult
+
+    } else if (pathname.startsWith('/events/')) {
+        // All /events/:id/* sub-routes and /events/create live here.
+        const createResult = await createEventRoute({ request, user, supabase })
+        if (createResult.status !== 200) return createResult
+
+        const groupsResult = await viewAllGroups({ request, user, supabase })
+        if (groupsResult.status !== 200) return groupsResult
+
+        const editResult = await editEventRoute({ request, user, supabase })
+        if (editResult.status !== 200) return editResult
+
+        const gradeResult = await eventSubmissionGradingRoute({ request, user, supabase })
+        if (gradeResult.status !== 200) return gradeResult
+
+    } else if (pathname.startsWith('/groups/')) {
+        const result = await userGroupRoute({ request, user, supabase })
+        if (result.status !== 200) return result
+
+    } else if (pathname.startsWith('/projects')) {
+        const manageResult = await projectsManageRoute({ request, user, supabase })
+        if (manageResult.status !== 200) return manageResult
+
+        const pendingResult = await projectDetailsPendingRoute({ request, user, supabase })
+        if (pendingResult.status !== 200) return pendingResult
+
+    } else if (pathname.startsWith('/student/')) {
+        const result = await studentRoute({ request, user, supabase })
+        if (result.status !== 200) return result
+
+    } else if (
+        pathname.startsWith('/user-management') ||
+        pathname.startsWith('/group-management') ||
+        pathname.startsWith('/events-management')
+    ) {
+        const result = await adminRouteProxy({ request, user, supabase })
+        if (result.status !== 200) return result
+    }
 }
 
 export const config = {
