@@ -14,7 +14,7 @@
 'use client'
 
 import { useState } from "react"
-import { useForm } from "react-hook-form"
+import { Control, useForm } from "react-hook-form"
 import { getSingleProjectByGroupAndChallenge } from "@/app/actions/projects"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
@@ -159,7 +159,7 @@ export default function CreateShowCaseProjectSection({
     <div className="w-full flex flex-col gap-6 select-text">
       {/* Event/Group/Challenge select panel */}
       <div className={`${tw.bg.surfaceContainerLow} ${tw.border.whiteSubtle} border rounded-sm p-6 flex flex-col gap-5`}>
-        
+
         {/* Row 1: Event & Group dropdowns */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
           {/* All Events */}
@@ -251,7 +251,7 @@ export default function CreateShowCaseProjectSection({
           setSelectedAward={setSelectedAward}
           initialEditorContent={initialEditorContent}
           setInitialEditorContent={setInitialEditorContent}
-          control={control}
+          control={control as Control}
           eventAwards={selectedEvent.event_awards ?? []}
         />
       )}

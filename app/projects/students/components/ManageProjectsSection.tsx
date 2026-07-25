@@ -17,7 +17,7 @@
 'use client'
 
 import { useState } from "react"
-import { useForm } from "react-hook-form"
+import { Control, useForm } from "react-hook-form"
 import Link from "next/link"
 import { getUserSubmittedProjects, getSingleProjectByGroupAndChallenge } from "@/app/actions/projects"
 import { PROJECT_STATUS } from "@/app/types/enum"
@@ -45,7 +45,7 @@ export default function ManageProjectsSection({
 }: ManageProjectsSectionProps) {
   const { showNotification } = useNotification()
   const { setIsOpenLoader } = useLoader()
-  
+
   const [chosenProject, setChosenProject] = useState<ProjectsSummaryExtended | null>(null)
   const [chosenStatus, setChosenStatus] = useState<PROJECT_STATUS | null>(null)
   const [chosenOrder, setChosenOrder] = useState<boolean>(false)
@@ -342,7 +342,7 @@ export default function ManageProjectsSection({
             setSelectedAward={setSelectedAward}
             initialEditorContent={initialEditorContent}
             setInitialEditorContent={setInitialEditorContent}
-            control={control}
+            control={control as Control}
             eventAwards={eventAwards}
           />
         </div>

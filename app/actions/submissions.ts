@@ -100,7 +100,7 @@ export async function saveGroupChallengeSubmission({ submission, submittedFiles,
 
             const { error: storageError } = await supabase.storage.from('attachments').upload(filePath, file);
             if (storageError) {
-                return { error: "Fail to upload files to storage" }
+                return
             };
 
             return {

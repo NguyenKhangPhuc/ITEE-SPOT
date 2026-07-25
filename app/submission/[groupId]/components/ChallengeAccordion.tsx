@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { useForm } from "react-hook-form"
+import { Control, useForm } from "react-hook-form"
 import { motion, AnimatePresence } from "framer-motion"
 import { Editor } from "@tiptap/core"
 import { EventChallenge } from "@/app/types/event_challenges"
@@ -263,8 +263,8 @@ export default function ChallengeAccordion({
         disabled={isLocked}
         onClick={handleExpandChallenge}
         className={`w-full flex items-center justify-between px-6 py-4 transition-colors font-mono select-none ${isLocked
-            ? "bg-[#151312]/20 opacity-50 cursor-not-allowed"
-            : "hover:bg-[#1d1b1a]/50 cursor-pointer"
+          ? "bg-[#151312]/20 opacity-50 cursor-not-allowed"
+          : "hover:bg-[#1d1b1a]/50 cursor-pointer"
           }`}
       >
         <div className="flex items-center gap-3">
@@ -322,7 +322,7 @@ export default function ChallengeAccordion({
             ) : (
               <form onSubmit={handleSubmit(handleSaveSubmission)} className="p-6 flex flex-col gap-6">
                 {/* Form Input Grid */}
-                <SubmissionFormFields register={register} errors={errors} control={control} />
+                <SubmissionFormFields register={register} errors={errors} control={control as Control} />
 
                 {/* dashed Dropzone */}
                 <div className="flex flex-col gap-1.5">

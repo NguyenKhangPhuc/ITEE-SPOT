@@ -9,7 +9,7 @@ import { SHORT_DESCRIPTION_LENGTH } from "@/app/constants"
 interface SubmissionFormFieldsProps {
   register: UseFormRegister<SubmissionInsert>
   errors: FieldErrors<SubmissionInsert>
-  control: Control<SubmissionInsert>
+  control: Control
 }
 
 /**
@@ -46,9 +46,8 @@ export default function SubmissionFormFields({
             autoComplete="off"
             placeholder="Enter Project Name..."
             type="text"
-            className={`w-full bg-[#151312] border ${
-              errors.title ? 'border-red-400/50' : 'border-white/10'
-            } rounded-sm px-4 py-2.5 text-xs font-mono text-[#e8e1df] placeholder:text-[#83958d]/30 focus:outline-none focus:border-[#00e0b3]/50 transition-colors`}
+            className={`w-full bg-[#151312] border ${errors.title ? 'border-red-400/50' : 'border-white/10'
+              } rounded-sm px-4 py-2.5 text-xs font-mono text-[#e8e1df] placeholder:text-[#83958d]/30 focus:outline-none focus:border-[#00e0b3]/50 transition-colors`}
             {...register('title', { required: "Project title is required" })}
           />
           {errors.title && (
@@ -66,9 +65,8 @@ export default function SubmissionFormFields({
             placeholder="One sentence summary..."
             type="text"
             maxLength={SHORT_DESCRIPTION_LENGTH}
-            className={`w-full bg-[#151312] border ${
-              errors.short_description ? 'border-red-400/50' : 'border-white/10'
-            } rounded-sm px-4 py-2.5 text-xs font-mono text-[#e8e1df] placeholder:text-[#83958d]/30 focus:outline-none focus:border-[#00e0b3]/50 transition-colors`}
+            className={`w-full bg-[#151312] border ${errors.short_description ? 'border-red-400/50' : 'border-white/10'
+              } rounded-sm px-4 py-2.5 text-xs font-mono text-[#e8e1df] placeholder:text-[#83958d]/30 focus:outline-none focus:border-[#00e0b3]/50 transition-colors`}
             {...register('short_description', {
               required: "Tagline is required",
               maxLength: {
@@ -88,9 +86,8 @@ export default function SubmissionFormFields({
           <label className="text-[8px] font-mono text-[#83958d] uppercase tracking-widest block">
             Data_Link: GitHub
           </label>
-          <div className={`flex bg-[#151312] border ${
-            errors.github_link ? 'border-red-400/50' : 'border-white/10'
-          } rounded-sm overflow-hidden focus-within:border-[#00e0b3]/50 transition-colors`}>
+          <div className={`flex bg-[#151312] border ${errors.github_link ? 'border-red-400/50' : 'border-white/10'
+            } rounded-sm overflow-hidden focus-within:border-[#00e0b3]/50 transition-colors`}>
             <div className="flex items-center justify-center bg-[#1d1b1a] border-r border-white/5 px-3 shrink-0 text-[#83958d]">
               <span className="material-symbols-outlined text-xs">code</span>
             </div>

@@ -16,7 +16,7 @@
 'use client'
 
 import { useState } from "react"
-import { useForm } from "react-hook-form"
+import { Control, useForm } from "react-hook-form"
 import Link from "next/link"
 import { getAllProjectsBasedOnStatus, getSingleProjectByGroupAndChallenge, updateProjectStatus } from "@/app/actions/projects"
 import { useLoader } from "@/app/context/LoaderContext"
@@ -394,7 +394,7 @@ export default function AdminProjectManageSection({
             setSelectedAward={setSelectedAward}
             initialEditorContent={initialEditorContent}
             setInitialEditorContent={setInitialEditorContent}
-            control={control}
+            control={control as Control}
             eventAwards={eventAwards}
           />
         </div>
