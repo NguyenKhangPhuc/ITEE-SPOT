@@ -180,7 +180,7 @@ export default function MobileMenuDrawer({
             </nav>
 
             {/* System Actions Area */}
-            <div className="flex flex-col gap-1 pt-4 border-t border-white/5 mt-auto">
+            <div className="flex flex-col gap-2 pt-4 border-t border-white/5 mt-auto">
               {user ? (
                 <button
                   onClick={handleLogout}
@@ -190,14 +190,24 @@ export default function MobileMenuDrawer({
                   <span>Sign Out</span>
                 </button>
               ) : (
-                <Link
-                  href="/login"
-                  onClick={onClose}
-                  className="flex items-center gap-3 px-3 py-2 rounded-sm text-xs font-semibold text-[#00382b] bg-[#00e0b3] hover:brightness-110 transition-all uppercase tracking-widest font-bold w-full justify-center"
-                >
-                  <span className="material-symbols-outlined text-xs">login</span>
-                  <span>Sign In</span>
-                </Link>
+                <div className="flex flex-col gap-2 w-full">
+                  <Link
+                    href="/login"
+                    onClick={onClose}
+                    className="flex items-center gap-3 px-3 py-2 rounded-sm text-xs font-semibold text-[#00382b] bg-[#00e0b3] hover:brightness-110 transition-all uppercase tracking-widest font-bold w-full justify-center"
+                  >
+                    <span className="material-symbols-outlined text-xs">login</span>
+                    <span>Sign In</span>
+                  </Link>
+                  <Link
+                    href="/sign-up"
+                    onClick={onClose}
+                    className="flex items-center gap-3 px-3 py-2 rounded-sm text-xs font-semibold text-[#e8e1df] bg-[#373433] border border-white/10 hover:bg-[#474443] hover:border-[#00e0b3]/30 transition-all uppercase tracking-widest font-bold w-full justify-center"
+                  >
+                    <span className="material-symbols-outlined text-xs">person_add</span>
+                    <span>Sign Up</span>
+                  </Link>
+                </div>
               )}
             </div>
           </motion.aside>

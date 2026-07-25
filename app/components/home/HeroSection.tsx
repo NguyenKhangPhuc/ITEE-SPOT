@@ -94,7 +94,7 @@ export default function HeroSection() {
 
       <div className="absolute inset-0 bg-gradient-to-b from-[#151312]/50 via-[#151312] to-[#151312] pointer-events-none"></div>
 
-      <div className="absolute inset-0 p-10 font-mono text-[9px] md:text-[11px] text-[#00e0b3]/50 overflow-hidden pointer-events-none select-none flex flex-col justify-end leading-relaxed text-left max-w-full">
+      <div className="absolute inset-0 p-10 font-mono text-[9px] md:text-[11px] text-[#00e0b3]/50 overflow-hidden pointer-events-none select-none flex flex-col justify-start leading-relaxed text-left max-w-full">
         {typedLines.map((line, idx) => (
           <div key={`bg-line-${idx}`} className="whitespace-pre min-h-[1.5em]">
             {line}
@@ -124,14 +124,14 @@ export default function HeroSection() {
             hidden: { opacity: 0, y: 20 },
             visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
           }}
-          className="inline-flex items-center gap-3 px-4 py-1.5 bg-[#00e0b3]/5 border border-[#00e0b3]/20 rounded-sm mb-12"
+          className="inline-flex items-center gap-3 px-4 py-1.5 bg-[#00e0b3]/100 border border-[#00e0b3]/20 rounded-sm mb-12"
         >
           <div className="flex gap-1">
-            <span className="w-1.5 h-1.5 bg-[#00e0b3] rounded-full animate-pulse"></span>
-            <span className="w-1.5 h-1.5 bg-[#00e0b3]/40 rounded-full"></span>
-            <span className="w-1.5 h-1.5 bg-[#00e0b3]/20 rounded-full"></span>
+            <span className="w-1.5 h-1.5 bg-black rounded-full animate-pulse"></span>
+            <span className="w-1.5 h-1.5 bg-black/40 rounded-full"></span>
+            <span className="w-1.5 h-1.5 bg-black/20 rounded-full"></span>
           </div>
-          <span className="text-[#00e0b3] font-semibold text-[11px] uppercase tracking-[0.2em] font-mono">
+          <span className="text-black font-semibold text-[11px] uppercase tracking-[0.2em] font-mono">
             Engineering Hub 0x01
           </span>
         </motion.div>

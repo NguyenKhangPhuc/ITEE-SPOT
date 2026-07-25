@@ -160,7 +160,7 @@ export default function AboutPage() {
               </div>
             </div>
 
-            <p className="text-sm md:text-base text-[#b9cbc2] leading-relaxed max-w-3xl mb-10 font-mono">
+            <p className="text-sm md:text-base text-[#b9cbc2] leading-relaxed max-w-3xl mb-10 font-mono text-justify indent-6">
               ITEE SPOT is a centralized digital platform built to{" "}
               <strong className="text-[#e8e1df]">
                 boost the connection between SMEs and ICT students
@@ -205,7 +205,7 @@ export default function AboutPage() {
               >
                 Bridging the Gap Between SMEs and Students
               </h2>
-              <p className="text-sm text-[#b9cbc2] leading-relaxed max-w-3xl">
+              <p className="text-sm text-[#b9cbc2] leading-relaxed max-w-3xl text-justify indent-6">
                 Small and medium enterprises in North Ostrobothnia often struggle to
                 access fresh engineering talent, while ICT students at the University
                 of Oulu need real-world problems to validate their skills. ITEE SPOT
@@ -269,7 +269,7 @@ export default function AboutPage() {
                     <h3 className="font-mono font-bold text-xs text-[#e8e1df] uppercase tracking-wider">
                       {cap.label}
                     </h3>
-                    <p className="font-mono text-[11px] text-[#83958d] leading-relaxed">
+                    <p className="font-mono text-[11px] text-[#83958d] leading-relaxed text-justify ">
                       {cap.description}
                     </p>
                   </div>
@@ -311,7 +311,7 @@ export default function AboutPage() {
                     </p>
                   </div>
                 </div>
-                <p className="font-mono text-[11px] text-[#83958d] leading-relaxed">
+                <p className="font-mono text-[11px] text-[#83958d] leading-relaxed text-justify ">
                   IKAPO (ICT Experts Creating Sustainable International Growth for
                   North Ostrobothnia) is an international cooperation project based
                   in Oulu, Finland. The team coordinates the partnership programme
@@ -352,13 +352,27 @@ export default function AboutPage() {
                     </p>
                   </div>
                 </div>
-                <p className="font-mono text-[11px] text-[#83958d] leading-relaxed">
+                <p className="font-mono text-[11px] text-[#83958d] leading-relaxed text-justify ">
                   Phuc Nguyen is a Computer Sciences and Engineering student at the
                   University of Oulu who architected and built the ITEE SPOT platform
                   end-to-end. The platform is built on Next.js, TypeScript, Supabase,
                   and Tailwind CSS — featuring a fully responsive dark terminal design
                   system with role-based access control and structured data management.
                 </p>
+                <div className="flex flex-col gap-1.5 pt-2 border-t border-white/5">
+                  <p className="font-mono text-[9px] text-[#83958d] uppercase tracking-widest">
+                    Contact Email
+                  </p>
+                  <a
+                    href="mailto:Phuc.Nguyen@student.oulu.fi"
+                    className="inline-flex items-center gap-1.5 font-mono text-xs text-[#00e0b3] hover:underline underline-offset-4 transition-all"
+                  >
+                    <span className="material-symbols-outlined text-sm">
+                      mail
+                    </span>
+                    Phuc.Nguyen@student.oulu.fi
+                  </a>
+                </div>
                 <div className="flex flex-wrap gap-2 pt-2 border-t border-white/5">
                   {["Next.js", "TypeScript", "Supabase", "Tailwind CSS", "Framer Motion"].map(
                     (tech) => (
@@ -407,7 +421,7 @@ export default function AboutPage() {
                     European Union
                   </p>
                 </div>
-                <p className="font-mono text-[11px] text-[#83958d] leading-relaxed">
+                <p className="font-mono text-[11px] text-[#83958d] leading-relaxed text-justify">
                   ITEE SPOT is co-funded by the European Union as part of the IKAPO
                   international growth initiative, supporting cross-border collaboration
                   between academia and industry in North Ostrobothnia.
@@ -433,7 +447,7 @@ export default function AboutPage() {
                     IKAPO
                   </p>
                 </div>
-                <p className="font-mono text-[11px] text-[#83958d] leading-relaxed">
+                <p className="font-mono text-[11px] text-[#83958d] leading-relaxed text-justify ">
                   The IKAPO project coordinates the student-SME partnership programme
                   in Oulu, organizing events and managing the platform ecosystem
                   that ITEE SPOT powers.
@@ -461,7 +475,7 @@ export default function AboutPage() {
                     University of Oulu
                   </p>
                 </div>
-                <p className="font-mono text-[11px] text-[#83958d] leading-relaxed">
+                <p className="font-mono text-[11px] text-[#83958d] leading-relaxed text-justify ">
                   The University of Oulu hosts the IKAPO project and provides the
                   academic foundation for the student-SME collaboration programme,
                   connecting engineering students with real-world industry challenges.
@@ -497,7 +511,7 @@ export default function AboutPage() {
               >
                 Explore the Platform
               </h2>
-              <p className="font-mono text-[11px] text-[#83958d] max-w-md leading-relaxed">
+              <p className="font-mono text-[11px] text-[#83958d] max-w-md leading-relaxed text-justify ">
                 Browse active events, discover student project submissions from
                 past hackathons, or register your team for the current competition.
               </p>

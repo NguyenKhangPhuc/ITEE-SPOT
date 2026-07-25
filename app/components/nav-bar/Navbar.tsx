@@ -138,13 +138,22 @@ const NavBar = ({ initialUser }: { initialUser: ProfileInsert | null }) => {
                         Sign Out
                     </button>
                 ) : (
-                    <Link
-                        href="/login"
-                        className="w-full bg-[#00e0b3] text-[#00382b] px-6 py-3 rounded-sm font-semibold text-sm hover:brightness-110 transition-all uppercase tracking-widest font-bold flex items-center justify-center gap-2 text-center"
-                    >
-                        <span className="material-symbols-outlined text-sm">login</span>
-                        Sign In
-                    </Link>
+                    <div className="flex flex-col gap-2 w-full">
+                        <Link
+                            href="/login"
+                            className="w-full bg-[#00e0b3] text-[#00382b] px-6 py-3 rounded-sm font-semibold text-sm hover:brightness-110 transition-all uppercase tracking-widest font-bold flex items-center justify-center gap-2 text-center"
+                        >
+                            <span className="material-symbols-outlined text-sm">login</span>
+                            Sign In
+                        </Link>
+                        <Link
+                            href="/sign-up"
+                            className="w-full bg-[#373433] text-[#e8e1df] border border-white/10 hover:bg-[#474443] hover:border-[#00e0b3]/30 px-6 py-3 rounded-sm font-semibold text-sm transition-all uppercase tracking-widest font-bold flex items-center justify-center gap-2 text-center"
+                        >
+                            <span className="material-symbols-outlined text-sm">person_add</span>
+                            Sign Up
+                        </Link>
+                    </div>
                 )}
 
                 <div className="mt-6 flex items-center gap-3 text-[10px] font-mono text-[#83958d]">
