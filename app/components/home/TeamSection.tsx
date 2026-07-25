@@ -78,7 +78,7 @@ export default function TeamSection() {
                   fill
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                 />
-                <div className="absolute inset-0 border border-[#00e0b3]/0 group-hover:border-[#00e0b3]/30 transition-all duration-500"></div>
+                <div className="absolute inset-0 border-3 border-[#00e0b3]/0 group-hover:border-[#00ffcc] transition-all duration-500"></div>
               </div>
               <h4 className="text-lg font-bold text-[#e8e1df] mb-1 group-hover:text-[#00e0b3] transition-colors">
                 {member.name}
