@@ -13,10 +13,13 @@
 
 'use client'
 
+import { useState } from "react"
 import HttpsIcon from "@mui/icons-material/Https"
 import GitHubIconMui from "@mui/icons-material/GitHub"
 import AlternateEmailIcon from "@mui/icons-material/AlternateEmail"
 import PersonIcon from "@mui/icons-material/Person"
+import Visibility from "@mui/icons-material/Visibility"
+import VisibilityOff from "@mui/icons-material/VisibilityOff"
 import { useForm } from "react-hook-form"
 import { SignupForm } from "../types/form_data"
 import { createClient } from "../utils/supabase/client"
@@ -39,6 +42,7 @@ const Home = () => {
     getValues,
   } = useForm<SignupForm>()
   const { setIsOpenLoader } = useLoader()
+  const [showPassword, setShowPassword] = useState<boolean>(false)
 
   /**
    * BEHAVIORAL MECHANISM:
@@ -186,7 +190,7 @@ const Home = () => {
                 <HttpsIcon fontSize="small" />
               </span>
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 placeholder="Enter your password"
                 className="w-full bg-transparent text-[#e8e1df] placeholder-[#83958d]/40 font-mono text-xs p-3 outline-none border-none"
                 {...register("password", {
@@ -197,6 +201,18 @@ const Home = () => {
                   },
                 })}
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="pr-3 text-[#83958d] hover:text-[#e8e1df] transition-colors focus:outline-none flex items-center shrink-0 cursor-pointer"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? (
+                  <VisibilityOff fontSize="small" />
+                ) : (
+                  <Visibility fontSize="small" />
+                )}
+              </button>
             </div>
             {errors.password && (
               <p className="text-red-400 font-mono text-[9px] mt-1 uppercase tracking-wider">
