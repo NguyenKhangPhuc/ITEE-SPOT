@@ -19,7 +19,7 @@
 
 import { useForm, useWatch } from "react-hook-form"
 import { motion } from "framer-motion"
-import { updateUserGrading } from "@/app/actions/user_grading"
+import { updateUserGrading } from "@/app/actions/user_grading/put/updateUserGrading"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
 import { CRITERIA_TYPE } from "@/app/types/enum"

@@ -2,7 +2,7 @@ import { getUser } from "@/app/actions/authentication/get/getUser";
 import { getEventCriteriaById } from "@/app/actions/event_criteria/get/getEventCriteriaById";
 import { getSubmissionById } from "@/app/actions/submissions/get/getSubmissionById";
 import SubmissionGradingClient from "./SubmissionGradingClient";
-import { getUserGradingForSubmissionById } from "@/app/actions/user_grading";
+import { getUserGradingForSubmissionById } from "@/app/actions/user_grading/get/getUserGradingForSubmissionById";
 import { getUserProfile } from "@/app/actions/profiles/get/getUserProfile";
 
 
