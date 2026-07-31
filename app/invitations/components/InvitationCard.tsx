@@ -17,7 +17,8 @@
 
 import { useState } from "react"
 import { User } from "@supabase/supabase-js"
-import { acceptInvitation, rejectInvitation } from "@/app/actions/invitations"
+import { acceptInvitation } from "@/app/actions/invitations/put/acceptInvitation"
+import { rejectInvitation } from "@/app/actions/invitations/put/rejectInvitation"
 import { useNotification } from "@/app/context/NotificationContext"
 import { EVENT_STATUS, INVITATION_STATUS } from "@/app/types/enum"
 import { InvitationWithGroupsEvent } from "@/app/types/invitation"
