@@ -15,7 +15,7 @@
 
 import { useState } from "react"
 import { Control, useForm } from "react-hook-form"
-import { getSingleProjectByGroupAndChallenge } from "@/app/actions/projects"
+import { getSingleProjectByGroupAndChallenge } from "@/app/actions/projects/get/getSingleProjectByGroupAndChallenge"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
 import { UserGroupsWithEvent } from "@/app/types/group"

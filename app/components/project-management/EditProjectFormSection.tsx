@@ -29,7 +29,7 @@ import { Control, FieldErrors, UseFormHandleSubmit, UseFormRegister, useWatch } 
 import Link from "next/link"
 import { Editor } from "@tiptap/core"
 import { getPublicFileURL } from "@/app/actions/file_url"
-import { saveStudentGroupProject } from "@/app/actions/projects"
+import { saveStudentGroupProject } from "@/app/actions/projects/post/saveStudentGroupProject"
 import WordCounter from "@/app/components/WordCounter"
 import YoutubeVideo from "@/app/components/YoutubeVideo"
 import { MAX_TOTAL_SIZE, SHORT_DESCRIPTION_LENGTH, STUDENT_SUBMISSION_DESCRIPTION } from "@/app/constants"

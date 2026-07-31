@@ -1,5 +1,5 @@
 import { getAllEvents } from "../actions/events/get/getAllEvents"
-import { getAllProjectsBasedOnStatus } from "../actions/projects";
+import { getAllProjectsBasedOnStatus } from "../actions/projects/get/getAllProjectsBasedOnStatus";
 import ProjectsClient from "./ProjectsClient";
 import { PROJECT_STATUS } from "../types/enum";
 const Home = async () => {

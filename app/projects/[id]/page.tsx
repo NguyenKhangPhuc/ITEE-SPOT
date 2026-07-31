@@ -1,4 +1,4 @@
-import { getSingleProject } from "@/app/actions/projects"
+import { getSingleProject } from "@/app/actions/projects/get/getSingleProject"
 import SingleProjectClient from "./SingleProjectClient"
 
 interface PageProps {

@@ -1,5 +1,5 @@
 import HomePage from "./HomePage"
-import { getAllProjectsBasedOnStatus } from "./actions/projects"
+import { getAllProjectsBasedOnStatus } from "./actions/projects/get/getAllProjectsBasedOnStatus"
 import { ProjectsSummaryExtended } from "./types/projects"
 import { PROJECT_STATUS } from "./types/enum"
 
