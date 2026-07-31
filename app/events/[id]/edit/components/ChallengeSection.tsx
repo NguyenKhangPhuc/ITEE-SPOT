@@ -16,7 +16,7 @@
 'use client'
 
 import { useForm } from "react-hook-form"
-import { createEventChallenge } from "@/app/actions/event_challenges"
+import { createEventChallenge } from "@/app/actions/event_challenges/post/createEventChallenge"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
 import { EventChallengeInsert } from "@/app/types/event_challenges"
