@@ -16,7 +16,8 @@
 
 import { useState } from "react"
 import { useForm } from "react-hook-form"
-import { createEventAwarđ, updateEventAward } from "@/app/actions/event_awards"
+import { createEventAwarđ } from "@/app/actions/event_awards/post/createEventAward"
+import { updateEventAward } from "@/app/actions/event_awards/put/updateEventAward"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
 import { EventAwardsInsert } from "@/app/types/event_awards"

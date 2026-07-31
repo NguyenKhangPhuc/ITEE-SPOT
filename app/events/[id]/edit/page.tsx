@@ -11,7 +11,7 @@
  */
 
 import { getSingleEvent } from "@/app/actions/events"
-import { getAwardsByEventId } from "@/app/actions/event_awards"
+import { getAwardsByEventId } from "@/app/actions/event_awards/get/getAwardsByEventId"
 import EditEventClient from "./EditEventClient"
 
 interface PageProps {
