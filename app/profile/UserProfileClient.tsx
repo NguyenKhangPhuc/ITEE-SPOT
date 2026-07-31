@@ -15,7 +15,7 @@
 
 import Link from "next/link"
 import { useForm } from "react-hook-form"
-import { updateProfile } from "../actions/profiles/put/updateProfile"
+import { runProfileAction } from "@/app/actions/profiles/actions.gateway"
 import { useLoader } from "../context/LoaderContext"
 import { useNotification } from "../context/NotificationContext"
 import { Profile, ProfileInsert } from "../types/profile"
@@ -58,7 +58,7 @@ export default function UserProfileClient({ user }: { user: Profile }) {
   const onSubmit = async (data: ProfileInsert): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { data: updatedValue, error } = await updateProfile({ profile: data })
+      const { data: updatedValue, error } = await runProfileAction({ type: 'updateProfile', payload: { profile: data } })
       if (error) {
         throw new Error(error)
       }

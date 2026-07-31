@@ -23,7 +23,7 @@ import { useState } from "react"
 import Image from "next/image"
 import { UseFormRegister, FieldErrors } from "react-hook-form"
 import { createClient } from "@/app/utils/supabase/client"
-import { updateProfileAvatar } from "@/app/actions/profiles/put/updateProfileAvatar"
+import { runProfileAction } from "@/app/actions/profiles/actions.gateway"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
 import { Profile, ProfileInsert } from "../../types/profile"
@@ -88,10 +88,13 @@ export default function ProfileSidebar({
       const file = files[0]
       setIsOpenLoader(true)
       try {
-        const { error } = await updateProfileAvatar({
-          userId: user.id,
-          posterFile: file,
-          originalPath: user.avatar_url ?? null
+        const { error } = await runProfileAction({
+          type: 'updateProfileAvatar',
+          payload: {
+            userId: user.id,
+            posterFile: file,
+            originalPath: user.avatar_url ?? null
+          }
         })
         if (error) {
           throw new Error(error)

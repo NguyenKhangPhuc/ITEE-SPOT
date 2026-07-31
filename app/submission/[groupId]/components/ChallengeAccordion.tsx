@@ -9,8 +9,7 @@ import { EventChallenge } from "@/app/types/event_challenges"
 import { GroupChallengeRelation } from "@/app/types/group_challenge"
 import { SubmissionInsert } from "@/app/types/submission"
 import { SubmissionFileExtended } from "@/app/types/submission_files"
-import { getGoupChallengeSubmission } from "@/app/actions/submissions/get/getGoupChallengeSubmission"
-import { saveGroupChallengeSubmission } from "@/app/actions/submissions/post/saveGroupChallengeSubmission"
+import { runSubmissionAction } from "@/app/actions/submissions/actions.gateway"
 import { getPublicFileURL } from "@/app/actions/file_url"
 import { useNotification } from "@/app/context/NotificationContext"
 import { useLoader } from "@/app/context/LoaderContext"
@@ -122,9 +121,12 @@ export default function ChallengeAccordion({
     if (!isOpen) {
       setIsFetching(true)
       try {
-        const { data, error } = await getGoupChallengeSubmission({
-          groupChallengeId: groupChallengeRelation.id,
-          groupId,
+        const { data, error } = await runSubmissionAction({
+          type: 'getGoupChallengeSubmission',
+          payload: {
+            groupChallengeId: groupChallengeRelation.id,
+            groupId,
+          }
         })
         if (error) throw new Error(error)
 
@@ -241,10 +243,13 @@ export default function ChallengeAccordion({
         throw new Error("Unable to save: group parameters missing")
       }
 
-      const { error } = await saveGroupChallengeSubmission({
-        submission: data,
-        submittedFiles,
-        funfacts: [], // Fun facts kept as empty array per user requirements
+      const { error } = await runSubmissionAction({
+        type: 'saveGroupChallengeSubmission',
+        payload: {
+          submission: data,
+          submittedFiles,
+          funfacts: [],
+        }
       })
 
       if (error) throw new Error(error)

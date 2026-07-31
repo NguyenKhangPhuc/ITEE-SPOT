@@ -18,7 +18,7 @@ import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { ProjectsSummaryExtended } from "@/app/types/projects"
 import { UserGroupsWithEvent } from "@/app/types/group"
-import { getUserSubmittedProjects } from "@/app/actions/projects/get/getUserSubmittedProjects"
+import { runProjectAction } from "@/app/actions/projects/actions.gateway"
 import { useNotification } from "@/app/context/NotificationContext"
 import BackButton from "@/app/components/BackButton"
 import SubmitShowcaseProjectSection from "./components/SubmitShowcaseProjectSection"
@@ -58,10 +58,13 @@ export default function StudentsManagementClient({
     if (tab === "manage" && !hasLoadedProjects) {
       setIsLoadingProjects(true)
       try {
-        const { data, error } = await getUserSubmittedProjects({
-          userId,
-          status: null,
-          ascending: false,
+        const { data, error } = await runProjectAction({
+          type: 'getUserSubmittedProjects',
+          payload: {
+            userId,
+            status: null,
+            ascending: false,
+          }
         })
         if (error) {
           throw new Error(error)

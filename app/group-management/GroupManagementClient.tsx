@@ -16,8 +16,8 @@
 
 import { useState } from "react"
 import { AdminGroups } from "@/app/types/group"
-import { deleteGroupMemberById } from "@/app/actions/group_member/delete/deleteGroupMemberById"
-import { deleteGroupChallengeById } from "@/app/actions/group_challenge/delete/deleteGroupChallengeById"
+import { runGroupMemberAction } from "@/app/actions/group_member/actions.gateway"
+import { runGroupChallengeAction } from "@/app/actions/group_challenge/actions.gateway"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
 import BackButton from "@/app/components/BackButton"
@@ -79,7 +79,7 @@ export default function GroupManagementClient({ groups: initialGroups }: GroupMa
   const handleRemoveMember = async (memberId: string, groupId: string): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { error } = await deleteGroupMemberById(memberId)
+      const { error } = await runGroupMemberAction({ type: 'deleteGroupMemberById', payload: { memberId } })
       if (error) {
         throw new Error(error)
       }
@@ -124,7 +124,7 @@ export default function GroupManagementClient({ groups: initialGroups }: GroupMa
   const handleDeleteChallenge = async (groupChallengeId: string, groupId: string): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { error } = await deleteGroupChallengeById(groupChallengeId)
+      const { error } = await runGroupChallengeAction({ type: 'deleteGroupChallengeById', payload: { id: groupChallengeId } })
       if (error) {
         throw new Error(error)
       }

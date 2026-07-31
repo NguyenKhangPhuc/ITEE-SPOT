@@ -19,8 +19,7 @@
 import { useState } from "react"
 import { Control, useForm } from "react-hook-form"
 import Link from "next/link"
-import { getUserSubmittedProjects } from "@/app/actions/projects/get/getUserSubmittedProjects"
-import { getSingleProjectByGroupAndChallenge } from "@/app/actions/projects/get/getSingleProjectByGroupAndChallenge"
+import { runProjectAction } from "@/app/actions/projects/actions.gateway"
 import { PROJECT_STATUS } from "@/app/types/enum"
 import { EventAwards } from "@/app/types/event_awards"
 import { ProjectAwardsInsert } from "@/app/types/project_awards"
@@ -77,10 +76,13 @@ export default function ManageProjectsSection({
   const handleFilterProjectStatus = async (status: PROJECT_STATUS | null): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { data, error } = await getUserSubmittedProjects({
-        userId,
-        status,
-        ascending: chosenOrder,
+      const { data, error } = await runProjectAction({
+        type: 'getUserSubmittedProjects',
+        payload: {
+          userId,
+          status,
+          ascending: chosenOrder,
+        }
       })
       if (error) {
         throw new Error(error)
@@ -113,10 +115,13 @@ export default function ManageProjectsSection({
   const handleFilterProjectOrder = async (ascending: boolean): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { data, error } = await getUserSubmittedProjects({
-        userId,
-        status: chosenStatus,
-        ascending,
+      const { data, error } = await runProjectAction({
+        type: 'getUserSubmittedProjects',
+        payload: {
+          userId,
+          status: chosenStatus,
+          ascending,
+        }
       })
       if (error) {
         throw new Error(error)
@@ -171,9 +176,12 @@ export default function ManageProjectsSection({
   const handleChooseProject = async (project: ProjectsSummaryExtended): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { data, error } = await getSingleProjectByGroupAndChallenge({
-        group_id: project.group_id!,
-        group_challenge_id: project.group_challenge_id!,
+      const { data, error } = await runProjectAction({
+        type: 'getSingleProjectByGroupAndChallenge',
+        payload: {
+          group_id: project.group_id!,
+          group_challenge_id: project.group_challenge_id!,
+        }
       })
       if (error) {
         throw new Error(error)

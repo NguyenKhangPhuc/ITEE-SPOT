@@ -17,7 +17,7 @@ import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { ProjectsSummary } from "@/app/types/projects"
 import { EventWithGroupsAndAward } from "@/app/types/event"
-import { getAllProjects } from "@/app/actions/projects/get/getAllProjects"
+import { runProjectAction } from "@/app/actions/projects/actions.gateway"
 import { useNotification } from "@/app/context/NotificationContext"
 import BackButton from "@/app/components/BackButton"
 import CreateShowCaseProjectSection from "./components/CreateShowCaseProjectSection"
@@ -55,7 +55,7 @@ export default function ProjectsAdminClient({
     if (tab === "manage" && !hasLoadedProjects) {
       setIsLoadingProjects(true)
       try {
-        const { data, error } = await getAllProjects()
+        const { data, error } = await runProjectAction({ type: 'getAllProjects' })
         if (error) {
           throw new Error(error)
         }

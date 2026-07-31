@@ -92,24 +92,64 @@ action file, rather than duplicating it everywhere.
 ### 5. Fix the "too many actions imported into one client file" problem
 
 Read `references/nextjs-constraint.md` for the full explanation before doing this step.
+**Splitting actions into separate files/folders alone does NOT fix this** — it has been
+independently bisected (real Vercel deploys, additive/reverse bisection, reproduced on
+both Next 15.5.20 and 16.1.6) that the trigger is a Client Component importing *more than
+one individually-exported Server Action*, regardless of how many files those actions live
+in. A Client Component importing 6 named exports from 3 separate `"use server"` files
+still fails the same way as importing 6 from 1 file.
 
-Once actions live in separate files, a Client Component should stop doing:
+**Verified fix: consolidate into a single exported dispatcher per Client Component usage
+site.** For each domain, keep the per-action files from Step 4 (`get/getProfile.ts`,
+`post/createProfile.ts`, etc.) as **internal, non-exported-to-client** implementations,
+then add one gateway file that is the *only* thing the Client Component imports:
+
 ```ts
-import { actionOne, actionTwo, actionThree, actionFour, actionFive, actionSix } from "./actions";
-```
-Instead, for each usage site:
-- Import each action from its own new file path
-  (`import { getProfile } from "./profiles/get/getProfile"`), **or**
-- If the same client file genuinely needs many actions, group the imports by re-exporting
-  from small barrel files per verb-folder (`profiles/get/index.ts` re-exporting all `get`
-  actions) so each import statement pulls from a narrower module, **or**
-- If the user's project has a specific threshold/lint rule already causing the error,
-  match the split to stay under that threshold per import statement.
+// profiles/actions.gateway.ts   ("use server")
+import { getProfile } from "./get/getProfile";
+import { getProfileList } from "./get/getProfileList";
+import { createProfile } from "./post/createProfile";
+import { updateProfile } from "./put/updateProfile";
+import { deleteProfile } from "./delete/deleteProfile";
 
-Ask the user which grouping they prefer if it's not obvious (see `ask_user_input_v0` if
-available) — direct per-action imports are the safest default; barrel re-exports are more
-convenient but reintroduce a bigger single file, so only offer that if the user wants
-fewer import lines.
+type ProfileAction =
+  | { type: "getProfile"; payload: { id: string } }
+  | { type: "getProfileList"; payload: Record<string, never> }
+  | { type: "createProfile"; payload: CreateProfileInput }
+  | { type: "updateProfile"; payload: UpdateProfileInput }
+  | { type: "deleteProfile"; payload: { id: string } };
+
+export async function runProfileAction(action: ProfileAction) {
+  switch (action.type) {
+    case "getProfile": return getProfile(action.payload.id);
+    case "getProfileList": return getProfileList();
+    case "createProfile": return createProfile(action.payload);
+    case "updateProfile": return updateProfile(action.payload);
+    case "deleteProfile": return deleteProfile(action.payload.id);
+  }
+}
+```
+
+```ts
+// page.tsx  ("use client")
+import { runProfileAction } from "./profiles/actions.gateway";
+// only ONE export imported — this is what makes the deploy succeed
+```
+
+Rules for this step:
+- One gateway/dispatcher file per **domain per Client Component usage pattern** — don't
+  make one giant dispatcher for the whole app; scope it to what a given client file
+  actually needs (e.g. `profiles/actions.gateway.ts`, `orders/actions.gateway.ts`).
+- The per-action files under `get/`, `post/`, `put/`, `delete/` should generally stop
+  being imported directly by any Client Component once a gateway exists for that domain.
+  They're still fine to export normally for use by Server Components, route handlers, or
+  other server-side callers — the failure mode is specifically Client Component → multiple
+  individually-exported Server Actions.
+- If a Client Component only ever needs a single action from a domain, it's fine to import
+  that one action file directly — the bug is about *multiple* named Server Action exports
+  landing in one client-imported module graph, not about using per-file actions at all.
+- Keep the dispatcher's `switch` thin — it should only route, not contain business logic
+  (business logic stays in the individual `get/post/put/delete` files from Step 4).
 
 ### 6. Find and update every other import site
 
@@ -118,8 +158,12 @@ fewer import lines.
   grep -rn "from ['\"].*actions['\"]" --include='*.ts' --include='*.tsx' .
   ```
   and specifically for each old action name to catch renamed/aliased imports.
-- For every match, rewrite the import statement(s) to the new per-action (or barrel)
-  paths, preserving any `as` aliases the original code used.
+- For every match in a **Client Component**, rewrite the import to pull the domain's
+  `runXAction` dispatcher (Step 5) and update call sites to pass `{ type, payload }`
+  instead of calling the old named function directly, preserving any `as` aliases.
+- For every match in a **Server Component, route handler, or other server-only file**,
+  it's fine (and simpler) to import the specific action directly from its new
+  `get/post/put/delete` file path — the dispatcher is only required for Client Components.
 - Don't forget non-component call sites: route handlers, other server actions calling
   each other, tests, and `revalidatePath`/`redirect` wrapper utilities.
 

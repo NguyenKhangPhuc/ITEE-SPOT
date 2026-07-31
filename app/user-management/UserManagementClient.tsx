@@ -17,7 +17,7 @@
 import { useState } from "react"
 import { ProfileInsert } from "@/app/types/profile"
 import { PROFILE_ROLE, UNIVERSITY, PROGRAMME } from "@/app/types/enum"
-import { updateUserRoleByUserId } from "@/app/actions/profiles/put/updateUserRoleByUserId"
+import { runProfileAction } from "@/app/actions/profiles/actions.gateway"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
 import BackButton from "@/app/components/BackButton"
@@ -60,7 +60,7 @@ export default function UserManagementClient({ profiles: initialProfiles }: User
   const handleRoleChange = async (userId: string, newRole: PROFILE_ROLE): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { error } = await updateUserRoleByUserId(userId, newRole)
+      const { error } = await runProfileAction({ type: 'updateUserRoleByUserId', payload: { userId, role: newRole } })
       if (error) {
         throw new Error(error)
       }

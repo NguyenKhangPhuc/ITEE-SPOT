@@ -1,35 +1,51 @@
-# Why "importing too many Server Actions into one Client Component" causes problems
+# Why "importing multiple Server Actions into one Client Component" breaks Vercel deploys
 
-Server Actions are not plain functions once they cross the server/client boundary: Next.js
-compiles each exported action from a `"use server"` module into a reference that gets
-serialized and sent to the client so it can be called back on the server (an RPC-style
-closure reference, similar in spirit to how `bind`-ed closures are serialized).
+## What's confirmed (via independent, real-deploy bisection)
 
-Practical consequences the user may be running into:
+A community investigation (additive bisection + reverse bisection, real Vercel deploys at
+every step — local builds do not reproduce it) isolated the exact trigger:
 
-1. **Bundle/reference bloat**: every Server Action imported into a Client Component adds
-   a client-side reference manifest entry. A file that re-exports many actions and is
-   imported by a Client Component pulls in the whole module graph for all of them, even
-   the ones not called on that page, inflating the client bundle and the action manifest.
-2. **Build/runtime errors on some Next.js versions**: importing a large number of Server
-   Actions from a single module into one Client Component has been a source of build
-   errors or unexpected "used before defined" / serialization errors in the App Router,
-   particularly when actions call each other or share closures within the same file.
-   Splitting one action per file, and keeping each Client Component's import list narrow,
-   avoids the module from acting as one giant server/client boundary crossing point.
-3. **Tree-shaking**: bundlers can drop unused code more reliably when each action lives in
-   its own module, since the Client Component only pulls in the reference it actually
-   calls.
+> A Client Component (`"use client"`) importing **more than one individually-exported
+> Server Action**, whether from one file or split across several `"use server"` files,
+> causes the Vercel build to fail silently at the output-deploy stage: "Deploying
+> outputs…" hangs, the build produces zero output artifacts, and the Builds record on
+> Vercel comes back empty (sometimes surfaced as `NEXT_MISSING_LAMBDA`).
 
-The practical fix (and what this skill applies) is:
-- One Server Action per file, each with its own `"use server"` directive at the top.
-- Client Components import only the specific actions they call, from their specific
-  files, rather than importing many actions from one shared `actions.ts`.
-- If a Client Component legitimately needs many actions, prefer grouping by verb-folder
-  barrel files (`get/index.ts`, `post/index.ts`, ...) over one flat `actions.ts`, so no
-  single module re-exports the entire domain's actions.
+Key findings from that bisection, in order:
+1. A Client Component importing 6 named Server Actions from one `actions.ts` -> fails.
+2. Same 6 functions with `"use server"` removed (plain functions) -> succeeds. Confirms
+   Server Actions specifically (not the functions' code) are the trigger.
+3. Restoring them as 6 real Server Actions in one file -> fails again.
+4. **Splitting across 3 separate `"use server"` files, still 6 total named exports
+   imported into the same Client Component -> still fails.** This rules out file count
+   or folder organization as the fix -- it is *not* solved by moving actions into more
+   files.
+5. Consolidating into **one exported dispatcher function** that switches internally to
+   private (non-exported) functions -> deploy succeeds.
 
-If the user cites a specific numeric limit or exact error message, treat their report as
-authoritative for their Next.js version — don't override it with a made-up universal
-number — and just make sure the resulting import statements stay under whatever threshold
-they observed.
+This was reproduced identically on Next.js 15.5.20 and 16.1.6, so it isn't tied to one
+specific version. The person who found it did not have access to `@vercel/next` internals,
+so the exact mechanism inside the builder isn't confirmed -- only the reproducible trigger
+and fix are.
+
+## What this means for a refactor
+
+- Reorganizing a `"use server"` file into a `get/post/put/delete` folder structure (this
+  skill's Step 4) is good for code organization but **does not by itself fix this class of
+  deploy failure**, since the bug is about the *Client Component's import surface*, not
+  file layout.
+- The fix that's actually verified to work is the **dispatcher pattern** in Step 5: only
+  one exported Server Action per domain reaches any given Client Component; everything
+  else stays as private, non-exported functions called internally by that one dispatcher.
+- This constraint is specifically about **Client Components**. Server Components, route
+  handlers, and other server-only code calling multiple named Server Actions directly have
+  not been reported as affected -- only apply the dispatcher pattern where a Client
+  Component is doing the importing.
+
+## If the user's error differs
+
+If the user is hitting a *different* error message (e.g. TypeScript errors, ESLint rule,
+ordinary ESM import limits, or one of the various documented Next.js Server Action GitHub
+issues about "Failed to find Server Action" / stale deployments / skew protection), don't
+assume it's this same bug -- ask for their exact error text and Next.js/Vercel version, and
+treat their own reproduction as authoritative over this reference if it conflicts.

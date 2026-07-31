@@ -18,7 +18,7 @@ import { usePathname } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
-import { signout } from "@/app/actions/authentication/post/signout"
+import { runAuthAction } from "@/app/actions/authentication/actions.gateway"
 import { NAVIGATION_BAR } from "@/app/constants"
 import { useNotification } from "@/app/context/NotificationContext"
 import { PROFILE_ROLE } from "@/app/types/enum"
@@ -46,7 +46,7 @@ export default function NavbarMobile({ initialUser }: { initialUser: ProfileInse
   const handleLogout = async (): Promise<void> => {
     try {
       setIsOpen(false)
-      await signout()
+      await runAuthAction({ type: 'signout' })
     } catch (error) {
       if (error instanceof Error && error.message !== 'NEXT_REDIRECT') {
         showNotification(error.message)

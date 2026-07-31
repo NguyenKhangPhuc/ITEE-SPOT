@@ -15,7 +15,7 @@
 
 import { useState } from "react"
 import { Control, useForm } from "react-hook-form"
-import { getSingleProjectByGroupAndChallenge } from "@/app/actions/projects/get/getSingleProjectByGroupAndChallenge"
+import { runProjectAction } from "@/app/actions/projects/actions.gateway"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
 import { EventWithGroupsAndAward } from "@/app/types/event"
@@ -112,9 +112,12 @@ export default function CreateShowCaseProjectSection({
     if (selectedEvent && selectedGroup && groupChallengeId) {
       setIsOpenLoader(true)
       try {
-        const { data, error } = await getSingleProjectByGroupAndChallenge({
-          group_id: selectedGroup.id,
-          group_challenge_id: groupChallengeId,
+        const { data, error } = await runProjectAction({
+          type: 'getSingleProjectByGroupAndChallenge',
+          payload: {
+            group_id: selectedGroup.id,
+            group_challenge_id: groupChallengeId,
+          }
         })
         if (error) {
           throw new Error(error)

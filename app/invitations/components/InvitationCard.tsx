@@ -17,8 +17,7 @@
 
 import { useState } from "react"
 import { User } from "@supabase/supabase-js"
-import { acceptInvitation } from "@/app/actions/invitations/put/acceptInvitation"
-import { rejectInvitation } from "@/app/actions/invitations/put/rejectInvitation"
+import { runInvitationAction } from "@/app/actions/invitations/actions.gateway"
 import { useNotification } from "@/app/context/NotificationContext"
 import { EVENT_STATUS, INVITATION_STATUS } from "@/app/types/enum"
 import { InvitationWithGroupsEvent } from "@/app/types/invitation"
@@ -80,10 +79,13 @@ export default function InvitationCard({
    */
   const handleAccept = async (): Promise<void> => {
     try {
-      const { error } = await acceptInvitation({
-        invitationId: invite.id,
-        groupId: invite.group_id!,
-        userId: user.id
+      const { error } = await runInvitationAction({
+        type: 'acceptInvitation',
+        payload: {
+          invitationId: invite.id,
+          groupId: invite.group_id!,
+          userId: user.id
+        }
       })
       if (error) {
         throw new Error(error)
@@ -110,7 +112,7 @@ export default function InvitationCard({
    */
   const handleReject = async (): Promise<void> => {
     try {
-      const { error } = await rejectInvitation({ invitationId: invite.id })
+      const { error } = await runInvitationAction({ type: 'rejectInvitation', payload: { invitationId: invite.id } })
       if (error) {
         throw new Error(error)
       }

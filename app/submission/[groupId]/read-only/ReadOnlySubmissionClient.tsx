@@ -10,7 +10,7 @@ import { SubmissionFeedback } from "@/app/types/submission_feedback"
 import { PROFILE_ROLE } from "@/app/types/enum"
 import { GroupInfo } from "@/app/types/group"
 import { getSubmissionRatingById } from "@/app/actions/submission_ratings"
-import { getSubmissionFeedBackByUserIdAndSubmissionId } from "@/app/actions/submission_feedback/get/getSubmissionFeedBackByUserIdAndSubmissionId"
+import { runSubmissionFeedbackAction } from "@/app/actions/submission_feedback/actions.gateway"
 import { getPublicFileURL } from "@/app/actions/file_url"
 import { useNotification } from "@/app/context/NotificationContext"
 import { useLoader } from "@/app/context/LoaderContext"
@@ -81,9 +81,12 @@ export default function ReadOnlySubmissionClient({
       if (ratingError) throw new Error(ratingError)
 
       // 2. Fetch user feedback log
-      const { data: feedbackData, error: feedbackError } = await getSubmissionFeedBackByUserIdAndSubmissionId({
-        userId: user.id,
-        submissionId,
+      const { data: feedbackData, error: feedbackError } = await runSubmissionFeedbackAction({
+        type: 'getSubmissionFeedBackByUserIdAndSubmissionId',
+        payload: {
+          userId: user.id,
+          submissionId,
+        }
       })
       if (feedbackError) throw new Error(feedbackError)
 
