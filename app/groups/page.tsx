@@ -1,4 +1,4 @@
-import { getUserGroups } from "../actions/groups"
+import { getUserGroups } from "../actions/groups/get/getUserGroups"
 import GroupsClient from "./GroupsClient"
 import BackButton from "@/app/components/BackButton"
 

@@ -11,7 +11,7 @@
  */
 
 import StudentManagementClient from "./StudentsManagementClient"
-import { getUserGroups } from "@/app/actions/groups"
+import { getUserGroups } from "@/app/actions/groups/get/getUserGroups"
 import { getUser } from "@/app/actions/authentication/get/getUser"
 
 export default async function Home() {

@@ -1,5 +1,5 @@
 import { getUser } from "@/app/actions/authentication/get/getUser"
-import { getSingleGroup } from "@/app/actions/groups"
+import { getSingleGroup } from "@/app/actions/groups/get/getSingleGroup"
 import { getPendingGroupInvitationsById } from "@/app/actions/invitations"
 import SingleGroupClient from "./SingleGroupClient"
 

@@ -11,7 +11,7 @@
  * None.
  */
 
-import { getAllGroups } from "@/app/actions/groups"
+import { getAllGroups } from "@/app/actions/groups/get/getAllGroups"
 import GroupManagementClient from "./GroupManagementClient"
 import { AdminGroups } from "@/app/types/group"
 

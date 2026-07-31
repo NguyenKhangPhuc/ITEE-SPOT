@@ -1,7 +1,7 @@
 import { getUser } from "@/app/actions/authentication/get/getUser"
 import { getSubmissionByGroupId } from "@/app/actions/submissions"
 import { getUserProfile } from "@/app/actions/profiles"
-import { getSingleGroup } from "@/app/actions/groups"
+import { getSingleGroup } from "@/app/actions/groups/get/getSingleGroup"
 import ReadOnlySubmissionClient from "./ReadOnlySubmissionClient"
 
 interface PageProps {
