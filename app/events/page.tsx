@@ -1,4 +1,4 @@
-import { getAllEvents } from "../actions/events"
+import { getAllEvents } from "../actions/events/get/getAllEvents"
 import EventsClient from "./EventsClient"
 import { EventInsert } from "../types/event"
 

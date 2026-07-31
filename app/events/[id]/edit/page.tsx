@@ -10,7 +10,7 @@
  * - params (Promise<{ id: string }>, Required): Request URL parameters containing event ID.
  */
 
-import { getSingleEvent } from "@/app/actions/events"
+import { getSingleEvent } from "@/app/actions/events/get/getSingleEvent"
 import { getAwardsByEventId } from "@/app/actions/event_awards/get/getAwardsByEventId"
 import EditEventClient from "./EditEventClient"
 

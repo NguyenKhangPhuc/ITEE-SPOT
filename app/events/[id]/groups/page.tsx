@@ -1,4 +1,4 @@
-import { getSingleEvent } from "@/app/actions/events"
+import { getSingleEvent } from "@/app/actions/events/get/getSingleEvent"
 import { getEventGroups } from "@/app/actions/groups"
 import EventGroupsClient from "./EventGroupsClient"
 import BackButton from "@/app/components/BackButton"

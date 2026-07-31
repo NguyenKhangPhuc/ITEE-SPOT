@@ -1,6 +1,6 @@
 import { getUser } from "@/app/actions/authentication/get/getUser";
 import { getEventChallenges } from "@/app/actions/event_challenges/get/getEventChallenges";
-import { getSingleEvent } from "@/app/actions/events";
+import { getSingleEvent } from "@/app/actions/events/get/getSingleEvent";
 import RegisterClient from "./RegisterClient";
 
 interface PageProps {

@@ -16,7 +16,7 @@
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { Editor } from "@tiptap/core"
-import { updateEventInfo } from "@/app/actions/events"
+import { updateEventInfo } from "@/app/actions/events/put/updateEventInfo"
 import { EVENT_CREATED_DESCRIPTION } from "@/app/constants"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"

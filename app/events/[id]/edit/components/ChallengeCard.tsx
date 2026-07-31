@@ -13,7 +13,7 @@
 'use client'
 
 import { useState } from "react"
-import { updateEventChallenges } from "@/app/actions/events"
+import { updateEventChallenges } from "@/app/actions/events/put/updateEventChallenges"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
 import { EventChallengeInsert } from "@/app/types/event_challenges"

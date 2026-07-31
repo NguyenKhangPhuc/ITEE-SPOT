@@ -10,7 +10,7 @@
  * None.
  */
 
-import { getAllEvents } from "@/app/actions/events"
+import { getAllEvents } from "@/app/actions/events/get/getAllEvents"
 import EventManagementClient from "./EventManagementClient"
 
 export default async function Home() {

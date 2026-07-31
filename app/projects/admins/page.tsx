@@ -12,7 +12,7 @@
  */
 
 import ProjectsAdminClient from "./ProjectsAdminClient"
-import { getAllEventsWithGroupAndAward } from "@/app/actions/events"
+import { getAllEventsWithGroupAndAward } from "@/app/actions/events/get/getAllEventsWithGroupAndAward"
 import { getUser } from "@/app/actions/authentication/get/getUser"
 
 export default async function Home() {

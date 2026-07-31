@@ -1,4 +1,4 @@
-import { getAllEvents } from "../actions/events"
+import { getAllEvents } from "../actions/events/get/getAllEvents"
 import { getAllProjectsBasedOnStatus } from "../actions/projects";
 import ProjectsClient from "./ProjectsClient";
 import { PROJECT_STATUS } from "../types/enum";
