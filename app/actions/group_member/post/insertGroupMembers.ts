@@ -1,15 +1,33 @@
 'use server'
 
-import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
-import { createClient } from '../utils/supabase/server'
-import { RegisterGroupMember } from '../types/group_member';
-import { InvitationInsert } from '../types/invitation';
-import { INVITATION_STATUS } from '../types/enum';
-import { GroupChallengeRelation, GroupChallengeRelationInsert } from '../types/group_challenge';
+/**
+ * PURPOSE:
+ * Registers a new project group, links selected event challenges, inserts the registering member, and sends invitations to other specified member emails.
+ *
+ * CONTEXT/PARENT FILE:
+ * Extracted from app/actions/group_member.ts as part of decomposing server actions into per-file HTTP intent structure.
+ *
+ * INPUTS / PARAMETERS:
+ * - registerGroupMemberData (RegisterGroupMember, Required): Object payload containing group title, description, event_id, user_id, member_emails, and challenges array.
+ */
 
+import { createClient } from '@/app/utils/supabase/server'
+import { RegisterGroupMember } from '@/app/types/group_member'
+import { InvitationInsert } from '@/app/types/invitation'
+import { INVITATION_STATUS } from '@/app/types/enum'
+import { GroupChallengeRelationInsert } from '@/app/types/group_challenge'
 
-
+/**
+ * BEHAVIORAL MECHANISM:
+ * Validates member emails against registered user profiles, creates the group row in 'groups', links group challenges in 'group_challenge',
+ * adds the group creator into 'group_members', and creates pending invitations in 'invitation'. On member insert failure, rolls back group creation.
+ *
+ * PARAMETERS:
+ * - registerGroupMemberData (RegisterGroupMember): Registration form data payload.
+ *
+ * RETURN VALUE:
+ * - Promise<{ createdGroup?: any, error?: string | any }>: Object containing created group payload or error message string.
+ */
 export async function insertGroupMembers(registerGroupMemberData: RegisterGroupMember) {
     const supabase = await createClient();
 
@@ -18,22 +36,6 @@ export async function insertGroupMembers(registerGroupMemberData: RegisterGroupM
     if ((data?.length == 0 && filteredOutEmails.length != 0) || error) {
         return { error: "Incorrect member email" }
     }
-    // Uncomment if you want user can only register one group / event
-    //     if (filteredOutEmails.length != 0) {
-    //         const { data: foundMembers, error: foundError } = await supabase
-    //             .from('group_members')
-    //             .select(`
-    //     profiles (email),
-    //     groups!inner (event_id)
-    //   `)
-    //             .eq('groups.event_id', registerGroupMemberData.event_id)
-    //             .in('profiles.email', filteredOutEmails);
-
-    //         if (foundMembers && foundMembers.length > 0) {
-    //             const existingEmails = foundMembers.map(m => m.profiles?.email);
-    //             throw new Error(`User already register for the event: ${existingEmails.join(', ')}`);
-    //         }
-    //     }
 
     const { data: createdGroup, error: groupError } = await supabase.from('groups').insert([{
         group_name: registerGroupMemberData.title,
@@ -80,27 +82,3 @@ export async function insertGroupMembers(registerGroupMemberData: RegisterGroupM
     }
     return { createdGroup, error: groupError }
 }
-
-export async function removeStudentsThemselveFromGroupById(groupId: string) {
-    const supabase = await createClient()
-
-    const { data: student } = await supabase.auth.getUser()
-    if (student.user == null) {
-        return { error: 'You are not signed in' }
-    }
-    const { data, error } = await supabase.from('group_members').delete().eq('member_id', student.user.id).eq('group_id', groupId);
-    if (error) {
-        return { error: 'Fail to remove yourself from the group' }
-    }
-    return { data, error }
-}
-
-export async function deleteGroupMemberById(id: string) {
-    const supabase = await createClient();
-    const { data, error } = await supabase.from('group_members').delete().eq('id', id)
-    if (error) {
-        return { error: 'Fail to delete the group member' }
-    }
-    return { data, error }
-}
-

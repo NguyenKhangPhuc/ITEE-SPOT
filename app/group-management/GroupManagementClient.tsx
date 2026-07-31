@@ -16,7 +16,7 @@
 
 import { useState } from "react"
 import { AdminGroups } from "@/app/types/group"
-import { deleteGroupMemberById } from "@/app/actions/group_member"
+import { deleteGroupMemberById } from "@/app/actions/group_member/delete/deleteGroupMemberById"
 import { deleteGroupChallengeById } from "@/app/actions/group_challenge/delete/deleteGroupChallengeById"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
