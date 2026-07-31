@@ -17,7 +17,8 @@
 
 import { useState } from "react"
 import { useForm } from "react-hook-form"
-import { createEventCriteria, updateEventCriteria } from "@/app/actions/event_criteria"
+import { createEventCriteria } from "@/app/actions/event_criteria/post/createEventCriteria"
+import { updateEventCriteria } from "@/app/actions/event_criteria/put/updateEventCriteria"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
 import { CRITERIA_TYPE } from "@/app/types/enum"

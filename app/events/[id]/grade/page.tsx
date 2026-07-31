@@ -12,7 +12,7 @@
  */
 
 import { getUser } from "@/app/actions/authentication/get/getUser"
-import { getEventCriteriaById } from "@/app/actions/event_criteria"
+import { getEventCriteriaById } from "@/app/actions/event_criteria/get/getEventCriteriaById"
 import { getSingleEvent } from "@/app/actions/events"
 import { getSubmissionFinalScores } from "@/app/actions/submission_final_score"
 import EventResultClient from "./EventResultClient"

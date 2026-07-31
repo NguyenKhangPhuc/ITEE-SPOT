@@ -1,5 +1,5 @@
 import { getUser } from "@/app/actions/authentication/get/getUser";
-import { getEventCriteriaById } from "@/app/actions/event_criteria";
+import { getEventCriteriaById } from "@/app/actions/event_criteria/get/getEventCriteriaById";
 import { getSubmissionById } from "@/app/actions/submissions";
 import SubmissionGradingClient from "./SubmissionGradingClient";
 import { getUserGradingForSubmissionById } from "@/app/actions/user_grading";
