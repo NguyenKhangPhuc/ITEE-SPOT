@@ -4,7 +4,7 @@ import Image from "next/image"
 
 import React, { useState } from "react"
 import { usePathname } from "next/navigation"
-import { runAuthAction } from "@/app/actions/authentication/actions.gateway"
+import { signout } from "@/app/actions/authentication/post/signout"
 import { NAVIGATION_BAR } from "@/app/constants"
 import { useNotification } from "@/app/context/NotificationContext"
 import { PROFILE_ROLE } from "@/app/types/enum"
@@ -17,7 +17,7 @@ const NavBar = ({ initialUser }: { initialUser: ProfileInsert | null }) => {
 
     const handleLogout = async () => {
         try {
-            await runAuthAction({ type: 'signout' })
+            await signout()
         } catch (error) {
             if (error instanceof Error && error.message !== 'NEXT_REDIRECT') {
                 showNotification(error.message)

@@ -18,7 +18,9 @@
 import { useState } from "react"
 import { Control, useForm } from "react-hook-form"
 import Link from "next/link"
-import { runProjectAction } from "@/app/actions/projects/actions.gateway"
+import { getAllProjectsBasedOnStatus } from "@/app/actions/projects/get/getAllProjectsBasedOnStatus"
+import { getSingleProjectByGroupAndChallenge } from "@/app/actions/projects/get/getSingleProjectByGroupAndChallenge"
+import { updateProjectStatus } from "@/app/actions/projects/put/updateProjectStatus"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
 import { PROJECT_STATUS } from "@/app/types/enum"
@@ -72,7 +74,7 @@ export default function AdminProjectManageSection({
   const handleFilterProjectStatus = async (status: PROJECT_STATUS | null): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { data, error } = await runProjectAction({ type: 'getAllProjectsBasedOnStatus', payload: { status, ascending: chosenOrder } })
+      const { data, error } = await getAllProjectsBasedOnStatus({ status, ascending: chosenOrder })
       if (error) {
         throw new Error(error)
       }
@@ -103,7 +105,7 @@ export default function AdminProjectManageSection({
   const handleFilterProjectOrder = async (ascending: boolean): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { data, error } = await runProjectAction({ type: 'getAllProjectsBasedOnStatus', payload: { status: chosenStatus, ascending } })
+      const { data, error } = await getAllProjectsBasedOnStatus({ status: chosenStatus, ascending })
       if (error) {
         throw new Error(error)
       }
@@ -157,12 +159,9 @@ export default function AdminProjectManageSection({
   const handleChooseProject = async (project: ProjectsSummary): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { data, error } = await runProjectAction({
-        type: 'getSingleProjectByGroupAndChallenge',
-        payload: {
-          group_id: project.group_id!,
-          group_challenge_id: project.group_challenge_id!,
-        }
+      const { data, error } = await getSingleProjectByGroupAndChallenge({
+        group_id: project.group_id!,
+        group_challenge_id: project.group_challenge_id!,
       })
       if (error) {
         throw new Error(error)
@@ -209,7 +208,7 @@ export default function AdminProjectManageSection({
   }): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { error } = await runProjectAction({ type: 'updateProjectStatus', payload: { projectId, status } })
+      const { error } = await updateProjectStatus({ projectId, status })
       if (error) {
         throw new Error(error)
       }

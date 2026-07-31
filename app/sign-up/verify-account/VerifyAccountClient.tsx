@@ -18,7 +18,7 @@ import HttpsIcon from "@mui/icons-material/Https"
 import AlternateEmailIcon from "@mui/icons-material/AlternateEmail"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { runProfileAction } from "@/app/actions/profiles/actions.gateway"
+import { verifySignUpAccount } from "@/app/actions/profiles/post/verifySignUpAccount"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
 import { VerifyAccountForm } from "@/app/types/form_data"
@@ -51,7 +51,7 @@ export const VerifyAccount = ({ email }: { email: string }) => {
   const onSubmit = async (userInfo: VerifyAccountForm): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { error } = await runProfileAction({ type: 'verifySignUpAccount', payload: userInfo })
+      const { error } = await verifySignUpAccount(userInfo)
       if (error) {
         throw new Error(error)
       }

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 import { createClient } from "@/app/utils/supabase/client"
 import { handleGetUrl } from "@/app/helpers/FileUrl"
-import { runGroupMemberAction } from "@/app/actions/group_member/actions.gateway"
+import { insertGroupMembers } from "@/app/actions/group_member/post/insertGroupMembers"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
 import { Event } from "@/app/types/event"
@@ -84,7 +84,7 @@ export default function RegisterClient({
   const handleCreateGroup = async (data: RegisterGroupMember) => {
     setIsOpenLoader(true)
     try {
-      const { createdGroup, error } = await runGroupMemberAction({ type: 'insertGroupMembers', payload: { registerGroupMemberData: data } })
+      const { createdGroup, error } = await insertGroupMembers(data)
       if (error) throw new Error(error)
       if (!createdGroup) throw new Error("Failed to load created group")
       setIsOpenLoader(false)

@@ -19,7 +19,7 @@
 
 import { useForm, useWatch } from "react-hook-form"
 import { motion } from "framer-motion"
-import { runUserGradingAction } from "@/app/actions/user_grading/actions.gateway"
+import { updateUserGrading } from "@/app/actions/user_grading/put/updateUserGrading"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
 import { CRITERIA_TYPE } from "@/app/types/enum"
@@ -140,12 +140,9 @@ export default function SubmissionGradingClient({
         grade: ele.grade,
       }))
       
-      const { error } = await runUserGradingAction({
-        type: 'updateUserGrading',
-        payload: {
-          grades: removedPercentageGrades,
-          submissionId: submission?.id ?? ""
-        }
+      const { error } = await updateUserGrading({
+        grades: removedPercentageGrades,
+        submissionId: submission?.id ?? ""
       })
       
       if (error) {

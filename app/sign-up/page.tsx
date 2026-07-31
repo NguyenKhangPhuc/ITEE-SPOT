@@ -23,7 +23,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff"
 import { useForm } from "react-hook-form"
 import { SignupForm } from "../types/form_data"
 import { createClient } from "../utils/supabase/client"
-import { runAuthAction } from "../actions/authentication/actions.gateway"
+import { signup } from "../actions/authentication/post/signup"
 import { useNotification } from "../context/NotificationContext"
 import Link from "next/link"
 import { AUTH_ERROR_CODE } from "../types/enum"
@@ -57,7 +57,7 @@ const Home = () => {
   const onSubmit = async (signupInfo: SignupForm): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { error } = await runAuthAction({ type: 'signup', payload: { formData: signupInfo, origin: window.location.origin } })
+      const { error } = await signup(signupInfo, window.location.origin)
       if (error) {
         throw new Error(error)
       }

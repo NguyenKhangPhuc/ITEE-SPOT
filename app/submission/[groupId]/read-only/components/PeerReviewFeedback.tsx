@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { motion } from "framer-motion"
 import { createSubmissionRating } from "@/app/actions/submission_ratings"
-import { runSubmissionFeedbackAction } from "@/app/actions/submission_feedback/actions.gateway"
+import { updateSubmissionFeedback } from "@/app/actions/submission_feedback/put/updateSubmissionFeedback"
 import { useNotification } from "@/app/context/NotificationContext"
 import { useLoader } from "@/app/context/LoaderContext"
 import { ProfileInsert } from "@/app/types/profile"
@@ -149,7 +149,7 @@ export default function PeerReviewFeedback({
       feedback.user_id = user.id
       feedback.submission_id = submissionId
 
-      const { error } = await runSubmissionFeedbackAction({ type: 'updateSubmissionFeedback', payload: { submissionFeedback: feedback } })
+      const { error } = await updateSubmissionFeedback({ submissionFeedback: feedback })
       if (error) throw new Error(error)
 
       setIsOpenLoader(false)

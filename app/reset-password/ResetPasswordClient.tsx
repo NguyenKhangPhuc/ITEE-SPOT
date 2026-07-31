@@ -18,7 +18,7 @@ import HttpsIcon from "@mui/icons-material/Https"
 import AlternateEmailIcon from "@mui/icons-material/AlternateEmail"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { runProfileAction } from "@/app/actions/profiles/actions.gateway"
+import { resetPassword } from "../actions/profiles/post/resetPassword"
 import { useLoader } from "../context/LoaderContext"
 import { useNotification } from "../context/NotificationContext"
 import { ResetPasswordForm } from "../types/form_data"
@@ -58,7 +58,7 @@ export const ResetPasswordClient = ({ email }: { email: string }) => {
   const onSubmit = async (userInfo: ResetPasswordForm): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { error } = await runProfileAction({ type: 'resetPassword', payload: userInfo })
+      const { error } = await resetPassword(userInfo)
       if (error) {
         throw new Error(error)
       }

@@ -18,7 +18,8 @@ import { useForm } from "react-hook-form"
 import { LoginForm } from "../types/form_data"
 import Link from "next/link"
 import { createClient } from "../utils/supabase/client"
-import { runAuthAction } from "../actions/authentication/actions.gateway"
+import { login } from "../actions/authentication/post/login"
+import { resendVerificationCode } from "../actions/authentication/post/resendVerificationCode"
 import { useNotification } from "../context/NotificationContext"
 import { AUTH_ERROR_CODE } from "../types/enum"
 import { useLoader } from "../context/LoaderContext"
@@ -77,7 +78,7 @@ const Home = () => {
   const onSubmit = async (userInfo: LoginForm): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { error } = await runAuthAction({ type: 'login', payload: userInfo })
+      const { error } = await login(userInfo)
       if (error) {
         throw new Error(error)
       }
@@ -85,7 +86,7 @@ const Home = () => {
       if (error instanceof Error && error.message !== "NEXT_REDIRECT") {
         if (error.message === AUTH_ERROR_CODE.EMAIL_NOT_CONFIRMED) {
           try {
-            await runAuthAction({ type: 'resendVerificationCode', payload: { email: userInfo.email, origin: window.location.origin } })
+            await resendVerificationCode(userInfo.email, window.location.origin)
             showNotification("Please verify your email")
             router.push(`/sign-up/verify-account?email=${userInfo.email}`)
           } catch (error) {
