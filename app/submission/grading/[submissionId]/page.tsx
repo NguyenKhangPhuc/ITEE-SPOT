@@ -3,7 +3,7 @@ import { getEventCriteriaById } from "@/app/actions/event_criteria/get/getEventC
 import { getSubmissionById } from "@/app/actions/submissions";
 import SubmissionGradingClient from "./SubmissionGradingClient";
 import { getUserGradingForSubmissionById } from "@/app/actions/user_grading";
-import { getUserProfile } from "@/app/actions/profiles";
+import { getUserProfile } from "@/app/actions/profiles/get/getUserProfile";
 
 
 interface PageProps {

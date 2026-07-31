@@ -1,6 +1,6 @@
 
 import { getUser } from "@/app/actions/authentication/get/getUser";
-import { getUserProfile } from "@/app/actions/profiles";
+import { getUserProfile } from "@/app/actions/profiles/get/getUserProfile";
 import NavBar from "./Navbar";
 import NavbarMobile from "./NavbarMobile";
 

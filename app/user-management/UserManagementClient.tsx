@@ -17,7 +17,7 @@
 import { useState } from "react"
 import { ProfileInsert } from "@/app/types/profile"
 import { PROFILE_ROLE, UNIVERSITY, PROGRAMME } from "@/app/types/enum"
-import { updateUserRoleByUserId } from "@/app/actions/profiles"
+import { updateUserRoleByUserId } from "@/app/actions/profiles/put/updateUserRoleByUserId"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
 import BackButton from "@/app/components/BackButton"

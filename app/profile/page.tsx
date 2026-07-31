@@ -1,6 +1,6 @@
 
 import { getUser } from "../actions/authentication/get/getUser";
-import { getUserProfile } from "../actions/profiles";
+import { getUserProfile } from "../actions/profiles/get/getUserProfile";
 import UserProfileClient from "./UserProfileClient";
 
 

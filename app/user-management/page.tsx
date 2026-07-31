@@ -10,7 +10,7 @@
  * None.
  */
 
-import { getAllUsers } from "@/app/actions/profiles"
+import { getAllUsers } from "@/app/actions/profiles/get/getAllUsers"
 import UserManagementClient from "./UserManagementClient"
 
 export default async function Home() {

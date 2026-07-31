@@ -1,7 +1,7 @@
 import { getSingleEvent } from "@/app/actions/events/get/getSingleEvent";
 import SingleEventClient from "./SingleEventClient";
 import { getUser } from "@/app/actions/authentication/get/getUser";
-import { getUserProfile } from "@/app/actions/profiles";
+import { getUserProfile } from "@/app/actions/profiles/get/getUserProfile";
 
 interface PageProps {
     params: Promise<{ id: string }>;

@@ -15,7 +15,7 @@
 
 import Link from "next/link"
 import { useForm } from "react-hook-form"
-import { updateProfile } from "../actions/profiles"
+import { updateProfile } from "../actions/profiles/put/updateProfile"
 import { useLoader } from "../context/LoaderContext"
 import { useNotification } from "../context/NotificationContext"
 import { Profile, ProfileInsert } from "../types/profile"

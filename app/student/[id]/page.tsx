@@ -1,6 +1,6 @@
 import { getSingleEvent } from "@/app/actions/events/get/getSingleEvent";
 import { getUser } from "@/app/actions/authentication/get/getUser";
-import { getUserProfile } from "@/app/actions/profiles";
+import { getUserProfile } from "@/app/actions/profiles/get/getUserProfile";
 import StudentProfileClient from "./StudentProfileClient";
 import { getUserSubmittedProjects } from "@/app/actions/projects";
 import { PROJECT_STATUS } from "@/app/types/enum";
