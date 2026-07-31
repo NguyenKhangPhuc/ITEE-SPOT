@@ -1,5 +1,5 @@
 import { getUser } from "@/app/actions/authentication/get/getUser"
-import { getSubmissionById } from "@/app/actions/submissions"
+import { getSubmissionById } from "@/app/actions/submissions/get/getSubmissionById"
 import { getSubmissionFeedBackBySubmissionId } from "@/app/actions/submission_feedback/get/getSubmissionFeedBackBySubmissionId"
 import SubmissionFeedbackClient from "./SubmissionFeedbackClient"
 import BackButton from "@/app/components/BackButton"

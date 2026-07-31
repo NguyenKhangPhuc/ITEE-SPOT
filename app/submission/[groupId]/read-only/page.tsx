@@ -1,5 +1,5 @@
 import { getUser } from "@/app/actions/authentication/get/getUser"
-import { getSubmissionByGroupId } from "@/app/actions/submissions"
+import { getSubmissionByGroupId } from "@/app/actions/submissions/get/getSubmissionByGroupId"
 import { getUserProfile } from "@/app/actions/profiles/get/getUserProfile"
 import { getSingleGroup } from "@/app/actions/groups/get/getSingleGroup"
 import ReadOnlySubmissionClient from "./ReadOnlySubmissionClient"
