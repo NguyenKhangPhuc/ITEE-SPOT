@@ -1,5 +1,5 @@
 
-import { getUser } from "../actions/authentication";
+import { getUser } from "../actions/authentication/get/getUser";
 import { getUserInvitations } from "../actions/invitations";
 import InvitationClient from "./InvitationsClient";
 

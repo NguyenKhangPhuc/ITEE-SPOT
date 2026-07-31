@@ -1,5 +1,5 @@
 
-import { getUser } from "@/app/actions/authentication";
+import { getUser } from "@/app/actions/authentication/get/getUser";
 import { getUserProfile } from "@/app/actions/profiles";
 import NavBar from "./Navbar";
 import NavbarMobile from "./NavbarMobile";

@@ -1,6 +1,6 @@
 import { getSingleEvent } from "@/app/actions/events";
 import SingleEventClient from "./SingleEventClient";
-import { getUser } from "@/app/actions/authentication";
+import { getUser } from "@/app/actions/authentication/get/getUser";
 import { getUserProfile } from "@/app/actions/profiles";
 
 interface PageProps {

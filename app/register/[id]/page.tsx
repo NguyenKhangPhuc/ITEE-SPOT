@@ -1,4 +1,4 @@
-import { getUser } from "@/app/actions/authentication";
+import { getUser } from "@/app/actions/authentication/get/getUser";
 import { getEventChallenges } from "@/app/actions/event_challenges";
 import { getSingleEvent } from "@/app/actions/events";
 import RegisterClient from "./RegisterClient";

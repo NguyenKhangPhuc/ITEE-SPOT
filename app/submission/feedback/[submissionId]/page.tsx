@@ -1,4 +1,4 @@
-import { getUser } from "@/app/actions/authentication"
+import { getUser } from "@/app/actions/authentication/get/getUser"
 import { getSubmissionById } from "@/app/actions/submissions"
 import { getSubmissionFeedBackBySubmissionId } from "@/app/actions/submission_feedback"
 import SubmissionFeedbackClient from "./SubmissionFeedbackClient"

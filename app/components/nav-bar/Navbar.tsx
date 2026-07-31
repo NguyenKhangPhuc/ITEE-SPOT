@@ -4,7 +4,7 @@ import Image from "next/image"
 
 import React, { useState } from "react"
 import { usePathname } from "next/navigation"
-import { signout } from "@/app/actions/authentication"
+import { signout } from "@/app/actions/authentication/post/signout"
 import { NAVIGATION_BAR } from "@/app/constants"
 import { useNotification } from "@/app/context/NotificationContext"
 import { PROFILE_ROLE } from "@/app/types/enum"

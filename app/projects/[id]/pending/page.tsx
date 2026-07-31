@@ -1,6 +1,6 @@
 import { getSingleEvent } from "@/app/actions/events";
 
-import { getUser } from "@/app/actions/authentication";
+import { getUser } from "@/app/actions/authentication/get/getUser";
 import { getUserProfile } from "@/app/actions/profiles";
 import { getSingleProject } from "@/app/actions/projects";
 import SingleProjectClient from "../SingleProjectClient";

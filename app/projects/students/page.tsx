@@ -12,7 +12,7 @@
 
 import StudentManagementClient from "./StudentsManagementClient"
 import { getUserGroups } from "@/app/actions/groups"
-import { getUser } from "@/app/actions/authentication"
+import { getUser } from "@/app/actions/authentication/get/getUser"
 
 export default async function Home() {
   const { data: groupsWithOtherInfo, error } = await getUserGroups()

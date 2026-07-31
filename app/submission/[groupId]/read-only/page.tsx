@@ -1,4 +1,4 @@
-import { getUser } from "@/app/actions/authentication"
+import { getUser } from "@/app/actions/authentication/get/getUser"
 import { getSubmissionByGroupId } from "@/app/actions/submissions"
 import { getUserProfile } from "@/app/actions/profiles"
 import { getSingleGroup } from "@/app/actions/groups"

@@ -11,7 +11,7 @@
  * - params (Promise<{ id: string }>, Required): Next.js router parameters containing event ID.
  */
 
-import { getUser } from "@/app/actions/authentication"
+import { getUser } from "@/app/actions/authentication/get/getUser"
 import { getEventCriteriaById } from "@/app/actions/event_criteria"
 import { getSingleEvent } from "@/app/actions/events"
 import { getSubmissionFinalScores } from "@/app/actions/submission_final_score"

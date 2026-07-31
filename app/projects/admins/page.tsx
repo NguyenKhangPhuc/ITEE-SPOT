@@ -13,7 +13,7 @@
 
 import ProjectsAdminClient from "./ProjectsAdminClient"
 import { getAllEventsWithGroupAndAward } from "@/app/actions/events"
-import { getUser } from "@/app/actions/authentication"
+import { getUser } from "@/app/actions/authentication/get/getUser"
 
 export default async function Home() {
   const { data: user, error: userError } = await getUser()
