@@ -83,6 +83,8 @@ export default function MobileMenuDrawer({
       case 'invitations':
         return 'person'
       case 'terms & condition':
+      case 'terms & conditions':
+      case 'privacy policy':
       case 'privacy policies':
         return 'description'
       default:

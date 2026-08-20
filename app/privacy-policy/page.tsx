@@ -229,7 +229,7 @@ export default function PrivacyPolicyPage() {
           </div>
 
           <h1 className="text-3xl md:text-4xl font-extrabold uppercase tracking-tight leading-tight text-[#e8e1df]">
-            Privacy <span className="text-[#00e0b3]">Policies</span>
+            Privacy <span className="text-[#00e0b3]">Policy</span>
           </h1>
 
           <p className="text-xs text-[#83958d] leading-relaxed max-w-xl">

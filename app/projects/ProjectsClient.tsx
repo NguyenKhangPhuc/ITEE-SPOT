@@ -50,13 +50,15 @@ export default function ProjectsClient({ projects, events }: ProjectsClientProps
     },
   })
 
-  // 0. Filter current projects by search query (project_title or groups.group_name)
+  // 0. Filter current projects by search query (project_title, short_description or groups.group_name)
   const searchedProjects = currentProjects.filter((pro) => {
     if (!searchQuery.trim()) return true
     const query = searchQuery.toLowerCase()
     const titleMatch = pro.project_title?.toLowerCase().includes(query) ?? false
+    const shortDescMatch = pro.short_description?.toLowerCase().includes(query) ?? false
+    const groupDescMatch = pro.groups?.short_description?.toLowerCase().includes(query) ?? false
     const groupMatch = pro.groups?.group_name?.toLowerCase().includes(query) ?? false
-    return titleMatch || groupMatch
+    return titleMatch || shortDescMatch || groupDescMatch || groupMatch
   })
 
   // 1. Partition projects by award classification based strictly on highest priority (General > Specific > Participant/None)
@@ -179,7 +181,7 @@ export default function ProjectsClient({ projects, events }: ProjectsClientProps
             <input
               type="text"
               autoComplete="off"
-              placeholder="Search by project title or group..."
+              placeholder="Search by project title, short description, or group..."
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value)

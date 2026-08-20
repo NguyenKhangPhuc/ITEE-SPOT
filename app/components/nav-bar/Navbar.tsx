@@ -66,6 +66,8 @@ const NavBar = ({ initialUser }: { initialUser: ProfileInsert | null }) => {
             case 'invitations':
                 return 'person';
             case 'terms & condition':
+            case 'terms & conditions':
+            case 'privacy policy':
             case 'privacy policies':
                 return 'description';
             default:

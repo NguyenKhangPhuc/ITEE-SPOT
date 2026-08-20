@@ -25,8 +25,8 @@ export const NAVIGATION_BAR = [
             { title: 'Home', link: '/' },
             { title: 'About', link: '/about' },
             { title: 'Past Projects', link: '/projects' },
-            { title: 'Terms & Condition', link: '/terms-and-conditions' },
-            { title: 'Privacy Policies', link: '/privacy-policy' }
+            { title: 'Terms & Conditions', link: '/terms-and-conditions' },
+            { title: 'Privacy Policy', link: '/privacy-policy' }
         ],
         role: null
     },
