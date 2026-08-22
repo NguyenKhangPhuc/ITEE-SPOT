@@ -3,6 +3,7 @@
 /**
  * PURPOSE:
  * Fetches all project records filtered optionally by project status and sorted by award priority, top priority, and creation date.
+ * Cached via Next.js unstable_cache to avoid heavy repeated DB joins on high-traffic routes (e.g., Home Page).
  *
  * CONTEXT/PARENT FILE:
  * Extracted from app/actions/projects.ts as part of decomposing server actions into per-file HTTP intent structure.
@@ -13,22 +14,33 @@
  *   - ascending (boolean, Required): Sorting order flag for creation date.
  */
 
-import { createClient } from '@/app/utils/supabase/server'
+import { unstable_cache } from 'next/cache'
+import { createServerClient } from '@supabase/ssr'
+import { Database } from '@/app/types/database.types'
 import { PROJECT_STATUS } from '@/app/types/enum'
 
 /**
- * BEHAVIORAL MECHANISM:
- * Queries view 'projects_with_priority' with project awards (and event awards) and groups (events, member profiles),
- * ordering by award_priority, top_priority, and created_at. Applies status filter if status parameter is provided.
- *
- * PARAMETERS:
- * - { status, ascending }: Parameters for status filter and date sort direction.
- *
- * RETURN VALUE:
- * - Promise<{ data?: any, error?: string | any }>: Object containing projects list array or error message string.
+ * Creates an anonymous Supabase server client without reading cookies().
+ * Safe to be executed inside unstable_cache scope.
  */
-export async function getAllProjectsBasedOnStatus({ status, ascending }: { status: PROJECT_STATUS | null, ascending: boolean }) {
-    const supabase = await createClient()
+function createPublicSupabaseClient() {
+    return createServerClient<Database>(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+        {
+            cookies: {
+                getAll() {
+                    return []
+                },
+                setAll() {},
+            },
+        }
+    )
+}
+
+const fetchProjectsFromDb = async (status: PROJECT_STATUS | null, ascending: boolean) => {
+    const supabase = createPublicSupabaseClient()
+
     let query = supabase
         .from('projects_with_priority')
         .select(`
@@ -62,4 +74,19 @@ export async function getAllProjectsBasedOnStatus({ status, ascending }: { statu
     }
 
     return { data, error: null }
+}
+
+const getCachedProjects = unstable_cache(
+    async (status: PROJECT_STATUS | null, ascending: boolean) => {
+        return fetchProjectsFromDb(status, ascending)
+    },
+    ['projects-status-cache-key'],
+    {
+        revalidate: 86400,
+        tags: ['projects']
+    }
+)
+
+export async function getAllProjectsBasedOnStatus({ status, ascending }: { status: PROJECT_STATUS | null, ascending: boolean }) {
+    return getCachedProjects(status, ascending)
 }

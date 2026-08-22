@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { Montserrat, Inter, Roboto_Mono } from "next/font/google";
 
@@ -8,6 +9,7 @@ import Loader from "./components/Loader";
 import { LoaderProvider } from "./context/LoaderContext";
 import FooterSection from "./components/FooterSection";
 import NavbarServer from "./components/nav-bar/NavbarServer";
+import NavbarSkeleton from "./components/nav-bar/NavbarSkeleton";
 
 const robotoMono = Roboto_Mono({
   subsets: ["latin"],
@@ -48,6 +50,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
       </head>
       <LoaderProvider>
@@ -55,7 +59,9 @@ export default function RootLayout({
           <body
             className={`${robotoMono.variable} ${montserrat.variable} ${inter.variable} antialiased min-h-screen bg-[#151312] text-[#e8e1df] flex flex-col xl:flex-row`}
           >
-            <NavbarServer />
+            <Suspense fallback={<NavbarSkeleton />}>
+              <NavbarServer />
+            </Suspense>
             <div className="flex-grow flex flex-col min-w-0 pt-18 xl:pt-0 xl:pl-72 transition-all duration-300">
               <NotificationCard />
               <Loader />

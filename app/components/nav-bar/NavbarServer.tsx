@@ -5,10 +5,10 @@ import NavBar from "./Navbar";
 import NavbarMobile from "./NavbarMobile";
 
 const NavbarServer = async () => {
-    const { data, error } = await getUser()
+    const { data } = await getUser()
+    const userId = data?.user?.id
 
-    const { data: profile, error: profileError } = await getUserProfile(data.user?.id ?? "")
-
+    const profile = userId ? (await getUserProfile(userId)).data : null
 
     return <>
         <div className="xl:block hidden"><NavBar initialUser={profile} /></div>

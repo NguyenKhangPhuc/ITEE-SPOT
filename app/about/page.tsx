@@ -17,6 +17,8 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import Image from "next/image"
 
+export const revalidate = 3600 // Cache statically for 1 hour
+
 // ─── SEO Metadata ─────────────────────────────────────────────────────────────
 export const metadata: Metadata = {
   title: "About ITEE SPOT | Student-SME Collaboration Platform by IKAPO, Oulu",
