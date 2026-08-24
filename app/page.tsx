@@ -1,37 +1,24 @@
-import HomePage from "./HomePage"
+import { Suspense } from "react"
+import HeroSection from "./components/home/HeroSection"
+import TeamSection from "./components/home/TeamSection"
+import CTASection from "./components/home/CTASection"
+import PastProjectsSection from "./components/home/PastProjectsSection"
+import ProjectsSkeleton from "./components/home/ProjectsSkeleton"
 import { getAllProjectsBasedOnStatus } from "./actions/projects/get/getAllProjectsBasedOnStatus"
 import { ProjectsSummaryExtended } from "./types/projects"
 import { PROJECT_STATUS } from "./types/enum"
 
 /**
- * PURPOSE:
- * This is the server entrypoint page for the Home route. It fetches accepted spotlight projects
- * from the database server-side and passes them as props to the client-side HomePage component.
- *
- * CONTEXT/PARENT FILE:
- * Extracted from a monolithic page.tsx layout to support server-side rendering of project data
- * and separation of interactive client components.
- *
- * INPUTS / PARAMETERS:
- * None.
+ * Async Server Component responsible for fetching project data and rendering PastProjectsSection.
+ * Wrapped in Suspense to allow streaming HTML rendering without blocking the initial page shell.
  */
-export default async function Home() {
-  /**
-   * BEHAVIORAL MECHANISM:
-   * During server-side rendering, this function invokes the `getAllProjectsBasedOnStatus` server action
-   * with accepted status to query database projects. The queried data is typed and forwarded as a prop
-   * to the child `HomePage` client component. If database operations fail, null is passed to ensure
-   * page rendering handles it gracefully.
-   *
-   * PARAMETERS:
-   * None.
-   *
-   * RETURNS:
-   * A JSX element rendering the client HomePage with server-fetched project data.
-   */
+async function ProjectsSectionServer() {
   let initialProjects: ProjectsSummaryExtended[] | null = null
   try {
-    const { data } = await getAllProjectsBasedOnStatus({ status: PROJECT_STATUS.ACCEPTED, ascending: true })
+    const { data } = await getAllProjectsBasedOnStatus({
+      status: PROJECT_STATUS.ACCEPTED,
+      ascending: true,
+    })
     if (data) {
       initialProjects = data as unknown as ProjectsSummaryExtended[]
     }
@@ -39,5 +26,24 @@ export default async function Home() {
     console.error("Failed to load projects on server:", error)
   }
 
-  return <HomePage initialProjects={initialProjects} />
+  return <PastProjectsSection projects={initialProjects} />
+}
+
+/**
+ * PURPOSE:
+ * Server entrypoint page for the Home route.
+ * Renders HeroSection, TeamSection, and CTASection immediately, while streaming the
+ * PastProjectsSection asynchronously via Suspense for instant TTFB & FCP.
+ */
+export default function Home() {
+  return (
+    <div className="w-full bg-[#151312] text-[#e8e1df] font-montserrat overflow-x-hidden">
+      <HeroSection />
+      <Suspense fallback={<ProjectsSkeleton />}>
+        <ProjectsSectionServer />
+      </Suspense>
+      <TeamSection />
+      <CTASection />
+    </div>
+  )
 }
