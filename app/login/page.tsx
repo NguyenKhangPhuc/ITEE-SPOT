@@ -14,6 +14,7 @@
 'use client'
 
 import GitHubIconMui from "@mui/icons-material/GitHub"
+import MicrosoftIcon from "@mui/icons-material/Microsoft"
 import { useForm } from "react-hook-form"
 import { LoginForm } from "../types/form_data"
 import Link from "next/link"
@@ -58,6 +59,31 @@ const Home = () => {
         provider: "github",
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      })
+    } else {
+      showNotification("Please accept the terms conditions and privacy policy")
+    }
+  }
+
+  /**
+   * BEHAVIORAL MECHANISM:
+   * Initiates Microsoft OAuth flow after validating Terms & Conditions acceptance.
+   *
+   * PARAMETERS:
+   * None.
+   *
+   * RETURNS:
+   * - Promise<void>
+   */
+  const handleLoginWithMicrosoft = async (): Promise<void> => {
+    const isAcceptedTerm = getValues("isTermAccepted")
+    if (isAcceptedTerm) {
+      await supabase.auth.signInWithOAuth({
+        provider: "azure",
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+          scopes: "email openid profile",
         },
       })
     } else {
@@ -159,13 +185,23 @@ const Home = () => {
             <div className="flex-1 h-px bg-white/5" />
           </div>
 
-          {/* OAuth Github Button */}
-          <div
-            onClick={handleLoginWithGithub}
-            className="w-full flex items-center justify-center gap-3 bg-[#151312] border border-white/10 text-[#e8e1df] hover:border-[#00e0b3]/50 font-mono font-bold text-xs uppercase tracking-wider py-3 rounded-sm transition-all cursor-pointer"
-          >
-            <GitHubIconMui fontSize="small" />
-            <span>Sign In with Github</span>
+          {/* OAuth Buttons */}
+          <div className="flex flex-col gap-2.5">
+            <div
+              onClick={handleLoginWithGithub}
+              className="w-full flex items-center justify-center gap-3 bg-[#151312] border border-white/10 text-[#e8e1df] hover:border-[#00e0b3]/50 font-mono font-bold text-xs uppercase tracking-wider py-3 rounded-sm transition-all cursor-pointer"
+            >
+              <GitHubIconMui fontSize="small" />
+              <span>Sign In with Github</span>
+            </div>
+
+            <div
+              onClick={handleLoginWithMicrosoft}
+              className="w-full flex items-center justify-center gap-3 bg-[#151312] border border-white/10 text-[#e8e1df] hover:border-[#00e0b3]/50 font-mono font-bold text-xs uppercase tracking-wider py-3 rounded-sm transition-all cursor-pointer"
+            >
+              <MicrosoftIcon fontSize="small" />
+              <span>Sign In with Microsoft</span>
+            </div>
           </div>
         </form>
       </div>
