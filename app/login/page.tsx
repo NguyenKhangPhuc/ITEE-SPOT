@@ -205,14 +205,6 @@ const Home = () => {
           {/* OAuth Buttons */}
           <div className="flex flex-col gap-2.5">
             <div
-              onClick={handleLoginWithGithub}
-              className="w-full flex items-center justify-center gap-3 bg-[#151312] border border-white/10 text-[#e8e1df] hover:border-[#00e0b3]/50 font-mono font-bold text-xs uppercase tracking-wider py-3 rounded-sm transition-all cursor-pointer"
-            >
-              <GitHubIconMui fontSize="small" />
-              <span>Sign In with Github</span>
-            </div>
-
-            <div
               onClick={handleGoogleOauthLogin}
               className="w-full flex items-center justify-between px-4 bg-[#151312] border border-[#00e0b3]/30 text-[#e8e1df] hover:border-[#00e0b3] font-mono font-bold text-xs uppercase tracking-wider py-3 rounded-sm transition-all cursor-pointer shadow-sm shadow-[#00e0b3]/5"
             >
@@ -223,6 +215,14 @@ const Home = () => {
               <span className="text-[8px] font-mono text-[#00e0b3] bg-[#00e0b3]/10 border border-[#00e0b3]/30 px-2 py-0.5 rounded-xs uppercase tracking-widest font-bold">
                 Recommended
               </span>
+            </div>
+
+            <div
+              onClick={handleLoginWithGithub}
+              className="w-full flex items-center justify-center gap-3 bg-[#151312] border border-white/10 text-[#e8e1df] hover:border-[#00e0b3]/50 font-mono font-bold text-xs uppercase tracking-wider py-3 rounded-sm transition-all cursor-pointer"
+            >
+              <GitHubIconMui fontSize="small" />
+              <span>Sign In with Github</span>
             </div>
 
             {/*

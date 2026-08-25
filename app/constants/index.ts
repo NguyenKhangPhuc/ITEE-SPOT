@@ -24,7 +24,7 @@ export const NAVIGATION_BAR = [
         category: 'About', items: [
             { title: 'Home', link: '/' },
             { title: 'About', link: '/about' },
-            { title: 'Past Projects', link: '/projects' },
+            { title: 'Projects', link: '/projects' },
             { title: 'Terms & Conditions', link: '/terms-and-conditions' },
             { title: 'Privacy Policy', link: '/privacy-policy' }
         ],
