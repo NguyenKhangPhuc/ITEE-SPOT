@@ -372,10 +372,15 @@ const Home = () => {
 
             <div
               onClick={handleGoogleOauthLogin}
-              className="w-full flex items-center justify-center gap-3 bg-[#151312] border border-white/10 text-[#e8e1df] hover:border-[#00e0b3]/50 font-mono font-bold text-xs uppercase tracking-wider py-3 rounded-sm transition-all cursor-pointer"
+              className="w-full flex items-center justify-between px-4 bg-[#151312] border border-[#00e0b3]/30 text-[#e8e1df] hover:border-[#00e0b3] font-mono font-bold text-xs uppercase tracking-wider py-3 rounded-sm transition-all cursor-pointer shadow-sm shadow-[#00e0b3]/5"
             >
-              <GoogleIcon fontSize="small" />
-              <span>Sign Up with Google</span>
+              <div className="flex items-center gap-3">
+                <GoogleIcon fontSize="small" className="text-[#00e0b3]" />
+                <span>Sign Up with Google</span>
+              </div>
+              <span className="text-[8px] font-mono text-[#00e0b3] bg-[#00e0b3]/10 border border-[#00e0b3]/30 px-2 py-0.5 rounded-xs uppercase tracking-widest font-bold">
+                Recommended
+              </span>
             </div>
 
             {/*
