@@ -16,7 +16,8 @@
 import { useState } from "react"
 import HttpsIcon from "@mui/icons-material/Https"
 import GitHubIconMui from "@mui/icons-material/GitHub"
-import MicrosoftIcon from "@mui/icons-material/Microsoft"
+import GoogleIcon from "@mui/icons-material/Google"
+// import MicrosoftIcon from "@mui/icons-material/Microsoft"
 import AlternateEmailIcon from "@mui/icons-material/AlternateEmail"
 import PersonIcon from "@mui/icons-material/Person"
 import Visibility from "@mui/icons-material/Visibility"
@@ -100,16 +101,7 @@ const Home = () => {
     }
   }
 
-  /**
-   * BEHAVIORAL MECHANISM:
-   * Initiates Microsoft OAuth flow after validating Terms & Conditions acceptance.
-   *
-   * PARAMETERS:
-   * None.
-   *
-   * RETURNS:
-   * - Promise<void>
-   */
+  /*
   const handleLoginWithMicrosoft = async (): Promise<void> => {
     const isAcceptedTerm = getValues("isTermAccepted")
     if (isAcceptedTerm) {
@@ -118,6 +110,31 @@ const Home = () => {
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
           scopes: "email openid profile",
+        },
+      })
+    } else {
+      showNotification("Please accept the terms conditions and privacy policy")
+    }
+  }
+  */
+
+  /**
+   * BEHAVIORAL MECHANISM:
+   * Initiates Google OAuth flow after validating Terms & Conditions acceptance.
+   *
+   * PARAMETERS:
+   * None.
+   *
+   * RETURNS:
+   * - Promise<void>
+   */
+  const handleGoogleOauthLogin = async (): Promise<void> => {
+    const isAcceptedTerm = getValues("isTermAccepted")
+    if (isAcceptedTerm) {
+      await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
         },
       })
     } else {
@@ -345,12 +362,22 @@ const Home = () => {
             </div>
 
             <div
+              onClick={handleGoogleOauthLogin}
+              className="w-full flex items-center justify-center gap-3 bg-[#151312] border border-white/10 text-[#e8e1df] hover:border-[#00e0b3]/50 font-mono font-bold text-xs uppercase tracking-wider py-3 rounded-sm transition-all cursor-pointer"
+            >
+              <GoogleIcon fontSize="small" />
+              <span>Sign Up with Google</span>
+            </div>
+
+            {/*
+            <div
               onClick={handleLoginWithMicrosoft}
               className="w-full flex items-center justify-center gap-3 bg-[#151312] border border-white/10 text-[#e8e1df] hover:border-[#00e0b3]/50 font-mono font-bold text-xs uppercase tracking-wider py-3 rounded-sm transition-all cursor-pointer"
             >
               <MicrosoftIcon fontSize="small" />
               <span>Sign Up with Microsoft</span>
             </div>
+            */}
           </div>
         </form>
       </div>

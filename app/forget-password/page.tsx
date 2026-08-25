@@ -14,7 +14,8 @@
 'use client'
 
 import GitHubIconMui from "@mui/icons-material/GitHub"
-import MicrosoftIcon from "@mui/icons-material/Microsoft"
+import GoogleIcon from "@mui/icons-material/Google"
+// import MicrosoftIcon from "@mui/icons-material/Microsoft"
 import AlternateEmailIcon from "@mui/icons-material/AlternateEmail"
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew"
 import { useForm } from "react-hook-form"
@@ -57,9 +58,21 @@ const Home = () => {
     })
   }
 
+  /*
+  const handleLoginWithMicrosoft = async (): Promise<void> => {
+    await supabase.auth.signInWithOAuth({
+      provider: "azure",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+        scopes: "email openid profile",
+      },
+    })
+  }
+  */
+
   /**
    * BEHAVIORAL MECHANISM:
-   * Initiates Microsoft OAuth flow.
+   * Initiates Google OAuth flow.
    *
    * PARAMETERS:
    * None.
@@ -67,12 +80,11 @@ const Home = () => {
    * RETURNS:
    * - Promise<void>
    */
-  const handleLoginWithMicrosoft = async (): Promise<void> => {
+  const handleGoogleOauthLogin = async (): Promise<void> => {
     await supabase.auth.signInWithOAuth({
-      provider: "azure",
+      provider: "google",
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
-        scopes: "email openid profile",
       },
     })
   }
@@ -207,12 +219,22 @@ const Home = () => {
             </div>
 
             <div
+              onClick={handleGoogleOauthLogin}
+              className="w-full flex items-center justify-center gap-3 bg-[#151312] border border-white/10 text-[#e8e1df] hover:border-[#00e0b3]/50 font-mono font-bold text-xs uppercase tracking-wider py-3 rounded-sm transition-all cursor-pointer"
+            >
+              <GoogleIcon fontSize="small" />
+              <span>Sign In with Google</span>
+            </div>
+
+            {/*
+            <div
               onClick={handleLoginWithMicrosoft}
               className="w-full flex items-center justify-center gap-3 bg-[#151312] border border-white/10 text-[#e8e1df] hover:border-[#00e0b3]/50 font-mono font-bold text-xs uppercase tracking-wider py-3 rounded-sm transition-all cursor-pointer"
             >
               <MicrosoftIcon fontSize="small" />
               <span>Sign In with Microsoft</span>
             </div>
+            */}
           </div>
         </form>
       </div>
