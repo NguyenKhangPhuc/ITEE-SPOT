@@ -18,6 +18,7 @@ import HttpsIcon from "@mui/icons-material/Https"
 import GitHubIconMui from "@mui/icons-material/GitHub"
 import GoogleIcon from "@mui/icons-material/Google"
 // import MicrosoftIcon from "@mui/icons-material/Microsoft"
+import PriorityHighIcon from "@mui/icons-material/PriorityHigh"
 import AlternateEmailIcon from "@mui/icons-material/AlternateEmail"
 import PersonIcon from "@mui/icons-material/Person"
 import Visibility from "@mui/icons-material/Visibility"
@@ -164,6 +165,14 @@ const Home = () => {
             <h1 className="text-2xl font-extrabold text-[#e8e1df] tracking-tight uppercase leading-tight font-mono">
               CREATE_ACCOUNT
             </h1>
+          </div>
+
+          {/* Microsoft Verification Note */}
+          <div className="flex items-start gap-2.5 p-3 bg-[#00e0b3]/5 border-l-2 border-[#00e0b3] rounded-r-sm text-[#00e0b3]">
+            <PriorityHighIcon sx={{ fontSize: 16 }} className="mt-0.5 shrink-0" />
+            <p className="text-[10px] font-mono leading-relaxed">
+              If you are using microsoft account to sign up manually, the verification email code can arrive very late and in the junk.
+            </p>
           </div>
 
           {/* Full Name Input */}
