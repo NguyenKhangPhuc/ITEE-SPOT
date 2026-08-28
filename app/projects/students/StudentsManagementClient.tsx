@@ -18,7 +18,7 @@ import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { ProjectsSummaryExtended } from "@/app/types/projects"
 import { UserGroupsWithEvent } from "@/app/types/group"
-import { getUserSubmittedProjects } from "@/app/actions/projects/get/getUserSubmittedProjects"
+import { createClient } from "@/app/utils/supabase/client"
 import { useNotification } from "@/app/context/NotificationContext"
 import BackButton from "@/app/components/BackButton"
 import SubmitShowcaseProjectSection from "./components/SubmitShowcaseProjectSection"
@@ -35,6 +35,7 @@ export default function StudentsManagementClient({
   groupsWithEvents,
   userId,
 }: StudentsManagementClientProps) {
+  const supabase = createClient()
   const { showNotification } = useNotification()
   const [currentPage, setCurrentPage] = useState<PageType>("create")
   const [userProjects, setUserProjects] = useState<Array<ProjectsSummaryExtended>>([])
@@ -44,8 +45,7 @@ export default function StudentsManagementClient({
   /**
    * BEHAVIORAL MECHANISM:
    * Handles switching tabs. If the target tab is 'manage' and user projects
-   * have not been fetched yet, triggers getUserSubmittedProjects server action
-   * with loading states.
+   * have not been fetched yet, queries projects directly via Supabase browser client.
    *
    * PARAMETERS:
    * - tab (PageType): The target tab view to transition to.
@@ -58,13 +58,17 @@ export default function StudentsManagementClient({
     if (tab === "manage" && !hasLoadedProjects) {
       setIsLoadingProjects(true)
       try {
-        const { data, error } = await getUserSubmittedProjects({
-          userId,
-          status: null,
-          ascending: false,
-        })
+        const { data: memberGroups } = await supabase.from('group_members').select('group_id').eq('user_id', userId)
+        const groupIds = memberGroups?.map(m => m.group_id) ?? []
+
+        const { data, error } = await supabase
+          .from('projects')
+          .select('*, groups (group_name, events (title))')
+          .in('group_id', groupIds)
+          .order('created_at', { ascending: false })
+
         if (error) {
-          throw new Error(error)
+          throw new Error("Failed to fetch submitted projects registry.")
         }
         setUserProjects(data ?? [])
         setHasLoadedProjects(true)

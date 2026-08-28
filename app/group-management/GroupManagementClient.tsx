@@ -16,8 +16,7 @@
 
 import { useState } from "react"
 import { AdminGroups } from "@/app/types/group"
-import { deleteGroupMemberById } from "@/app/actions/group_member/delete/deleteGroupMemberById"
-import { deleteGroupChallengeById } from "@/app/actions/group_challenge/delete/deleteGroupChallengeById"
+import { createClient } from "@/app/utils/supabase/client"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
 import BackButton from "@/app/components/BackButton"
@@ -32,6 +31,7 @@ interface GroupManagementClientProps {
 const ITEMS_PER_PAGE = 20
 
 export default function GroupManagementClient({ groups: initialGroups }: GroupManagementClientProps) {
+  const supabase = createClient()
   const { showNotification } = useNotification()
   const { setIsOpenLoader } = useLoader()
 
@@ -67,7 +67,7 @@ export default function GroupManagementClient({ groups: initialGroups }: GroupMa
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Removes a group member using server action and updates local state.
+   * Removes a group member using Supabase client and updates local state.
    *
    * PARAMETERS:
    * - memberId (string): Primary key ID of the group member.
@@ -79,9 +79,9 @@ export default function GroupManagementClient({ groups: initialGroups }: GroupMa
   const handleRemoveMember = async (memberId: string, groupId: string): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { error } = await deleteGroupMemberById(memberId)
+      const { error } = await supabase.from('group_members').delete().eq('id', memberId)
       if (error) {
-        throw new Error(error)
+        throw new Error(error.message)
       }
       setGroupsList((prev) =>
         prev.map((g) => {
@@ -112,7 +112,7 @@ export default function GroupManagementClient({ groups: initialGroups }: GroupMa
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Deletes a group challenge using server action and updates local state.
+   * Deletes a group challenge using Supabase client and updates local state.
    *
    * PARAMETERS:
    * - groupChallengeId (string): Primary key ID of the group challenge.
@@ -124,9 +124,9 @@ export default function GroupManagementClient({ groups: initialGroups }: GroupMa
   const handleDeleteChallenge = async (groupChallengeId: string, groupId: string): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { error } = await deleteGroupChallengeById(groupChallengeId)
+      const { error } = await supabase.from('group_challenge').delete().eq('id', groupChallengeId)
       if (error) {
-        throw new Error(error)
+        throw new Error(error.message)
       }
       setGroupsList((prev) =>
         prev.map((g) => {

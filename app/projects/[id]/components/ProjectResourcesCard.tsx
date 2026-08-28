@@ -14,7 +14,7 @@
 'use client'
 
 import { ProjectFilesInsert } from "../../../types/project_files"
-import { getPublicFileURL } from "@/app/actions/file_url"
+import { createClient } from "@/app/utils/supabase/client"
 import { useNotification } from "@/app/context/NotificationContext"
 import { tw } from "@/app/constants/design-tokens"
 
@@ -27,11 +27,12 @@ export default function ProjectResourcesCard({
   githubLink,
   projectFiles,
 }: ProjectResourcesCardProps) {
+  const supabase = createClient()
   const { showNotification } = useNotification()
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Handles storage file download. Resolves the public Supabase bucket file URL and triggers browser download.
+   * Handles storage file download. Resolves the public Supabase bucket file URL and triggers browser download via Supabase client.
    *
    * PARAMETERS:
    * - storagePath (string | null): The file storage path in Supabase.
@@ -42,8 +43,7 @@ export default function ProjectResourcesCard({
   const handleDownloadFile = async (storagePath: string | null) => {
     if (!storagePath) return
     try {
-      const { data, error } = await getPublicFileURL(storagePath)
-      if (error) throw new Error(error)
+      const { data } = supabase.storage.from('attachments').getPublicUrl(storagePath)
       if (data?.publicUrl) {
         window.open(data.publicUrl, "_blank")
       }

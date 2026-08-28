@@ -17,7 +17,7 @@
 import { useState } from "react"
 import { ProfileInsert } from "@/app/types/profile"
 import { PROFILE_ROLE, UNIVERSITY, PROGRAMME } from "@/app/types/enum"
-import { updateUserRoleByUserId } from "@/app/actions/profiles/put/updateUserRoleByUserId"
+import { createClient } from "@/app/utils/supabase/client"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
 import BackButton from "@/app/components/BackButton"
@@ -34,6 +34,7 @@ const ITEMS_PER_PAGE = 20
 type SortKey = "name_asc" | "name_desc"
 
 export default function UserManagementClient({ profiles: initialProfiles }: UserManagementClientProps) {
+  const supabase = createClient()
   const { showNotification } = useNotification()
   const { setIsOpenLoader } = useLoader()
 
@@ -47,7 +48,7 @@ export default function UserManagementClient({ profiles: initialProfiles }: User
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Handles calling the server action to update the user's role in database.
+   * Handles updating the user's role directly via Supabase browser client.
    * On success, updates local profiles state.
    *
    * PARAMETERS:
@@ -60,9 +61,9 @@ export default function UserManagementClient({ profiles: initialProfiles }: User
   const handleRoleChange = async (userId: string, newRole: PROFILE_ROLE): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { error } = await updateUserRoleByUserId(userId, newRole)
+      const { error } = await supabase.from('profiles').update({ role: newRole }).eq('id', userId)
       if (error) {
-        throw new Error(error)
+        throw new Error(error.message)
       }
       setProfiles((prev) =>
         prev.map((profile) =>

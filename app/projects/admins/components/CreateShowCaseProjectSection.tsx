@@ -15,7 +15,7 @@
 
 import { useState } from "react"
 import { Control, useForm } from "react-hook-form"
-import { getSingleProjectByGroupAndChallenge } from "@/app/actions/projects/get/getSingleProjectByGroupAndChallenge"
+import { createClient } from "@/app/utils/supabase/client"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
 import { EventWithGroupsAndAward } from "@/app/types/event"
@@ -35,6 +35,7 @@ export default function CreateShowCaseProjectSection({
   eventsWithGroupsAndAwards,
   page,
 }: CreateShowCaseProjectSectionProps) {
+  const supabase = createClient()
   const { showNotification } = useNotification()
   const { setIsOpenLoader } = useLoader()
 
@@ -98,7 +99,7 @@ export default function CreateShowCaseProjectSection({
   /**
    * BEHAVIORAL MECHANISM:
    * Handles challenge selection. Loads existing project specifications
-   * if they exist in database, resetting form fields.
+   * if they exist in database via Supabase client, resetting form fields.
    *
    * PARAMETERS:
    * - groupChallengeId (string): Selected challenge ID.
@@ -112,12 +113,15 @@ export default function CreateShowCaseProjectSection({
     if (selectedEvent && selectedGroup && groupChallengeId) {
       setIsOpenLoader(true)
       try {
-        const { data, error } = await getSingleProjectByGroupAndChallenge({
-          group_id: selectedGroup.id,
-          group_challenge_id: groupChallengeId,
-        })
-        if (error) {
-          throw new Error(error)
+        const { data, error } = await supabase
+          .from('projects')
+          .select('*, groups (events (event_awards (*))), project_files (*), project_awards (*)')
+          .eq('group_id', selectedGroup.id)
+          .eq('group_challenge_id', groupChallengeId)
+          .single()
+
+        if (error && error.code !== 'PGRST116') {
+          throw new Error("Failed to fetch project specifications.")
         }
         if (data) {
           reset(data)

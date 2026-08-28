@@ -1,30 +1,27 @@
 'use client'
 
-import { getPublicFileURL, getSignedUrl } from "@/app/actions/file_url"
+import { createClient } from "@/app/utils/supabase/client"
 import { useNotification } from "@/app/context/NotificationContext"
 import { SubmissionFileExtended } from "@/app/types/submission_files"
+import DownloadIcon from '@mui/icons-material/Download';
+import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 
 interface SubmissionFilesProps {
     submittedFiles: SubmissionFileExtended[],
     title: string
 
-}import DownloadIcon from '@mui/icons-material/Download';
-import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
+}
 const SubmissionFiles = ({ submittedFiles, title }: SubmissionFilesProps) => {
+    const supabase = createClient()
     const { showNotification } = useNotification()
     const handleDownloadFile = async (file: SubmissionFileExtended) => {
         if (file.storage_path != null && file.storage_path != "") {
             try {
-                const { data, error } = await getPublicFileURL(file.storage_path)
-                if (error) {
-                    throw new Error(error)
-                }
-                if (!data) {
+                const { data } = supabase.storage.from('attachments').getPublicUrl(file.storage_path)
+                if (!data || !data.publicUrl) {
                     throw new Error("Fail to load url")
                 }
-                if (data.publicUrl) {
-                    window.open(data.publicUrl, '_blank');
-                }
+                window.open(data.publicUrl, '_blank');
             } catch (error) {
                 if (error instanceof Error) {
                     showNotification(error.message)

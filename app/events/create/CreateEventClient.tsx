@@ -19,7 +19,7 @@ import { useForm } from "react-hook-form"
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 import { Editor } from "@tiptap/core"
-import { createEvent } from "@/app/actions/events/post/createEvent"
+import { createClient } from "@/app/utils/supabase/client"
 import { useNotification } from "@/app/context/NotificationContext"
 import { useLoader } from "@/app/context/LoaderContext"
 import { EventInsert } from "@/app/types/event"
@@ -28,6 +28,7 @@ import TemporalLogisticsSection from "./components/TemporalLogisticsSection"
 import DataPayloadSection from "./components/DataPayloadSection"
 
 export default function CreateEventClient() {
+  const supabase = createClient()
   const router = useRouter()
   const { showNotification } = useNotification()
   const { setIsOpenLoader } = useLoader()
@@ -42,7 +43,7 @@ export default function CreateEventClient() {
   /**
    * BEHAVIORAL MECHANISM:
    * Event submission callback handler. Combines rich text payload HTML, formats organizing milestone
-   * local strings to ISO format, calls database insertions via createEvent server action,
+   * local strings to ISO format, calls database insertions via Supabase client,
    * triggers notifications, and directs users directly to the newly created event's edit dashboard.
    *
    * PARAMETERS:
@@ -62,10 +63,10 @@ export default function CreateEventClient() {
       }
       
       const updatedLocalDateEvent = { ...event, organized_date: formattedDate }
-      const { data, error } = await createEvent({ event: updatedLocalDateEvent })
+      const { data, error } = await supabase.from('events').insert(updatedLocalDateEvent).select().single()
       
       if (error) {
-        throw new Error(error)
+        throw new Error(error.message)
       }
       if (data == null) {
         throw new Error('Cannot find created event')

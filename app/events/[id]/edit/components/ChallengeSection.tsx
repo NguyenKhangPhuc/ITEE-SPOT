@@ -16,7 +16,7 @@
 'use client'
 
 import { useForm } from "react-hook-form"
-import { createEventChallenge } from "@/app/actions/event_challenges/post/createEventChallenge"
+import { createClient } from "@/app/utils/supabase/client"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
 import { EventChallengeInsert } from "@/app/types/event_challenges"
@@ -36,6 +36,7 @@ export default function ChallengeSection({
   event,
   page,
 }: ChallengeSectionProps) {
+  const supabase = createClient()
   const { showNotification } = useNotification()
   const { setIsOpenLoader } = useLoader()
 
@@ -48,8 +49,8 @@ export default function ChallengeSection({
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Handles creating new event challenges. Automatically appends the event_id reference,
-   * calls createEventChallenge server action, adds the new challenge to the state array, and resets fields.
+   * Handles creating new event challenges directly via Supabase client. Automatically appends the event_id reference,
+   * adds the new challenge to the state array, and resets fields.
    *
    * PARAMETERS:
    * - challenge (EventChallengeInsert): Form field value data parameters.
@@ -64,9 +65,9 @@ export default function ChallengeSection({
         throw new Error("Failed to create challenge: event key is missing.")
       }
       challenge.event_id = event.id
-      const { data, error } = await createEventChallenge(challenge)
+      const { data, error } = await supabase.from('event_challenges').insert(challenge).select('*').maybeSingle()
       if (error) {
-        throw new Error(error)
+        throw new Error(error.message)
       }
       if (!data) {
         throw new Error("Failed to retrieve newly created challenge.")

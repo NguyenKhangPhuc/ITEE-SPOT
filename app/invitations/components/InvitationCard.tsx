@@ -17,8 +17,7 @@
 
 import { useState } from "react"
 import { User } from "@supabase/supabase-js"
-import { acceptInvitation } from "@/app/actions/invitations/put/acceptInvitation"
-import { rejectInvitation } from "@/app/actions/invitations/put/rejectInvitation"
+import { createClient } from "@/app/utils/supabase/client"
 import { useNotification } from "@/app/context/NotificationContext"
 import { EVENT_STATUS, INVITATION_STATUS } from "@/app/types/enum"
 import { InvitationWithGroupsEvent } from "@/app/types/invitation"
@@ -35,6 +34,7 @@ export default function InvitationCard({
   user,
   onStatusUpdate,
 }: InvitationCardProps) {
+  const supabase = createClient()
   const [invitationStatus, setInvitationStatus] = useState(invite.invitation_status)
   const { showNotification } = useNotification()
 
@@ -80,14 +80,19 @@ export default function InvitationCard({
    */
   const handleAccept = async (): Promise<void> => {
     try {
-      const { error } = await acceptInvitation({
-        invitationId: invite.id,
-        groupId: invite.group_id!,
-        userId: user.id
-      })
+      const { error } = await supabase.from('invitation').update({ invitation_status: INVITATION_STATUS.ACCEPTED }).eq('id', invite.id)
       if (error) {
-        throw new Error(error)
+        throw new Error("Fail to accept the invitation")
       }
+
+      const { error: memberError } = await supabase.from('group_members').insert({
+        group_id: invite.group_id!,
+        member_id: user.id
+      })
+      if (memberError) {
+        throw new Error("Failed to become a member, please contact staff")
+      }
+
       showNotification('Accepting Successfully')
       setInvitationStatus(INVITATION_STATUS.ACCEPTED)
       onStatusUpdate(invite.id, INVITATION_STATUS.ACCEPTED)
@@ -110,9 +115,9 @@ export default function InvitationCard({
    */
   const handleReject = async (): Promise<void> => {
     try {
-      const { error } = await rejectInvitation({ invitationId: invite.id })
+      const { error } = await supabase.from('invitation').update({ invitation_status: INVITATION_STATUS.REJECTED }).eq('id', invite.id)
       if (error) {
-        throw new Error(error)
+        throw new Error("Fail to reject the invitation")
       }
       showNotification('Rejecting Successfully')
       setInvitationStatus(INVITATION_STATUS.REJECTED)

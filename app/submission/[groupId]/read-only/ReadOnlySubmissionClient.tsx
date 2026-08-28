@@ -9,9 +9,7 @@ import { SubmissionRatingInsert } from "@/app/types/submission_rating"
 import { SubmissionFeedback } from "@/app/types/submission_feedback"
 import { PROFILE_ROLE } from "@/app/types/enum"
 import { GroupInfo } from "@/app/types/group"
-import { getSubmissionRatingById } from "@/app/actions/submission_ratings"
-import { getSubmissionFeedBackByUserIdAndSubmissionId } from "@/app/actions/submission_feedback/get/getSubmissionFeedBackByUserIdAndSubmissionId"
-import { getPublicFileURL } from "@/app/actions/file_url"
+import { createClient } from "@/app/utils/supabase/client"
 import { useNotification } from "@/app/context/NotificationContext"
 import { useLoader } from "@/app/context/LoaderContext"
 import ReadOnlyEditor from "@/components/tiptap-templates/simple/ReadOnlyEditor"
@@ -47,6 +45,7 @@ export default function ReadOnlySubmissionClient({
   user,
   groupInfo,
 }: ReadOnlySubmissionClientProps) {
+  const supabase = createClient()
   const { showNotification } = useNotification()
   const { setIsOpenLoader } = useLoader()
 
@@ -58,8 +57,8 @@ export default function ReadOnlySubmissionClient({
   /**
    * BEHAVIORAL MECHANISM:
    * Handles user selection of a challenge tab. It fetches the existing rating and feedback
-   * record for the selected submission, sets loading animations during the query, and loads
-   * the details into local states.
+   * record for the selected submission using Supabase client, sets loading animations during the query,
+   * and loads the details into local states.
    *
    * PARAMETERS:
    * - index (number): Array index of the chosen submission.
@@ -74,18 +73,24 @@ export default function ReadOnlySubmissionClient({
 
     try {
       // 1. Fetch user rating
-      const { data: ratingData, error: ratingError } = await getSubmissionRatingById({
-        submissionId,
-        userId: user.id,
-      })
-      if (ratingError) throw new Error(ratingError)
+      const { data: ratingData, error: ratingError } = await supabase
+        .from('submission_ratings')
+        .select('*')
+        .eq('submission_id', submissionId)
+        .eq('user_id', user.id)
+        .maybeSingle()
+
+      if (ratingError) throw new Error("Failed to fetch submission rating")
 
       // 2. Fetch user feedback log
-      const { data: feedbackData, error: feedbackError } = await getSubmissionFeedBackByUserIdAndSubmissionId({
-        userId: user.id,
-        submissionId,
-      })
-      if (feedbackError) throw new Error(feedbackError)
+      const { data: feedbackData, error: feedbackError } = await supabase
+        .from('submission_feedback')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('submission_id', submissionId)
+        .maybeSingle()
+
+      if (feedbackError) throw new Error("Failed to fetch submission feedback")
 
       setUserRating(ratingData ?? null)
       setUserFeedback(feedbackData ?? null)
@@ -133,7 +138,7 @@ export default function ReadOnlySubmissionClient({
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Triggers download of submission file attachments.
+   * Triggers download of submission file attachments via Supabase storage.
    *
    * PARAMETERS:
    * - storagePath (string | null): The storage bucket path.
@@ -144,8 +149,7 @@ export default function ReadOnlySubmissionClient({
   const handleDownloadFile = async (storagePath: string | null) => {
     if (!storagePath) return
     try {
-      const { data, error } = await getPublicFileURL(storagePath)
-      if (error) throw new Error(error)
+      const { data } = supabase.storage.from('attachments').getPublicUrl(storagePath)
       if (data?.publicUrl) window.open(data.publicUrl, "_blank")
     } catch (error) {
       if (error instanceof Error) showNotification(error.message)

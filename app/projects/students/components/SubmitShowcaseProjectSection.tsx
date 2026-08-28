@@ -15,7 +15,7 @@
 
 import { useState } from "react"
 import { Control, useForm } from "react-hook-form"
-import { getSingleProjectByGroupAndChallenge } from "@/app/actions/projects/get/getSingleProjectByGroupAndChallenge"
+import { createClient } from "@/app/utils/supabase/client"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
 import { UserGroupsWithEvent } from "@/app/types/group"
@@ -34,6 +34,7 @@ export default function SubmitShowcaseProjectSection({
   groupsWithEvents,
   page,
 }: SubmitShowcaseProjectSectionProps) {
+  const supabase = createClient()
   const { showNotification } = useNotification()
   const { setIsOpenLoader } = useLoader()
   const [selectedGroup, setSelectedGroup] = useState<UserGroupsWithEvent | null>(null)
@@ -74,7 +75,7 @@ export default function SubmitShowcaseProjectSection({
   /**
    * BEHAVIORAL MECHANISM:
    * Triggers when challenge selection is modified. Fetches existing project registry parameters
-   * from the database if they exist, resetting form states, preloaded files, and awards.
+   * from the database via Supabase client if they exist, resetting form states, preloaded files, and awards.
    *
    * PARAMETERS:
    * - groupChallengeId (string): Selected challenge ID.
@@ -88,12 +89,15 @@ export default function SubmitShowcaseProjectSection({
     if (groupChallengeId && selectedGroup) {
       setIsOpenLoader(true)
       try {
-        const { data, error } = await getSingleProjectByGroupAndChallenge({
-          group_id: selectedGroup.id,
-          group_challenge_id: groupChallengeId,
-        })
-        if (error) {
-          throw new Error(error)
+        const { data, error } = await supabase
+          .from('projects')
+          .select('*, groups (events (event_awards (*))), project_files (*), project_awards (*)')
+          .eq('group_id', selectedGroup.id)
+          .eq('group_challenge_id', groupChallengeId)
+          .single()
+
+        if (error && error.code !== 'PGRST116') {
+          throw new Error("Failed to fetch project specifications.")
         }
         if (data) {
           reset(data)

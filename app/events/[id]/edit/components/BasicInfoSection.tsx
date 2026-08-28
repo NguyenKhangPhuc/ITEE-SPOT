@@ -16,7 +16,7 @@
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { Editor } from "@tiptap/core"
-import { updateEventInfo } from "@/app/actions/events/put/updateEventInfo"
+import { createClient } from "@/app/utils/supabase/client"
 import { EVENT_CREATED_DESCRIPTION } from "@/app/constants"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
@@ -30,6 +30,7 @@ interface BasicInfoSectionProps {
 }
 
 export default function BasicInfoSection({ event, page }: BasicInfoSectionProps) {
+  const supabase = createClient()
   const { showNotification } = useNotification()
   const { setIsOpenLoader } = useLoader()
   const [editorValue, setEditorValue] = useState<Editor | null>(null)
@@ -49,8 +50,8 @@ export default function BasicInfoSection({ event, page }: BasicInfoSectionProps)
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Handles submitting updated basic information. Formats localized organized date to ISO date string,
-   * extracts the rich editor HTML, and executes database updates via updateEventInfo.
+   * Handles submitting updated basic information directly via Supabase client. Formats localized organized date to ISO date string,
+   * extracts the rich editor HTML, and executes database updates.
    *
    * PARAMETERS:
    * - payload (EventInsert): The basic information form fields values.
@@ -66,9 +67,10 @@ export default function BasicInfoSection({ event, page }: BasicInfoSectionProps)
       const formattedDate = localDate.toISOString()
       const updatedLocalDateEvent = { ...payload, organized_date: formattedDate }
 
-      const { error } = await updateEventInfo({ event: updatedLocalDateEvent })
+      if (!event.id) throw new Error("Event ID missing")
+      const { error } = await supabase.from('events').update(updatedLocalDateEvent).eq('id', event.id)
       if (error) {
-        throw new Error(error)
+        throw new Error(error.message)
       }
       showNotification("Update event successfully")
     } catch (error) {

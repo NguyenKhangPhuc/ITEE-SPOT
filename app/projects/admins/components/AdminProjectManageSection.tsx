@@ -18,9 +18,7 @@
 import { useState } from "react"
 import { Control, useForm } from "react-hook-form"
 import Link from "next/link"
-import { getAllProjectsBasedOnStatus } from "@/app/actions/projects/get/getAllProjectsBasedOnStatus"
-import { getSingleProjectByGroupAndChallenge } from "@/app/actions/projects/get/getSingleProjectByGroupAndChallenge"
-import { updateProjectStatus } from "@/app/actions/projects/put/updateProjectStatus"
+import { createClient } from "@/app/utils/supabase/client"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
 import { PROJECT_STATUS } from "@/app/types/enum"
@@ -42,6 +40,7 @@ export default function AdminProjectManageSection({
   currentProjects,
   setCurrentProjects,
 }: AdminProjectManageSectionProps) {
+  const supabase = createClient()
   const { showNotification } = useNotification()
   const { setIsOpenLoader } = useLoader()
 
@@ -63,7 +62,7 @@ export default function AdminProjectManageSection({
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Handles querying project registry based on chosen status filter.
+   * Handles querying project registry based on chosen status filter using Supabase client.
    *
    * PARAMETERS:
    * - status (PROJECT_STATUS | null): Chosen status option.
@@ -74,9 +73,13 @@ export default function AdminProjectManageSection({
   const handleFilterProjectStatus = async (status: PROJECT_STATUS | null): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { data, error } = await getAllProjectsBasedOnStatus({ status, ascending: chosenOrder })
+      let query = supabase.from('projects').select('*, groups (group_name, events (title))')
+      if (status != null) {
+        query = query.eq('project_status', status)
+      }
+      const { data, error } = await query.order('created_at', { ascending: chosenOrder })
       if (error) {
-        throw new Error(error)
+        throw new Error("Failed to filter project database.")
       }
       setCurrentProjects(data ?? [])
       setChosenStatus(status)
@@ -94,7 +97,7 @@ export default function AdminProjectManageSection({
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Handles sorting project registry list.
+   * Handles sorting project registry list using Supabase client.
    *
    * PARAMETERS:
    * - ascending (boolean): True for ascending, false for descending.
@@ -105,9 +108,13 @@ export default function AdminProjectManageSection({
   const handleFilterProjectOrder = async (ascending: boolean): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { data, error } = await getAllProjectsBasedOnStatus({ status: chosenStatus, ascending })
+      let query = supabase.from('projects').select('*, groups (group_name, events (title))')
+      if (chosenStatus != null) {
+        query = query.eq('project_status', chosenStatus)
+      }
+      const { data, error } = await query.order('created_at', { ascending })
       if (error) {
-        throw new Error(error)
+        throw new Error("Failed to sort project database.")
       }
       setCurrentProjects(data ?? [])
       setChosenOrder(ascending)
@@ -148,7 +155,7 @@ export default function AdminProjectManageSection({
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Loads target project data in form parameters.
+   * Loads target project data in form parameters via Supabase client.
    *
    * PARAMETERS:
    * - project (ProjectsSummary): Target project database record.
@@ -159,12 +166,15 @@ export default function AdminProjectManageSection({
   const handleChooseProject = async (project: ProjectsSummary): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { data, error } = await getSingleProjectByGroupAndChallenge({
-        group_id: project.group_id!,
-        group_challenge_id: project.group_challenge_id!,
-      })
+      const { data, error } = await supabase
+        .from('projects')
+        .select('*, groups (events (event_awards (*))), project_files (*), project_awards (*)')
+        .eq('group_id', project.group_id)
+        .eq('group_challenge_id', project.group_challenge_id)
+        .single()
+
       if (error) {
-        throw new Error(error)
+        throw new Error("Failed to fetch project specifications.")
       }
       if (data) {
         reset(data)
@@ -190,7 +200,7 @@ export default function AdminProjectManageSection({
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Triggers status change write queries to database.
+   * Triggers status change write queries to database using Supabase client.
    *
    * PARAMETERS:
    * - projectId (string): Target project ID.
@@ -208,9 +218,9 @@ export default function AdminProjectManageSection({
   }): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { error } = await updateProjectStatus({ projectId, status })
+      const { error } = await supabase.from('projects').update({ project_status: status }).eq('id', projectId)
       if (error) {
-        throw new Error(error)
+        throw new Error("Failed to update project status.")
       }
       const updatedProjects = currentProjects.map((project) => {
         if (project.id === projectId) {

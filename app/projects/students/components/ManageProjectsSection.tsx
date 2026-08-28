@@ -19,8 +19,7 @@
 import { useState } from "react"
 import { Control, useForm } from "react-hook-form"
 import Link from "next/link"
-import { getUserSubmittedProjects } from "@/app/actions/projects/get/getUserSubmittedProjects"
-import { getSingleProjectByGroupAndChallenge } from "@/app/actions/projects/get/getSingleProjectByGroupAndChallenge"
+import { createClient } from "@/app/utils/supabase/client"
 import { PROJECT_STATUS } from "@/app/types/enum"
 import { EventAwards } from "@/app/types/event_awards"
 import { ProjectAwardsInsert } from "@/app/types/project_awards"
@@ -44,6 +43,7 @@ export default function ManageProjectsSection({
   setUserProjects,
   userId,
 }: ManageProjectsSectionProps) {
+  const supabase = createClient()
   const { showNotification } = useNotification()
   const { setIsOpenLoader } = useLoader()
 
@@ -66,7 +66,7 @@ export default function ManageProjectsSection({
   /**
    * BEHAVIORAL MECHANISM:
    * Triggers when status filter is modified. Queries user's submitted projects
-   * matching status and order.
+   * matching status and order via Supabase client.
    *
    * PARAMETERS:
    * - status (PROJECT_STATUS | null): Target project status choice.
@@ -77,13 +77,16 @@ export default function ManageProjectsSection({
   const handleFilterProjectStatus = async (status: PROJECT_STATUS | null): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { data, error } = await getUserSubmittedProjects({
-        userId,
-        status,
-        ascending: chosenOrder,
-      })
+      const { data: memberGroups } = await supabase.from('group_members').select('group_id').eq('user_id', userId)
+      const groupIds = memberGroups?.map(m => m.group_id) ?? []
+
+      let query = supabase.from('projects').select('*, groups (group_name, events (title))').in('group_id', groupIds)
+      if (status != null) {
+        query = query.eq('project_status', status)
+      }
+      const { data, error } = await query.order('created_at', { ascending: chosenOrder })
       if (error) {
-        throw new Error(error)
+        throw new Error("Failed to filter project registry.")
       }
       setUserProjects(data ?? [])
       setChosenStatus(status)
@@ -102,7 +105,7 @@ export default function ManageProjectsSection({
   /**
    * BEHAVIORAL MECHANISM:
    * Triggers when order sorting is modified. Queries user's submitted projects
-   * matching status and order.
+   * matching status and order via Supabase client.
    *
    * PARAMETERS:
    * - ascending (boolean): True for oldest first, false for newest first.
@@ -113,13 +116,16 @@ export default function ManageProjectsSection({
   const handleFilterProjectOrder = async (ascending: boolean): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { data, error } = await getUserSubmittedProjects({
-        userId,
-        status: chosenStatus,
-        ascending,
-      })
+      const { data: memberGroups } = await supabase.from('group_members').select('group_id').eq('user_id', userId)
+      const groupIds = memberGroups?.map(m => m.group_id) ?? []
+
+      let query = supabase.from('projects').select('*, groups (group_name, events (title))').in('group_id', groupIds)
+      if (chosenStatus != null) {
+        query = query.eq('project_status', chosenStatus)
+      }
+      const { data, error } = await query.order('created_at', { ascending })
       if (error) {
-        throw new Error(error)
+        throw new Error("Failed to sort project registry.")
       }
       setUserProjects(data ?? [])
       setChosenOrder(ascending)
@@ -160,7 +166,7 @@ export default function ManageProjectsSection({
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Loads specific project's data into the form fields.
+   * Loads specific project's data into the form fields via Supabase client.
    *
    * PARAMETERS:
    * - project (ProjectsSummaryExtended): Target project row.
@@ -171,12 +177,15 @@ export default function ManageProjectsSection({
   const handleChooseProject = async (project: ProjectsSummaryExtended): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { data, error } = await getSingleProjectByGroupAndChallenge({
-        group_id: project.group_id!,
-        group_challenge_id: project.group_challenge_id!,
-      })
+      const { data, error } = await supabase
+        .from('projects')
+        .select('*, groups (events (event_awards (*))), project_files (*), project_awards (*)')
+        .eq('group_id', project.group_id)
+        .eq('group_challenge_id', project.group_challenge_id)
+        .single()
+
       if (error) {
-        throw new Error(error)
+        throw new Error("Failed to fetch project specifications.")
       }
       if (data) {
         reset(data)

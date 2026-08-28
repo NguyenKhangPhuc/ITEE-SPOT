@@ -3,8 +3,7 @@
 import React, { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { motion } from "framer-motion"
-import { createSubmissionRating } from "@/app/actions/submission_ratings"
-import { updateSubmissionFeedback } from "@/app/actions/submission_feedback/put/updateSubmissionFeedback"
+import { createClient } from "@/app/utils/supabase/client"
 import { useNotification } from "@/app/context/NotificationContext"
 import { useLoader } from "@/app/context/LoaderContext"
 import { ProfileInsert } from "@/app/types/profile"
@@ -23,7 +22,7 @@ interface PeerReviewFeedbackProps {
 /**
  * PURPOSE:
  * Renders the interactive Peer Review Feedback card. It handles star rating clicks
- * (triggering createSubmissionRating) and feedback submissions (triggering updateSubmissionFeedback
+ * (updating submission_ratings) and feedback submissions (updating submission_feedback
  * on form submit). It models its dropdown/textarea layout after FeedbackSection.tsx
  * using the dark console terminal styling.
  *
@@ -42,6 +41,7 @@ export default function PeerReviewFeedback({
   initialRating,
   initialFeedback,
 }: PeerReviewFeedbackProps) {
+  const supabase = createClient()
   const { showNotification } = useNotification()
   const { setIsOpenLoader } = useLoader()
 
@@ -103,7 +103,7 @@ export default function PeerReviewFeedback({
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Saves the rating immediately on star click via the createSubmissionRating server action.
+   * Saves the rating immediately on star click via Supabase client.
    *
    * PARAMETERS:
    * - rating (number): The star rating chosen (1..5).
@@ -120,8 +120,11 @@ export default function PeerReviewFeedback({
         rating,
       }
 
-      const { error } = await createSubmissionRating({ submissionRating: upsertedRating })
-      if (error) throw new Error(error)
+      const { error } = await supabase
+        .from('submission_ratings')
+        .upsert(upsertedRating, { onConflict: 'submission_id,user_id' })
+
+      if (error) throw new Error("Fail to rate submission")
 
       setSelectedRating(rating)
       setIsOpenLoader(false)
@@ -134,7 +137,7 @@ export default function PeerReviewFeedback({
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Dispatches the feedback content to the updateSubmissionFeedback server action.
+   * Dispatches the feedback content directly to Supabase table submission_feedback.
    *
    * PARAMETERS:
    * - feedback (SubmissionFeedbackInsert): Form data from react-hook-form.
@@ -149,8 +152,11 @@ export default function PeerReviewFeedback({
       feedback.user_id = user.id
       feedback.submission_id = submissionId
 
-      const { error } = await updateSubmissionFeedback({ submissionFeedback: feedback })
-      if (error) throw new Error(error)
+      const { error } = await supabase
+        .from('submission_feedback')
+        .upsert(feedback, { onConflict: 'user_id,submission_id' })
+
+      if (error) throw new Error("Fail to update feedback")
 
       setIsOpenLoader(false)
       showNotification("Update the feedback successfully")

@@ -16,8 +16,7 @@
 
 import { useState } from "react"
 import { useForm } from "react-hook-form"
-import { createEventAwarđ } from "@/app/actions/event_awards/post/createEventAward"
-import { updateEventAward } from "@/app/actions/event_awards/put/updateEventAward"
+import { createClient } from "@/app/utils/supabase/client"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
 import { EventAwardsInsert } from "@/app/types/event_awards"
@@ -34,6 +33,7 @@ export default function AwardManagementSection({
   eventId,
   page,
 }: AwardManagementSectionProps) {
+  const supabase = createClient()
   const [awards, setAwards] = useState<Array<EventAwardsInsert>>(receivedAwards)
   const { showNotification } = useNotification()
   const { setIsOpenLoader } = useLoader()
@@ -51,8 +51,8 @@ export default function AwardManagementSection({
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Handles creating new event award. Sets event_id reference, clears id to trigger insertion,
-   * calls createEventAwarđ server action, updates local state, and resets the form.
+   * Handles creating new event award directly via Supabase client. Sets event_id reference, clears id to trigger insertion,
+   * updates local state, and resets the form.
    *
    * PARAMETERS:
    * - newAward (EventAwardsInsert): Award fields values from form.
@@ -67,9 +67,9 @@ export default function AwardManagementSection({
         ...newAward,
         event_id: eventId,
       }
-      const { data, error } = await createEventAwarđ(payload)
+      const { data, error } = await supabase.from('event_awards').insert(payload).select('*').maybeSingle()
       if (error) {
-        throw new Error(error)
+        throw new Error(error.message)
       }
       if (!data) {
         throw new Error("Failed to retrieve newly created award.")
@@ -94,7 +94,7 @@ export default function AwardManagementSection({
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Handles updating an existing event award.
+   * Handles updating an existing event award directly via Supabase client.
    *
    * PARAMETERS:
    * - updatedAward (EventAwardsInsert): Modified award fields values.
@@ -109,9 +109,9 @@ export default function AwardManagementSection({
     }
     setIsOpenLoader(true)
     try {
-      const { error } = await updateEventAward(updatedAward)
+      const { error } = await supabase.from('event_awards').update(updatedAward).eq('id', updatedAward.id).select('*').maybeSingle()
       if (error) {
-        throw new Error(error)
+        throw new Error(error.message)
       }
       const updatedList = awards.map((item) => {
         if (item.id === updatedAward.id) {

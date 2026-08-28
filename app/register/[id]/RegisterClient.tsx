@@ -5,12 +5,14 @@ import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 import { createClient } from "@/app/utils/supabase/client"
 import { handleGetUrl } from "@/app/helpers/FileUrl"
-import { insertGroupMembers } from "@/app/actions/group_member/post/insertGroupMembers"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
 import { Event } from "@/app/types/event"
 import { EventChallengeInsert } from "@/app/types/event_challenges"
 import { RegisterGroupMember } from "@/app/types/group_member"
+import { InvitationInsert } from "@/app/types/invitation"
+import { INVITATION_STATUS } from "@/app/types/enum"
+import { GroupChallengeRelationInsert } from "@/app/types/group_challenge"
 import { User } from "@supabase/supabase-js"
 import BackButton from "@/app/components/BackButton"
 import IdentitySection from "./components/IdentitySection"
@@ -27,8 +29,8 @@ import { tw } from "@/app/constants/design-tokens"
 /**
  * PURPOSE:
  * Client-side orchestrator for the group registration flow. Initialises react-hook-form
- * with the correct default values, wires the submit handler to the insertGroupMembers
- * server action, and composes the two-column page layout from isolated sub-components.
+ * with the correct default values, wires the submit handler to Supabase browser client,
+ * and composes the two-column page layout from isolated sub-components.
  *
  * CONTEXT/PARENT FILE:
  * Rendered by 'app/register/[id]/page.tsx'. Sub-components live in
@@ -71,9 +73,8 @@ export default function RegisterClient({
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Calls the insertGroupMembers server action with the validated form payload.
-   * Shows a loader overlay during the async operation and a notification on success
-   * or failure. On success, navigates the user to their newly created group page.
+   * Registers a group with Supabase directly: creates group, challenge relations,
+   * adds creator as member, and sends invitations to extra member emails.
    *
    * PARAMETERS:
    * - data (RegisterForm): Validated form values from react-hook-form.
@@ -84,9 +85,69 @@ export default function RegisterClient({
   const handleCreateGroup = async (data: RegisterGroupMember) => {
     setIsOpenLoader(true)
     try {
-      const { createdGroup, error } = await insertGroupMembers(data)
-      if (error) throw new Error(error)
-      if (!createdGroup) throw new Error("Failed to load created group")
+      const filteredOutEmails = data.member_emails.filter((value) => value != null).splice(1)
+      const { data: profilesData, error: profileError } = await supabase
+        .from('profiles')
+        .select('email')
+        .in('email', filteredOutEmails)
+
+      if ((profilesData?.length === 0 && filteredOutEmails.length !== 0) || profileError) {
+        throw new Error("Incorrect member email")
+      }
+
+      const { data: createdGroup, error: groupError } = await supabase
+        .from('groups')
+        .insert([{
+          group_name: data.title,
+          short_description: data.short_description,
+          event_id: data.event_id,
+        }])
+        .select()
+        .single()
+
+      if (groupError || !createdGroup) {
+        throw new Error('Failed to create the event, please try again later')
+      }
+
+      const groupChallengeRelation: Array<GroupChallengeRelationInsert> = data.challenges.map((challengeId) => ({
+        group_id: createdGroup.id,
+        challenge_id: challengeId,
+        event_id: data.event_id,
+      }))
+
+      const { error: challengeRelationError } = await supabase
+        .from('group_challenge')
+        .insert(groupChallengeRelation)
+
+      if (challengeRelationError) {
+        throw new Error('Failed to choose the challenges for the group, please contact the staff')
+      }
+
+      const { error: memberError } = await supabase
+        .from('group_members')
+        .insert([{
+          group_id: createdGroup.id,
+          member_id: data.user_id,
+        }])
+
+      if (memberError) {
+        await supabase.from('groups').delete().eq('id', createdGroup.id)
+        throw new Error('Fail to insert the member to the group, please contact the staff')
+      }
+
+      if (filteredOutEmails.length > 0) {
+        const invitations: Array<InvitationInsert> = filteredOutEmails.map((value) => ({
+          group_id: createdGroup.id,
+          member_email: value.toLowerCase().trim(),
+          invitation_status: INVITATION_STATUS.PENDING,
+        }))
+
+        const { error: invitationError } = await supabase.from('invitation').insert(invitations)
+        if (invitationError) {
+          throw new Error('Fail to send the invitation to other members')
+        }
+      }
+
       setIsOpenLoader(false)
       showNotification("Group registered successfully")
       router.push(`/groups/${createdGroup.id}`)

@@ -15,7 +15,7 @@
 
 import Link from "next/link"
 import { useForm } from "react-hook-form"
-import { updateProfile } from "../actions/profiles/put/updateProfile"
+import { createClient } from "@/app/utils/supabase/client"
 import { useLoader } from "../context/LoaderContext"
 import { useNotification } from "../context/NotificationContext"
 import { Profile, ProfileInsert } from "../types/profile"
@@ -25,6 +25,7 @@ import IdentityCoreSection from "./components/IdentityCoreSection"
 import ProfessionalModuleSection from "./components/ProfessionalModuleSection"
 
 export default function UserProfileClient({ user }: { user: Profile }) {
+  const supabase = createClient()
   const {
     register,
     handleSubmit,
@@ -47,7 +48,7 @@ export default function UserProfileClient({ user }: { user: Profile }) {
   /**
    * BEHAVIORAL MECHANISM:
    * Handles form submit. It opens the loading curtain, updates the user profile row
-   * in the Supabase database via the updateProfile action, and triggers notifications.
+   * in Supabase directly, and triggers notifications.
    *
    * PARAMETERS:
    * - data (ProfileInsert): Updated profile field values.
@@ -58,9 +59,10 @@ export default function UserProfileClient({ user }: { user: Profile }) {
   const onSubmit = async (data: ProfileInsert): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { data: updatedValue, error } = await updateProfile({ profile: data })
+      if (!data.id) throw new Error("User ID is missing")
+      const { data: updatedValue, error } = await supabase.from('profiles').update(data).eq('id', data.id).select().maybeSingle()
       if (error) {
-        throw new Error(error)
+        throw new Error(error.message)
       }
       if (updatedValue) {
         reset(updatedValue)

@@ -6,10 +6,6 @@ import { useRouter } from "next/navigation"
 import { createClient } from "@/app/utils/supabase/client"
 import { useNotification } from "@/app/context/NotificationContext"
 import { useLoader } from "@/app/context/LoaderContext"
-import { updateGroupNameAndDescription } from "@/app/actions/groups/put/updateGroupNameAndDescription"
-import { updateGroupPosterPath } from "@/app/actions/groups/put/updateGroupPosterPath"
-import { sendInvitations } from "@/app/actions/invitations/post/sendInvitations"
-import { removeStudentsThemselveFromGroupById } from "@/app/actions/group_member/delete/removeStudentsThemselveFromGroupById"
 import { EditGroupInfo, GroupInfo } from "@/app/types/group"
 import { InvitationInsert } from "@/app/types/invitation"
 import { User } from "@supabase/supabase-js"
@@ -89,8 +85,7 @@ export default function SingleGroupClient({
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Saves updated group metadata (name and description) to the database by calling the
-   * updateGroupNameAndDescription server action.
+   * Saves updated group metadata (name and description) to the database using Supabase client.
    *
    * PARAMETERS:
    * - data (EditGroupInfo): Validated form data.
@@ -101,12 +96,14 @@ export default function SingleGroupClient({
   const handleSaveGroupName = async (data: EditGroupInfo) => {
     setIsOpenLoader(true)
     try {
-      const { data: updatedGroupInfo, error } = await updateGroupNameAndDescription({
-        groupId: groupInfo!.id,
-        groupName: data.groupName,
-        description: data.short_description,
-      })
-      if (error) throw new Error(error)
+      const { data: updatedGroupInfo, error } = await supabase
+        .from('groups')
+        .update({ group_name: data.groupName, short_description: data.short_description })
+        .eq('id', groupInfo!.id)
+        .select()
+        .maybeSingle()
+
+      if (error) throw new Error("Fail to update the group information")
 
       resetGroupName({
         groupName: updatedGroupInfo?.group_name ?? "",
@@ -114,6 +111,7 @@ export default function SingleGroupClient({
       })
       setIsOpenLoader(false)
       showNotification("Update group name successfully")
+      router.refresh()
     } catch (error) {
       if (error instanceof Error) showNotification(error.message)
       setIsOpenLoader(false)
@@ -122,7 +120,7 @@ export default function SingleGroupClient({
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Validates and dispatches team invitation email payloads to the sendInvitations server action.
+   * Validates and dispatches team invitation email payloads to Supabase directly.
    *
    * PARAMETERS:
    * - invitationInfo (InvitationInsert): Form values containing the target node email.
@@ -144,8 +142,22 @@ export default function SingleGroupClient({
           ...invitationInfo,
           member_email: invitationInfo.member_email?.toLowerCase().trim(),
         }
-        const { error } = await sendInvitations(updatedInvitation)
-        if (error) throw new Error(error)
+        
+        const { data: foundMember, error: foundMemberError } = await supabase
+          .from('group_members')
+          .select('*, profiles!inner(email)')
+          .eq('group_id', invitationInfo.group_id!)
+          .eq('profiles.email', updatedInvitation.member_email ?? "")
+          .maybeSingle()
+
+        if (foundMemberError) throw new Error("Fail to check the user information")
+        if (foundMember) throw new Error("Member is already in the team")
+
+        const { error } = await supabase
+          .from('invitation')
+          .upsert(updatedInvitation, { onConflict: 'group_id,member_email' })
+
+        if (error) throw new Error("Fail to create the invitation to the other member")
         setIsOpenLoader(false)
         showNotification("Send invitation successfully")
         router.refresh()
@@ -191,8 +203,7 @@ export default function SingleGroupClient({
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Uploads the selected poster image file to Supabase storage by calling the
-   * updateGroupPosterPath server action.
+   * Uploads the selected poster image file to Supabase storage and updates group record.
    *
    * PARAMETERS:
    * None.
@@ -203,12 +214,28 @@ export default function SingleGroupClient({
   const handleUpdateImage = async () => {
     setIsOpenLoader(true)
     try {
-      const { error } = await updateGroupPosterPath({
-        groupId: groupInfo!.id,
-        avatarFile,
-        originalPath: groupInfo?.poster_path ?? null,
-      })
-      if (error) throw new Error(error)
+      const groupId = groupInfo!.id
+      const originalPath = groupInfo?.poster_path ?? null
+
+      if (avatarFile != null) {
+        const avatarUrlPath = `${groupId}/${Date.now()}-${avatarFile.name}`
+        const { error: storageError } = await supabase.storage.from('attachments').upload(avatarUrlPath, avatarFile)
+        if (storageError) throw new Error("Failed to upload the group image")
+
+        if (originalPath) {
+          await supabase.storage.from('attachments').remove([originalPath])
+        }
+
+        const { error } = await supabase.from('groups').update({ poster_path: avatarUrlPath }).eq('id', groupId)
+        if (error) throw new Error("Fail to update the group image")
+      } else {
+        if (originalPath) {
+          await supabase.storage.from('attachments').remove([originalPath])
+        }
+        const { error } = await supabase.from('groups').update({ poster_path: null }).eq('id', groupId)
+        if (error) throw new Error("Fail to delete the group image")
+      }
+
       setIsOpenLoader(false)
       showNotification("Update successfully")
       router.refresh()
@@ -220,9 +247,8 @@ export default function SingleGroupClient({
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Triggers the self-exclusion logic, removing the student from the group via the
-   * removeStudentsThemselveFromGroupById server action. Upon completion, redirects
-   * the user back to the parent event page.
+   * Triggers the self-exclusion logic, removing the student from the group via Supabase client.
+   * Upon completion, redirects the user back to the parent event page.
    *
    * PARAMETERS:
    * None.
@@ -233,8 +259,16 @@ export default function SingleGroupClient({
   const handleRemoveStudentSelf = async (groupId: string) => {
     setIsOpenLoader(true)
     try {
-      const { error } = await removeStudentsThemselveFromGroupById(groupId)
-      if (error) throw new Error(error)
+      const { data: student } = await supabase.auth.getUser()
+      if (!student.user) throw new Error('You are not signed in')
+
+      const { error } = await supabase
+        .from('group_members')
+        .delete()
+        .eq('member_id', student.user.id)
+        .eq('group_id', groupId)
+
+      if (error) throw new Error('Fail to remove yourself from the group')
       setIsOpenLoader(false)
       showNotification("Removed from group successfully")
       const eventId = groupInfo?.event_id

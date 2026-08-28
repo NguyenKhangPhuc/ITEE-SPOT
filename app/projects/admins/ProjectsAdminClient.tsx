@@ -17,7 +17,7 @@ import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { ProjectsSummary } from "@/app/types/projects"
 import { EventWithGroupsAndAward } from "@/app/types/event"
-import { getAllProjects } from "@/app/actions/projects/get/getAllProjects"
+import { createClient } from "@/app/utils/supabase/client"
 import { useNotification } from "@/app/context/NotificationContext"
 import BackButton from "@/app/components/BackButton"
 import CreateShowCaseProjectSection from "./components/CreateShowCaseProjectSection"
@@ -32,6 +32,7 @@ interface ProjectsAdminClientProps {
 export default function ProjectsAdminClient({
   eventsWithGroupsAndAwards,
 }: ProjectsAdminClientProps) {
+  const supabase = createClient()
   const { showNotification } = useNotification()
   const [currentPage, setCurrentPage] = useState<PageType>("create")
   const [currentProjects, setCurrentProjects] = useState<Array<ProjectsSummary>>([])
@@ -41,8 +42,7 @@ export default function ProjectsAdminClient({
   /**
    * BEHAVIORAL MECHANISM:
    * Handles switching tabs. If the target tab is 'manage' and project registry
-   * data has not been fetched yet, triggers getAllProjects server action
-   * with loading states.
+   * data has not been fetched yet, queries projects directly via Supabase browser client.
    *
    * PARAMETERS:
    * - tab (PageType): The target tab view to transition to.
@@ -55,9 +55,13 @@ export default function ProjectsAdminClient({
     if (tab === "manage" && !hasLoadedProjects) {
       setIsLoadingProjects(true)
       try {
-        const { data, error } = await getAllProjects()
+        const { data, error } = await supabase
+          .from('projects')
+          .select('*, groups (group_name, events (title))')
+          .order('created_at', { ascending: false })
+
         if (error) {
-          throw new Error(error)
+          throw new Error("Failed to fetch showcase projects registry.")
         }
         setCurrentProjects(data ?? [])
         setHasLoadedProjects(true)

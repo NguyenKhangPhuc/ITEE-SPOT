@@ -13,7 +13,7 @@
 'use client'
 
 import { useState } from "react"
-import { updateEventChallenges } from "@/app/actions/events/put/updateEventChallenges"
+import { createClient } from "@/app/utils/supabase/client"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
 import { EventChallengeInsert } from "@/app/types/event_challenges"
@@ -24,13 +24,14 @@ interface ChallengeCardProps {
 }
 
 export default function ChallengeCard({ receivedChallenge }: ChallengeCardProps) {
+  const supabase = createClient()
   const { showNotification } = useNotification()
   const { setIsOpenLoader } = useLoader()
   const [challenge, setChallenge] = useState<EventChallengeInsert>(receivedChallenge)
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Saves challenge edits by calling updateEventChallenges server action.
+   * Saves challenge edits directly via Supabase client.
    *
    * PARAMETERS:
    * None.
@@ -41,9 +42,10 @@ export default function ChallengeCard({ receivedChallenge }: ChallengeCardProps)
   const handleUpdateChallenge = async (): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { error } = await updateEventChallenges({ eventChallenge: challenge })
+      if (!challenge.id) throw new Error("Challenge ID is missing")
+      const { error } = await supabase.from('event_challenges').update(challenge).eq('id', challenge.id)
       if (error) {
-        throw new Error(error)
+        throw new Error(error.message)
       }
       showNotification("Update challenge successfully")
     } catch (error) {

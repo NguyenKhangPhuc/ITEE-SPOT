@@ -9,9 +9,7 @@ import { EventChallenge } from "@/app/types/event_challenges"
 import { GroupChallengeRelation } from "@/app/types/group_challenge"
 import { SubmissionInsert } from "@/app/types/submission"
 import { SubmissionFileExtended } from "@/app/types/submission_files"
-import { getGoupChallengeSubmission } from "@/app/actions/submissions/get/getGoupChallengeSubmission"
-import { saveGroupChallengeSubmission } from "@/app/actions/submissions/post/saveGroupChallengeSubmission"
-import { getPublicFileURL } from "@/app/actions/file_url"
+import { createClient } from "@/app/utils/supabase/client"
 import { useNotification } from "@/app/context/NotificationContext"
 import { useLoader } from "@/app/context/LoaderContext"
 import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor"
@@ -61,6 +59,7 @@ export default function ChallengeAccordion({
   isOpen,
   onToggle,
 }: ChallengeAccordionProps) {
+  const supabase = createClient()
   const isLocked = !groupChallengeRelation
   const { showNotification } = useNotification()
   const { setIsOpenLoader } = useLoader()
@@ -103,8 +102,7 @@ export default function ChallengeAccordion({
   /**
    * BEHAVIORAL MECHANISM:
    * Handles user interaction to expand/collapse the challenge accordion.
-   * On expansion of an active challenge, triggers component-level fetching of submission data
-   * while maintaining local mint loader state.
+   * On expansion of an active challenge, triggers component-level fetching of submission data via Supabase client.
    *
    * PARAMETERS:
    * None.
@@ -122,11 +120,14 @@ export default function ChallengeAccordion({
     if (!isOpen) {
       setIsFetching(true)
       try {
-        const { data, error } = await getGoupChallengeSubmission({
-          groupChallengeId: groupChallengeRelation.id,
-          groupId,
-        })
-        if (error) throw new Error(error)
+        const { data, error } = await supabase
+          .from('submissions')
+          .select('*, submission_files (*), submission_reactions (*), submission_ratings (*), fun_facts (*)')
+          .eq('group_id', groupId)
+          .eq('group_challenge_id', groupChallengeRelation.id)
+          .maybeSingle()
+
+        if (error) throw new Error("Fail to get group's submissions")
 
         if (data) {
           reset(data)
@@ -205,8 +206,7 @@ export default function ChallengeAccordion({
   const handleDownloadFile = async (file: SubmissionFileExtended) => {
     if (file.storage_path) {
       try {
-        const { data, error } = await getPublicFileURL(file.storage_path)
-        if (error) throw new Error(error)
+        const { data } = supabase.storage.from('attachments').getPublicUrl(file.storage_path)
         if (data?.publicUrl) window.open(data.publicUrl, "_blank")
       } catch (error) {
         if (error instanceof Error) showNotification(error.message)
@@ -219,8 +219,7 @@ export default function ChallengeAccordion({
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Triggers the saveGroupChallengeSubmission server action to commit the form payload
-   * along with rich-text content, submitted files, and fun facts.
+   * Commits the submission payload along with rich-text content and submitted files directly to Supabase.
    *
    * PARAMETERS:
    * - data (SubmissionInsert): Form fields payload.
@@ -241,13 +240,64 @@ export default function ChallengeAccordion({
         throw new Error("Unable to save: group parameters missing")
       }
 
-      const { error } = await saveGroupChallengeSubmission({
-        submission: data,
-        submittedFiles,
-        funfacts: [], // Fun facts kept as empty array per user requirements
-      })
+      const { data: subData, error: subError } = await supabase
+        .from('submissions')
+        .upsert({
+          title: data.title,
+          github_link: data.github_link,
+          youtube_link: data.youtube_link,
+          short_description: data.short_description,
+          description: data.description,
+          group_id: data.group_id,
+          group_challenge_id: data.group_challenge_id,
+        }, { onConflict: 'group_id,group_challenge_id' })
+        .select('id')
+        .maybeSingle()
 
-      if (error) throw new Error(error)
+      if (subError || !subData) {
+        throw new Error("Fail to update the submission")
+      }
+
+      await supabase.from('fun_facts').delete().eq('submission_id', subData.id)
+
+      const newFiles = submittedFiles.filter(f => !f.id)
+      const existingFileIds = submittedFiles.filter(f => f.id).map(f => f.id)
+
+      const { data: oldFiles } = await supabase.from('submission_files').select('*').eq('submission_id', subData.id)
+      const deletedFiles = oldFiles?.filter(old => !existingFileIds.includes(old.id)) ?? []
+      const deletedFilesId = deletedFiles.map((ele) => ele.id)
+      const deleteFilesStorage = deletedFiles.map((ele) => ele.storage_path ?? "")
+
+      if (deletedFiles.length > 0) {
+        const { error: dbError } = await supabase.from('submission_files').delete().in('id', deletedFilesId)
+        if (dbError) throw new Error("Failed to delete the submission files")
+        await supabase.storage.from('attachments').remove(deleteFilesStorage)
+      }
+
+      if (newFiles.length > 0) {
+        const uploadPromises = newFiles.map(async (item) => {
+          const file = item.file!
+          const filePath = `${data.group_id}/${Date.now()}-${file.name}`
+          const { error: storageError } = await supabase.storage.from('attachments').upload(filePath, file)
+          if (storageError) return null
+
+          return {
+            submission_id: subData.id,
+            group_id: data.group_id,
+            storage_path: filePath,
+            original_file_name: file.name,
+            size: file.size,
+            mime_type: file.type,
+          }
+        })
+
+        const recordsToInsert = (await Promise.all(uploadPromises)).filter((r): r is NonNullable<typeof r> => r !== null)
+        if (recordsToInsert.length > 0) {
+          const { error: insertedFileError } = await supabase.from('submission_files').insert(recordsToInsert)
+          if (insertedFileError) throw new Error("Fail to insert files")
+        }
+      }
+
       setIsOpenLoader(false)
       showNotification("Save submission successfully")
     } catch (error) {

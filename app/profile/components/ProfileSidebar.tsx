@@ -23,7 +23,6 @@ import { useState } from "react"
 import Image from "next/image"
 import { UseFormRegister, FieldErrors } from "react-hook-form"
 import { createClient } from "@/app/utils/supabase/client"
-import { updateProfileAvatar } from "@/app/actions/profiles/put/updateProfileAvatar"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
 import { Profile, ProfileInsert } from "../../types/profile"
@@ -73,7 +72,7 @@ export default function ProfileSidebar({
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Intercepts file select, uploads file immediately via updateProfileAvatar,
+   * Intercepts file select, uploads file immediately via Supabase client,
    * updates local preview state, and triggers notification.
    *
    * PARAMETERS:
@@ -88,14 +87,17 @@ export default function ProfileSidebar({
       const file = files[0]
       setIsOpenLoader(true)
       try {
-        const { error } = await updateProfileAvatar({
-          userId: user.id,
-          posterFile: file,
-          originalPath: user.avatar_url ?? null
-        })
-        if (error) {
-          throw new Error(error)
+        const avatarPath = `${user.id}/${Date.now()}-${file.name}`
+        const { error: storageError } = await supabase.storage.from('attachments').upload(avatarPath, file)
+        if (storageError) throw new Error("Failed to upload avatar image")
+
+        if (user.avatar_url) {
+          await supabase.storage.from('attachments').remove([user.avatar_url])
         }
+
+        const { error } = await supabase.from('profiles').update({ avatar_url: avatarPath }).eq('id', user.id)
+        if (error) throw new Error("Failed to update profile avatar")
+
         const url = URL.createObjectURL(file)
         setPreviewUrl(url)
         showNotification("Update image successfully")

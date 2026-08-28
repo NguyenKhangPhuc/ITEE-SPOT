@@ -28,8 +28,7 @@ import React, { SetStateAction, useState } from "react"
 import { Control, FieldErrors, UseFormHandleSubmit, UseFormRegister, useWatch } from "react-hook-form"
 import Link from "next/link"
 import { Editor } from "@tiptap/core"
-import { getPublicFileURL } from "@/app/actions/file_url"
-import { saveStudentGroupProject } from "@/app/actions/projects/post/saveStudentGroupProject"
+import { createClient } from "@/app/utils/supabase/client"
 import WordCounter from "@/app/components/WordCounter"
 import YoutubeVideo from "@/app/components/YoutubeVideo"
 import { MAX_TOTAL_SIZE, SHORT_DESCRIPTION_LENGTH, STUDENT_SUBMISSION_DESCRIPTION } from "@/app/constants"
@@ -40,6 +39,7 @@ import { EventAwardsInsert } from "@/app/types/event_awards"
 import { ProjectAwardsInsert } from "@/app/types/project_awards"
 import { ProjectFileExtended } from "@/app/types/project_files"
 import { ProjectsInsert } from "@/app/types/projects"
+import { PROJECT_STATUS } from "@/app/types/enum"
 import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor"
 import { tw } from "@/app/constants/design-tokens"
 
@@ -69,6 +69,7 @@ export default function EditProjectFormSection({
   control,
   eventAwards,
 }: EditProjectFormSectionProps) {
+  const supabase = createClient()
   const [editorValue, setEditorValue] = useState<Editor | null>(null)
   const { showNotification } = useNotification()
   const { setIsOpenLoader } = useLoader()
@@ -114,7 +115,7 @@ export default function EditProjectFormSection({
   /**
    * BEHAVIORAL MECHANISM:
    * Triggers a browser download of the attached file. Resolves public URLs
-   * for remote storage or creates local URLs for new unsaved selections.
+   * via Supabase storage client or creates local URLs for new unsaved selections.
    *
    * PARAMETERS:
    * - file (ProjectFileExtended): Target file registry item.
@@ -125,10 +126,7 @@ export default function EditProjectFormSection({
   const handleDownloadFile = async (file: ProjectFileExtended): Promise<void> => {
     if (file.storage_path) {
       try {
-        const { data, error } = await getPublicFileURL(file.storage_path)
-        if (error) {
-          throw new Error(error)
-        }
+        const { data } = supabase.storage.from('attachments').getPublicUrl(file.storage_path)
         if (data?.publicUrl) {
           window.open(data.publicUrl, "_blank")
         } else {
@@ -182,7 +180,7 @@ export default function EditProjectFormSection({
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Submits the project updates to database. Formats description content using Tiptap HTML.
+   * Submits the project updates to database directly via Supabase browser client.
    *
    * PARAMETERS:
    * - project (ProjectsInsert): Project form field payload.
@@ -194,14 +192,93 @@ export default function EditProjectFormSection({
     setIsOpenLoader(true)
     try {
       project.description = editorValue?.getHTML()
-      const { data, error } = await saveStudentGroupProject({
-        project,
-        submittedFiles,
-        projectAwards: selectedAward,
-      })
-      if (error) {
-        throw new Error(error)
+      
+      const { data: subData, error: subError } = await supabase
+        .from('projects')
+        .upsert({
+          project_title: project.project_title,
+          github_link: project.github_link,
+          youtube_link: project.youtube_link,
+          short_description: project.short_description,
+          description: project.description,
+          group_id: project.group_id,
+          group_challenge_id: project.group_challenge_id,
+          project_status: PROJECT_STATUS.PENDING
+        }, { onConflict: 'group_id,group_challenge_id' })
+        .select('id')
+        .maybeSingle()
+
+      if (subError || !subData) {
+        throw new Error("Fail to update the project submission")
       }
+
+      const updatedProjectsAward: Array<ProjectAwardsInsert> = selectedAward.map((ele) => ({
+        project_id: subData.id,
+        award_id: ele.award_id
+      }))
+
+      if (selectedAward.length > 0) {
+        const { error: deletedProjectAwardsError } = await supabase.from('project_awards').delete().eq('project_id', subData.id)
+        if (deletedProjectAwardsError) {
+          throw new Error("Fail to update the project")
+        }
+      }
+
+      if (updatedProjectsAward.length > 0) {
+        const { error: projectAwardsError } = await supabase.from('project_awards').insert(updatedProjectsAward)
+        if (projectAwardsError) {
+          throw new Error("Fail to update the project")
+        }
+      }
+
+      const newFiles = submittedFiles.filter(f => !f.id)
+      const existingFileIds = submittedFiles.filter(f => f.id).map(f => f.id)
+
+      const { data: oldFiles } = await supabase.from('project_files').select('*').eq('project_id', subData.id)
+
+      const deletedFiles = oldFiles?.filter(old => !existingFileIds.includes(old.id)) ?? []
+      const deletedFilesId = deletedFiles.map((ele) => ele.id)
+      const deleteFilesStorage = deletedFiles.map((ele) => ele.storage_path ?? "")
+
+      if (deletedFiles.length > 0) {
+        const { error: dbError } = await supabase
+          .from('project_files')
+          .delete()
+          .in('id', deletedFilesId)
+
+        if (dbError) {
+          throw new Error("Failed to delete the project files")
+        }
+        await supabase.storage.from('attachments').remove(deleteFilesStorage)
+      }
+
+      if (newFiles.length > 0) {
+        const uploadPromises = newFiles.map(async (item) => {
+          const file = item.file!
+          const filePath = `${project.group_id}/${Date.now()}-${file.name}`
+
+          const { error: storageError } = await supabase.storage.from('attachments').upload(filePath, file)
+          if (storageError) return null
+
+          return {
+            project_id: subData.id,
+            group_id: project.group_id,
+            storage_path: filePath,
+            original_file_name: file.name,
+            size: file.size,
+            mime_type: file.type,
+          }
+        })
+
+        const recordsToInsert = (await Promise.all(uploadPromises)).filter((r): r is NonNullable<typeof r> => r !== null)
+        if (recordsToInsert.length > 0) {
+          const { error: insertedFileError } = await supabase.from('project_files').insert(recordsToInsert)
+          if (insertedFileError) {
+            throw new Error("Fail to insert files")
+          }
+        }
+      }
+
       showNotification("Update successfully")
     } catch (error) {
       if (error instanceof Error) {

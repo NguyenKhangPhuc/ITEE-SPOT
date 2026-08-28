@@ -19,7 +19,7 @@
 
 import { useForm, useWatch } from "react-hook-form"
 import { motion } from "framer-motion"
-import { updateUserGrading } from "@/app/actions/user_grading/put/updateUserGrading"
+import { createClient } from "@/app/utils/supabase/client"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
 import { CRITERIA_TYPE } from "@/app/types/enum"
@@ -48,6 +48,7 @@ export default function SubmissionGradingClient({
   user: Profile
   userGrading: Array<UserSubmissionGradeWithPercentage>
 }) {
+  const supabase = createClient()
   const { showNotification } = useNotification()
   const { setIsOpenLoader } = useLoader()
 
@@ -121,7 +122,7 @@ export default function SubmissionGradingClient({
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Submits grades to the database, mapping and stripping internal percentage keys.
+   * Submits grades to the database, mapping and stripping internal percentage keys using Supabase client.
    *
    * PARAMETERS:
    * - data (GradeValue): Form submit values.
@@ -140,13 +141,12 @@ export default function SubmissionGradingClient({
         grade: ele.grade,
       }))
       
-      const { error } = await updateUserGrading({
-        grades: removedPercentageGrades,
-        submissionId: submission?.id ?? ""
-      })
-      
+      const { error } = await supabase
+        .from('submission_grading')
+        .upsert(removedPercentageGrades, { onConflict: 'user_id, submission_id, event_criteria_id' })
+
       if (error) {
-        throw new Error(error)
+        throw new Error("Failed to update the grade")
       }
       showNotification("Give grade successfully")
     } catch (error) {

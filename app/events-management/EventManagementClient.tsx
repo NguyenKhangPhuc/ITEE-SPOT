@@ -17,8 +17,7 @@
 import { useState } from "react"
 import { EventInsert } from "@/app/types/event"
 import { EVENT_STATUS } from "@/app/types/enum"
-import { updateEventStatus } from "@/app/actions/events/put/updateEventStatus"
-import { updateEventRegistrationStatus } from "@/app/actions/events/put/updateEventRegistrationStatus"
+import { createClient } from "@/app/utils/supabase/client"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
 import BackButton from "@/app/components/BackButton"
@@ -35,6 +34,7 @@ const ITEMS_PER_PAGE = 20
 type SortKey = "date_desc" | "date_asc"
 
 export default function EventManagementClient({ events: initialEvents }: EventManagementClientProps) {
+  const supabase = createClient()
   const { showNotification } = useNotification()
   const { setIsOpenLoader } = useLoader()
 
@@ -47,7 +47,7 @@ export default function EventManagementClient({ events: initialEvents }: EventMa
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Triggers the updateEventStatus server action and updates local events state array on success.
+   * Updates event status directly via Supabase client and updates local events state array on success.
    *
    * PARAMETERS:
    * - eventId (string): Database ID of the target event.
@@ -59,9 +59,9 @@ export default function EventManagementClient({ events: initialEvents }: EventMa
   const handleStatusChange = async (eventId: string, newStatus: EVENT_STATUS): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { error } = await updateEventStatus(eventId, newStatus)
+      const { error } = await supabase.from('events').update({ status: newStatus }).eq('id', eventId)
       if (error) {
-        throw new Error(error)
+        throw new Error(error.message)
       }
       setEvents((prev) =>
         prev.map((event) =>
@@ -82,7 +82,7 @@ export default function EventManagementClient({ events: initialEvents }: EventMa
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Triggers the updateEventRegistrationStatus server action and updates local events state array on success.
+   * Updates event registration status directly via Supabase client and updates local events state array on success.
    *
    * PARAMETERS:
    * - eventId (string): Database ID of the target event.
@@ -97,9 +97,9 @@ export default function EventManagementClient({ events: initialEvents }: EventMa
   ): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { error } = await updateEventRegistrationStatus(eventId, newRegStatus)
+      const { error } = await supabase.from('events').update({ registration_status: newRegStatus }).eq('id', eventId)
       if (error) {
-        throw new Error(error)
+        throw new Error(error.message)
       }
       setEvents((prev) =>
         prev.map((event) =>
