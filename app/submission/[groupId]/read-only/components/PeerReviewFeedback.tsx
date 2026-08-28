@@ -3,8 +3,8 @@
 import React, { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { motion } from "framer-motion"
-import type { createSubmissionRating } from "@/app/actions/submission_ratings"
-import type { updateSubmissionFeedback } from "@/app/actions/submission_feedback/put/updateSubmissionFeedback"
+import { createSubmissionRating } from "@/app/actions/submission_ratings"
+import { updateSubmissionFeedback } from "@/app/actions/submission_feedback/put/updateSubmissionFeedback"
 import { useNotification } from "@/app/context/NotificationContext"
 import { useLoader } from "@/app/context/LoaderContext"
 import { ProfileInsert } from "@/app/types/profile"
@@ -18,10 +18,6 @@ interface PeerReviewFeedbackProps {
   user: ProfileInsert
   initialRating: SubmissionRatingInsert | null
   initialFeedback: SubmissionFeedback | null
-  actions: {
-    createSubmissionRating: typeof createSubmissionRating
-    updateSubmissionFeedback: typeof updateSubmissionFeedback
-  }
 }
 
 /**
@@ -45,7 +41,6 @@ export default function PeerReviewFeedback({
   user,
   initialRating,
   initialFeedback,
-  actions,
 }: PeerReviewFeedbackProps) {
   const { showNotification } = useNotification()
   const { setIsOpenLoader } = useLoader()
@@ -125,7 +120,7 @@ export default function PeerReviewFeedback({
         rating,
       }
 
-      const { error } = await actions.createSubmissionRating({ submissionRating: upsertedRating })
+      const { error } = await createSubmissionRating({ submissionRating: upsertedRating })
       if (error) throw new Error(error)
 
       setSelectedRating(rating)
@@ -154,7 +149,7 @@ export default function PeerReviewFeedback({
       feedback.user_id = user.id
       feedback.submission_id = submissionId
 
-      const { error } = await actions.updateSubmissionFeedback({ submissionFeedback: feedback })
+      const { error } = await updateSubmissionFeedback({ submissionFeedback: feedback })
       if (error) throw new Error(error)
 
       setIsOpenLoader(false)

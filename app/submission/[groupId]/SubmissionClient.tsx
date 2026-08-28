@@ -3,9 +3,6 @@
 import { useState } from "react"
 import { EventChallenge } from "@/app/types/event_challenges"
 import { GroupChallengeRelation } from "@/app/types/group_challenge"
-import type { getGoupChallengeSubmission } from "@/app/actions/submissions/get/getGoupChallengeSubmission"
-import type { saveGroupChallengeSubmission } from "@/app/actions/submissions/post/saveGroupChallengeSubmission"
-import type { getPublicFileURL } from "@/app/actions/file_url"
 import BackButton from "@/app/components/BackButton"
 import SubmissionHeader from "./components/SubmissionHeader"
 import ChallengeAccordion from "./components/ChallengeAccordion"
@@ -14,11 +11,6 @@ interface SubmissionClientProps {
   groupChallenges: Array<GroupChallengeRelation>
   eventChallenges: Array<EventChallenge>
   group_id: string
-  actions: {
-    getGoupChallengeSubmission: typeof getGoupChallengeSubmission
-    saveGroupChallengeSubmission: typeof saveGroupChallengeSubmission
-    getPublicFileURL: typeof getPublicFileURL
-  }
 }
 
 /**
@@ -40,7 +32,6 @@ export default function SubmissionClient({
   groupChallenges,
   eventChallenges,
   group_id,
-  actions,
 }: SubmissionClientProps) {
   // Tracks the index of the currently expanded challenge accordion
   const [activeAccordionIndex, setActiveAccordionIndex] = useState<number | null>(null)
@@ -85,7 +76,6 @@ export default function SubmissionClient({
                 groupChallengeRelation={matchingRelation}
                 isOpen={activeAccordionIndex === index}
                 onToggle={() => handleToggleAccordion(index)}
-                actions={actions}
               />
             )
           })}

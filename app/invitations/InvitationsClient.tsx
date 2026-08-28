@@ -19,8 +19,6 @@ import { motion, AnimatePresence } from "framer-motion"
 import { User } from "@supabase/supabase-js"
 import { InvitationWithGroupsEvent } from "../types/invitation"
 import { INVITATION_STATUS } from "../types/enum"
-import type { acceptInvitation } from "@/app/actions/invitations/put/acceptInvitation"
-import type { rejectInvitation } from "@/app/actions/invitations/put/rejectInvitation"
 import BackButton from "@/app/components/BackButton"
 import Pagination from "@/app/helpers/Pagination"
 import InvitationCard from "./components/InvitationCard"
@@ -28,14 +26,9 @@ import InvitationCard from "./components/InvitationCard"
 export default function InvitationsClient({
   invitations,
   user,
-  actions,
 }: {
   invitations: Array<InvitationWithGroupsEvent> | null
   user: User
-  actions: {
-    acceptInvitation: typeof acceptInvitation
-    rejectInvitation: typeof rejectInvitation
-  }
 }) {
   const [localInvitations, setLocalInvitations] = useState<InvitationWithGroupsEvent[]>(
     invitations || []
@@ -121,7 +114,6 @@ export default function InvitationsClient({
                   invite={invite}
                   user={user}
                   onStatusUpdate={handleStatusUpdate}
-                  actions={actions}
                 />
               </motion.div>
             ))

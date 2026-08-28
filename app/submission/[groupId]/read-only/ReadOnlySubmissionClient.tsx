@@ -9,10 +9,9 @@ import { SubmissionRatingInsert } from "@/app/types/submission_rating"
 import { SubmissionFeedback } from "@/app/types/submission_feedback"
 import { PROFILE_ROLE } from "@/app/types/enum"
 import { GroupInfo } from "@/app/types/group"
-import type { getSubmissionRatingById, createSubmissionRating } from "@/app/actions/submission_ratings"
-import type { getSubmissionFeedBackByUserIdAndSubmissionId } from "@/app/actions/submission_feedback/get/getSubmissionFeedBackByUserIdAndSubmissionId"
-import type { updateSubmissionFeedback } from "@/app/actions/submission_feedback/put/updateSubmissionFeedback"
-import type { getPublicFileURL } from "@/app/actions/file_url"
+import { getSubmissionRatingById } from "@/app/actions/submission_ratings"
+import { getSubmissionFeedBackByUserIdAndSubmissionId } from "@/app/actions/submission_feedback/get/getSubmissionFeedBackByUserIdAndSubmissionId"
+import { getPublicFileURL } from "@/app/actions/file_url"
 import { useNotification } from "@/app/context/NotificationContext"
 import { useLoader } from "@/app/context/LoaderContext"
 import ReadOnlyEditor from "@/components/tiptap-templates/simple/ReadOnlyEditor"
@@ -26,16 +25,7 @@ interface ReadOnlySubmissionClientProps {
   groupSubmissions: GroupSubmissions
   user: ProfileInsert
   groupInfo: GroupInfo | null
-  actions: {
-    getSubmissionRatingById: typeof getSubmissionRatingById
-    getSubmissionFeedBackByUserIdAndSubmissionId: typeof getSubmissionFeedBackByUserIdAndSubmissionId
-    getPublicFileURL: typeof getPublicFileURL
-    createSubmissionRating: typeof createSubmissionRating
-    updateSubmissionFeedback: typeof updateSubmissionFeedback
-  }
 }
-
-
 
 /**
  * PURPOSE:
@@ -56,7 +46,6 @@ export default function ReadOnlySubmissionClient({
   groupSubmissions,
   user,
   groupInfo,
-  actions,
 }: ReadOnlySubmissionClientProps) {
   const { showNotification } = useNotification()
   const { setIsOpenLoader } = useLoader()
@@ -85,14 +74,14 @@ export default function ReadOnlySubmissionClient({
 
     try {
       // 1. Fetch user rating
-      const { data: ratingData, error: ratingError } = await actions.getSubmissionRatingById({
+      const { data: ratingData, error: ratingError } = await getSubmissionRatingById({
         submissionId,
         userId: user.id,
       })
       if (ratingError) throw new Error(ratingError)
 
       // 2. Fetch user feedback log
-      const { data: feedbackData, error: feedbackError } = await actions.getSubmissionFeedBackByUserIdAndSubmissionId({
+      const { data: feedbackData, error: feedbackError } = await getSubmissionFeedBackByUserIdAndSubmissionId({
         userId: user.id,
         submissionId,
       })
@@ -155,7 +144,7 @@ export default function ReadOnlySubmissionClient({
   const handleDownloadFile = async (storagePath: string | null) => {
     if (!storagePath) return
     try {
-      const { data, error } = await actions.getPublicFileURL(storagePath)
+      const { data, error } = await getPublicFileURL(storagePath)
       if (error) throw new Error(error)
       if (data?.publicUrl) window.open(data.publicUrl, "_blank")
     } catch (error) {
@@ -387,7 +376,6 @@ export default function ReadOnlySubmissionClient({
                 user={user}
                 initialRating={userRating}
                 initialFeedback={userFeedback}
-                actions={actions}
               />
             </motion.div>
           )}

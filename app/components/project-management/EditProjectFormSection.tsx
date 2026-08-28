@@ -28,8 +28,8 @@ import React, { SetStateAction, useState } from "react"
 import { Control, FieldErrors, UseFormHandleSubmit, UseFormRegister, useWatch } from "react-hook-form"
 import Link from "next/link"
 import { Editor } from "@tiptap/core"
-import type { getPublicFileURL } from "@/app/actions/file_url"
-import type { saveStudentGroupProject } from "@/app/actions/projects/post/saveStudentGroupProject"
+import { getPublicFileURL } from "@/app/actions/file_url"
+import { saveStudentGroupProject } from "@/app/actions/projects/post/saveStudentGroupProject"
 import WordCounter from "@/app/components/WordCounter"
 import YoutubeVideo from "@/app/components/YoutubeVideo"
 import { MAX_TOTAL_SIZE, SHORT_DESCRIPTION_LENGTH, STUDENT_SUBMISSION_DESCRIPTION } from "@/app/constants"
@@ -55,10 +55,6 @@ interface EditProjectFormSectionProps {
   handleSubmit: UseFormHandleSubmit<ProjectsInsert>
   control: Control
   eventAwards: EventAwardsInsert[]
-  actions?: {
-    getPublicFileURL?: typeof getPublicFileURL
-    saveStudentGroupProject?: typeof saveStudentGroupProject
-  }
 }
 
 export default function EditProjectFormSection({
@@ -72,7 +68,6 @@ export default function EditProjectFormSection({
   initialEditorContent,
   control,
   eventAwards,
-  actions,
 }: EditProjectFormSectionProps) {
   const [editorValue, setEditorValue] = useState<Editor | null>(null)
   const { showNotification } = useNotification()
@@ -130,10 +125,7 @@ export default function EditProjectFormSection({
   const handleDownloadFile = async (file: ProjectFileExtended): Promise<void> => {
     if (file.storage_path) {
       try {
-        if (!actions?.getPublicFileURL) {
-          throw new Error("Download action unavailable.")
-        }
-        const { data, error } = await actions.getPublicFileURL(file.storage_path)
+        const { data, error } = await getPublicFileURL(file.storage_path)
         if (error) {
           throw new Error(error)
         }
@@ -202,10 +194,7 @@ export default function EditProjectFormSection({
     setIsOpenLoader(true)
     try {
       project.description = editorValue?.getHTML()
-      if (!actions?.saveStudentGroupProject) {
-        throw new Error("Save project action unavailable.")
-      }
-      const { data, error } = await actions.saveStudentGroupProject({
+      const { data, error } = await saveStudentGroupProject({
         project,
         submittedFiles,
         projectAwards: selectedAward,

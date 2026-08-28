@@ -18,10 +18,7 @@ import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { ProjectsSummaryExtended } from "@/app/types/projects"
 import { UserGroupsWithEvent } from "@/app/types/group"
-import type { getUserSubmittedProjects } from "@/app/actions/projects/get/getUserSubmittedProjects"
-import type { getSingleProjectByGroupAndChallenge } from "@/app/actions/projects/get/getSingleProjectByGroupAndChallenge"
-import type { getPublicFileURL } from "@/app/actions/file_url"
-import type { saveStudentGroupProject } from "@/app/actions/projects/post/saveStudentGroupProject"
+import { getUserSubmittedProjects } from "@/app/actions/projects/get/getUserSubmittedProjects"
 import { useNotification } from "@/app/context/NotificationContext"
 import BackButton from "@/app/components/BackButton"
 import SubmitShowcaseProjectSection from "./components/SubmitShowcaseProjectSection"
@@ -32,18 +29,11 @@ type PageType = "create" | "manage"
 interface StudentsManagementClientProps {
   groupsWithEvents: Array<UserGroupsWithEvent>
   userId: string
-  actions: {
-    getUserSubmittedProjects: typeof getUserSubmittedProjects
-    getSingleProjectByGroupAndChallenge: typeof getSingleProjectByGroupAndChallenge
-    getPublicFileURL: typeof getPublicFileURL
-    saveStudentGroupProject: typeof saveStudentGroupProject
-  }
 }
 
 export default function StudentsManagementClient({
   groupsWithEvents,
   userId,
-  actions,
 }: StudentsManagementClientProps) {
   const { showNotification } = useNotification()
   const [currentPage, setCurrentPage] = useState<PageType>("create")
@@ -68,7 +58,7 @@ export default function StudentsManagementClient({
     if (tab === "manage" && !hasLoadedProjects) {
       setIsLoadingProjects(true)
       try {
-        const { data, error } = await actions.getUserSubmittedProjects({
+        const { data, error } = await getUserSubmittedProjects({
           userId,
           status: null,
           ascending: false,
@@ -174,7 +164,6 @@ export default function StudentsManagementClient({
                     userProjects={userProjects}
                     setUserProjects={setUserProjects}
                     userId={userId}
-                    actions={actions}
                   />
                 )}
               </div>

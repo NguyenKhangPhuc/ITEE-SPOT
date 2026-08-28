@@ -19,10 +19,8 @@
 import { useState } from "react"
 import { Control, useForm } from "react-hook-form"
 import Link from "next/link"
-import type { getUserSubmittedProjects } from "@/app/actions/projects/get/getUserSubmittedProjects"
-import type { getSingleProjectByGroupAndChallenge } from "@/app/actions/projects/get/getSingleProjectByGroupAndChallenge"
-import type { getPublicFileURL } from "@/app/actions/file_url"
-import type { saveStudentGroupProject } from "@/app/actions/projects/post/saveStudentGroupProject"
+import { getUserSubmittedProjects } from "@/app/actions/projects/get/getUserSubmittedProjects"
+import { getSingleProjectByGroupAndChallenge } from "@/app/actions/projects/get/getSingleProjectByGroupAndChallenge"
 import { PROJECT_STATUS } from "@/app/types/enum"
 import { EventAwards } from "@/app/types/event_awards"
 import { ProjectAwardsInsert } from "@/app/types/project_awards"
@@ -38,12 +36,6 @@ interface ManageProjectsSectionProps {
   userProjects: Array<ProjectsSummaryExtended>
   setUserProjects: React.Dispatch<React.SetStateAction<Array<ProjectsSummaryExtended>>>
   userId: string
-  actions: {
-    getUserSubmittedProjects: typeof getUserSubmittedProjects
-    getSingleProjectByGroupAndChallenge: typeof getSingleProjectByGroupAndChallenge
-    getPublicFileURL: typeof getPublicFileURL
-    saveStudentGroupProject: typeof saveStudentGroupProject
-  }
 }
 
 export default function ManageProjectsSection({
@@ -51,7 +43,6 @@ export default function ManageProjectsSection({
   userProjects,
   setUserProjects,
   userId,
-  actions,
 }: ManageProjectsSectionProps) {
   const { showNotification } = useNotification()
   const { setIsOpenLoader } = useLoader()
@@ -86,7 +77,7 @@ export default function ManageProjectsSection({
   const handleFilterProjectStatus = async (status: PROJECT_STATUS | null): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { data, error } = await actions.getUserSubmittedProjects({
+      const { data, error } = await getUserSubmittedProjects({
         userId,
         status,
         ascending: chosenOrder,
@@ -122,7 +113,7 @@ export default function ManageProjectsSection({
   const handleFilterProjectOrder = async (ascending: boolean): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { data, error } = await actions.getUserSubmittedProjects({
+      const { data, error } = await getUserSubmittedProjects({
         userId,
         status: chosenStatus,
         ascending,
@@ -180,7 +171,7 @@ export default function ManageProjectsSection({
   const handleChooseProject = async (project: ProjectsSummaryExtended): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { data, error } = await actions.getSingleProjectByGroupAndChallenge({
+      const { data, error } = await getSingleProjectByGroupAndChallenge({
         group_id: project.group_id!,
         group_challenge_id: project.group_challenge_id!,
       })
@@ -354,7 +345,6 @@ export default function ManageProjectsSection({
             setInitialEditorContent={setInitialEditorContent}
             control={control as Control}
             eventAwards={eventAwards}
-            actions={actions}
           />
         </div>
       )}

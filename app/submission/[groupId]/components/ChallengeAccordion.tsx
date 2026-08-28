@@ -9,9 +9,9 @@ import { EventChallenge } from "@/app/types/event_challenges"
 import { GroupChallengeRelation } from "@/app/types/group_challenge"
 import { SubmissionInsert } from "@/app/types/submission"
 import { SubmissionFileExtended } from "@/app/types/submission_files"
-import type { getGoupChallengeSubmission } from "@/app/actions/submissions/get/getGoupChallengeSubmission"
-import type { saveGroupChallengeSubmission } from "@/app/actions/submissions/post/saveGroupChallengeSubmission"
-import type { getPublicFileURL } from "@/app/actions/file_url"
+import { getGoupChallengeSubmission } from "@/app/actions/submissions/get/getGoupChallengeSubmission"
+import { saveGroupChallengeSubmission } from "@/app/actions/submissions/post/saveGroupChallengeSubmission"
+import { getPublicFileURL } from "@/app/actions/file_url"
 import { useNotification } from "@/app/context/NotificationContext"
 import { useLoader } from "@/app/context/LoaderContext"
 import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor"
@@ -32,11 +32,6 @@ interface ChallengeAccordionProps {
   groupChallengeRelation: GroupChallengeRelation | null
   isOpen: boolean
   onToggle: () => void
-  actions: {
-    getGoupChallengeSubmission: typeof getGoupChallengeSubmission
-    saveGroupChallengeSubmission: typeof saveGroupChallengeSubmission
-    getPublicFileURL: typeof getPublicFileURL
-  }
 }
 
 /**
@@ -65,7 +60,6 @@ export default function ChallengeAccordion({
   groupChallengeRelation,
   isOpen,
   onToggle,
-  actions,
 }: ChallengeAccordionProps) {
   const isLocked = !groupChallengeRelation
   const { showNotification } = useNotification()
@@ -128,7 +122,7 @@ export default function ChallengeAccordion({
     if (!isOpen) {
       setIsFetching(true)
       try {
-        const { data, error } = await actions.getGoupChallengeSubmission({
+        const { data, error } = await getGoupChallengeSubmission({
           groupChallengeId: groupChallengeRelation.id,
           groupId,
         })
@@ -211,7 +205,7 @@ export default function ChallengeAccordion({
   const handleDownloadFile = async (file: SubmissionFileExtended) => {
     if (file.storage_path) {
       try {
-        const { data, error } = await actions.getPublicFileURL(file.storage_path)
+        const { data, error } = await getPublicFileURL(file.storage_path)
         if (error) throw new Error(error)
         if (data?.publicUrl) window.open(data.publicUrl, "_blank")
       } catch (error) {
@@ -247,7 +241,7 @@ export default function ChallengeAccordion({
         throw new Error("Unable to save: group parameters missing")
       }
 
-      const { error } = await actions.saveGroupChallengeSubmission({
+      const { error } = await saveGroupChallengeSubmission({
         submission: data,
         submittedFiles,
         funfacts: [], // Fun facts kept as empty array per user requirements

@@ -18,11 +18,9 @@
 import { useState } from "react"
 import { Control, useForm } from "react-hook-form"
 import Link from "next/link"
-import type { getAllProjectsBasedOnStatus } from "@/app/actions/projects/get/getAllProjectsBasedOnStatus"
-import type { getSingleProjectByGroupAndChallenge } from "@/app/actions/projects/get/getSingleProjectByGroupAndChallenge"
-import type { updateProjectStatus } from "@/app/actions/projects/put/updateProjectStatus"
-import type { getPublicFileURL } from "@/app/actions/file_url"
-import type { saveStudentGroupProject } from "@/app/actions/projects/post/saveStudentGroupProject"
+import { getAllProjectsBasedOnStatus } from "@/app/actions/projects/get/getAllProjectsBasedOnStatus"
+import { getSingleProjectByGroupAndChallenge } from "@/app/actions/projects/get/getSingleProjectByGroupAndChallenge"
+import { updateProjectStatus } from "@/app/actions/projects/put/updateProjectStatus"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
 import { PROJECT_STATUS } from "@/app/types/enum"
@@ -37,20 +35,12 @@ interface AdminProjectManageSectionProps {
   page: "create" | "manage"
   currentProjects: Array<ProjectsSummary>
   setCurrentProjects: React.Dispatch<React.SetStateAction<Array<ProjectsSummary>>>
-  actions: {
-    getAllProjectsBasedOnStatus: typeof getAllProjectsBasedOnStatus
-    getSingleProjectByGroupAndChallenge: typeof getSingleProjectByGroupAndChallenge
-    updateProjectStatus: typeof updateProjectStatus
-    getPublicFileURL: typeof getPublicFileURL
-    saveStudentGroupProject: typeof saveStudentGroupProject
-  }
 }
 
 export default function AdminProjectManageSection({
   page,
   currentProjects,
   setCurrentProjects,
-  actions,
 }: AdminProjectManageSectionProps) {
   const { showNotification } = useNotification()
   const { setIsOpenLoader } = useLoader()
@@ -84,7 +74,7 @@ export default function AdminProjectManageSection({
   const handleFilterProjectStatus = async (status: PROJECT_STATUS | null): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { data, error } = await actions.getAllProjectsBasedOnStatus({ status, ascending: chosenOrder })
+      const { data, error } = await getAllProjectsBasedOnStatus({ status, ascending: chosenOrder })
       if (error) {
         throw new Error(error)
       }
@@ -115,7 +105,7 @@ export default function AdminProjectManageSection({
   const handleFilterProjectOrder = async (ascending: boolean): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { data, error } = await actions.getAllProjectsBasedOnStatus({ status: chosenStatus, ascending })
+      const { data, error } = await getAllProjectsBasedOnStatus({ status: chosenStatus, ascending })
       if (error) {
         throw new Error(error)
       }
@@ -169,7 +159,7 @@ export default function AdminProjectManageSection({
   const handleChooseProject = async (project: ProjectsSummary): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { data, error } = await actions.getSingleProjectByGroupAndChallenge({
+      const { data, error } = await getSingleProjectByGroupAndChallenge({
         group_id: project.group_id!,
         group_challenge_id: project.group_challenge_id!,
       })
@@ -218,7 +208,7 @@ export default function AdminProjectManageSection({
   }): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { error } = await actions.updateProjectStatus({ projectId, status })
+      const { error } = await updateProjectStatus({ projectId, status })
       if (error) {
         throw new Error(error)
       }
@@ -408,7 +398,6 @@ export default function AdminProjectManageSection({
             setInitialEditorContent={setInitialEditorContent}
             control={control as Control}
             eventAwards={eventAwards}
-            actions={actions}
           />
         </div>
       )}

@@ -14,11 +14,6 @@
 import ProjectsAdminClient from "./ProjectsAdminClient"
 import { getAllEventsWithGroupAndAward } from "@/app/actions/events/get/getAllEventsWithGroupAndAward"
 import { getUser } from "@/app/actions/authentication/get/getUser"
-import { getAllProjectsBasedOnStatus } from "@/app/actions/projects/get/getAllProjectsBasedOnStatus"
-import { getSingleProjectByGroupAndChallenge } from "@/app/actions/projects/get/getSingleProjectByGroupAndChallenge"
-import { updateProjectStatus } from "@/app/actions/projects/put/updateProjectStatus"
-import { getPublicFileURL } from "@/app/actions/file_url"
-import { saveStudentGroupProject } from "@/app/actions/projects/post/saveStudentGroupProject"
 
 export default async function Home() {
   const { data: user, error: userError } = await getUser()
@@ -45,13 +40,6 @@ export default async function Home() {
       <div className="max-w-7xl mx-auto flex flex-col">
         <ProjectsAdminClient
           eventsWithGroupsAndAwards={eventsWithGroupsAndAward ?? []}
-          actions={{
-            getAllProjectsBasedOnStatus,
-            getSingleProjectByGroupAndChallenge,
-            updateProjectStatus,
-            getPublicFileURL,
-            saveStudentGroupProject,
-          }}
         />
       </div>
     </div>

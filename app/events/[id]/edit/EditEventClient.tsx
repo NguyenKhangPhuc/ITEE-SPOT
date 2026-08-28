@@ -20,10 +20,6 @@ import Image from "next/image"
 import { EventWithChallenges } from "@/app/types/event"
 import { EventChallengeInsert } from "@/app/types/event_challenges"
 import { updateEventPoster } from "@/app/actions/events/put/updateEventPoster"
-import type { createEventAwarđ } from "@/app/actions/event_awards/post/createEventAward"
-import type { updateEventAward } from "@/app/actions/event_awards/put/updateEventAward"
-import type { createEventCriteria } from "@/app/actions/event_criteria/post/createEventCriteria"
-import type { updateEventCriteria } from "@/app/actions/event_criteria/put/updateEventCriteria"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
 import { createClient } from "@/app/utils/supabase/client"
@@ -37,18 +33,7 @@ import AwardManagementSection from "./components/AwardManagementSection"
 
 type ConfigPage = "basic" | "challenge" | "criteria" | "awards"
 
-interface EditEventClientProps {
-  event: EventWithChallenges
-  awards: Array<EventAwardsInsert>
-  actions: {
-    createEventAwarđ: typeof createEventAwarđ
-    updateEventAward: typeof updateEventAward
-    createEventCriteria: typeof createEventCriteria
-    updateEventCriteria: typeof updateEventCriteria
-  }
-}
-
-export default function EditEventClient({ event, awards, actions }: EditEventClientProps) {
+export default function EditEventClient({ event, awards }: { event: EventWithChallenges; awards: Array<EventAwardsInsert> }) {
   const supabase = createClient()
   const { showNotification } = useNotification()
   const { setIsOpenLoader } = useLoader()
@@ -300,10 +285,6 @@ export default function EditEventClient({ event, awards, actions }: EditEventCli
                     receivedCriteria={event.event_grading_criteria ?? []}
                     eventId={event.id}
                     page={currentPage}
-                    actions={{
-                      createEventCriteria: actions.createEventCriteria,
-                      updateEventCriteria: actions.updateEventCriteria,
-                    }}
                   />
                 )}
                 {currentPage === "awards" && (
@@ -311,10 +292,6 @@ export default function EditEventClient({ event, awards, actions }: EditEventCli
                     receivedAwards={awards}
                     eventId={event.id}
                     page={currentPage}
-                    actions={{
-                      createEventAwarđ: actions.createEventAwarđ,
-                      updateEventAward: actions.updateEventAward,
-                    }}
                   />
                 )}
               </motion.div>

@@ -2,10 +2,6 @@ import { getUser } from "@/app/actions/authentication/get/getUser"
 import { getSubmissionByGroupId } from "@/app/actions/submissions/get/getSubmissionByGroupId"
 import { getUserProfile } from "@/app/actions/profiles/get/getUserProfile"
 import { getSingleGroup } from "@/app/actions/groups/get/getSingleGroup"
-import { getSubmissionRatingById, createSubmissionRating } from "@/app/actions/submission_ratings"
-import { getSubmissionFeedBackByUserIdAndSubmissionId } from "@/app/actions/submission_feedback/get/getSubmissionFeedBackByUserIdAndSubmissionId"
-import { updateSubmissionFeedback } from "@/app/actions/submission_feedback/put/updateSubmissionFeedback"
-import { getPublicFileURL } from "@/app/actions/file_url"
 import ReadOnlySubmissionClient from "./ReadOnlySubmissionClient"
 
 interface PageProps {
@@ -65,13 +61,6 @@ export default async function ReadOnlySubmissionPage({ params }: PageProps) {
       groupSubmissions={submissions}
       user={userProfile}
       groupInfo={groupInfo}
-      actions={{
-        getSubmissionRatingById,
-        getSubmissionFeedBackByUserIdAndSubmissionId,
-        getPublicFileURL,
-        createSubmissionRating,
-        updateSubmissionFeedback,
-      }}
     />
   )
 }

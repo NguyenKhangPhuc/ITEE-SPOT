@@ -18,11 +18,6 @@ import { motion, AnimatePresence } from "framer-motion"
 import { ProjectsSummary } from "@/app/types/projects"
 import { EventWithGroupsAndAward } from "@/app/types/event"
 import { getAllProjects } from "@/app/actions/projects/get/getAllProjects"
-import type { getAllProjectsBasedOnStatus } from "@/app/actions/projects/get/getAllProjectsBasedOnStatus"
-import type { getSingleProjectByGroupAndChallenge } from "@/app/actions/projects/get/getSingleProjectByGroupAndChallenge"
-import type { updateProjectStatus } from "@/app/actions/projects/put/updateProjectStatus"
-import type { getPublicFileURL } from "@/app/actions/file_url"
-import type { saveStudentGroupProject } from "@/app/actions/projects/post/saveStudentGroupProject"
 import { useNotification } from "@/app/context/NotificationContext"
 import BackButton from "@/app/components/BackButton"
 import CreateShowCaseProjectSection from "./components/CreateShowCaseProjectSection"
@@ -32,18 +27,10 @@ type PageType = "create" | "manage"
 
 interface ProjectsAdminClientProps {
   eventsWithGroupsAndAwards: Array<EventWithGroupsAndAward>
-  actions: {
-    getAllProjectsBasedOnStatus: typeof getAllProjectsBasedOnStatus
-    getSingleProjectByGroupAndChallenge: typeof getSingleProjectByGroupAndChallenge
-    updateProjectStatus: typeof updateProjectStatus
-    getPublicFileURL: typeof getPublicFileURL
-    saveStudentGroupProject: typeof saveStudentGroupProject
-  }
 }
 
 export default function ProjectsAdminClient({
   eventsWithGroupsAndAwards,
-  actions,
 }: ProjectsAdminClientProps) {
   const { showNotification } = useNotification()
   const [currentPage, setCurrentPage] = useState<PageType>("create")
@@ -169,7 +156,6 @@ export default function ProjectsAdminClient({
                     page={currentPage}
                     currentProjects={currentProjects}
                     setCurrentProjects={setCurrentProjects}
-                    actions={actions}
                   />
                 )}
               </div>
