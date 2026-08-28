@@ -1,4 +1,4 @@
-'use server'
+'use client'
 
 /**
  * PURPOSE:
@@ -11,7 +11,7 @@
  * - id (string, Required): Unique ID string of the group_members record to delete.
  */
 
-import { createClient } from '@/app/utils/supabase/server'
+import { createClient } from '@/app/utils/supabase/client'
 
 /**
  * BEHAVIORAL MECHANISM:
@@ -25,7 +25,7 @@ import { createClient } from '@/app/utils/supabase/server'
  * - Promise<{ data?: any, error?: string | any }>: Object containing operation response or error message string.
  */
 export async function deleteGroupMemberById(id: string) {
-    const supabase = await createClient();
+    const supabase = createClient();
     const { data, error } = await supabase.from('group_members').delete().eq('id', id)
     if (error) {
         return { error: 'Fail to delete the group member' }

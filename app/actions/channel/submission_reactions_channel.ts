@@ -1,3 +1,5 @@
+'use client'
+
 import { RealtimeChannel, SupabaseClient } from '@supabase/supabase-js';
 
 class SubmissionReactionChannel {

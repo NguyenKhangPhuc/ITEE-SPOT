@@ -1,4 +1,4 @@
-'use server'
+'use client'
 
 /**
  * PURPOSE:
@@ -13,7 +13,7 @@
  *   - status (PROJECT_STATUS, Required): Target PROJECT_STATUS enum value to assign.
  */
 
-import { createClient } from '@/app/utils/supabase/server'
+import { createClient } from '@/app/utils/supabase/client'
 import { PROJECT_STATUS } from '@/app/types/enum'
 
 /**
@@ -27,7 +27,7 @@ import { PROJECT_STATUS } from '@/app/types/enum'
  * - Promise<{ data?: any, error?: string | any }>: Object containing update result payload or error message string.
  */
 export async function updateProjectStatus({ projectId, status }: { projectId: string, status: PROJECT_STATUS }) {
-    const supabase = await createClient()
+    const supabase = createClient()
     const { data, error } = await supabase.from('projects').update({ project_status: status }).eq('id', projectId)
         .maybeSingle()
     if (error) {

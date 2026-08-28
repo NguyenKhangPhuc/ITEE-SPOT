@@ -1,4 +1,4 @@
-'use server'
+'use client'
 
 /**
  * PURPOSE:
@@ -14,7 +14,7 @@
  *   - funfacts (Array<FunFactsInsert>, Required): List of fun facts entries to associate with submission.
  */
 
-import { createClient } from '@/app/utils/supabase/server'
+import { createClient } from '@/app/utils/supabase/client'
 import { FunFactsInsert } from '@/app/types/funfacts'
 import { SubmissionInsert } from '@/app/types/submission'
 import { SubmissionFileExtended } from '@/app/types/submission_files'
@@ -32,7 +32,7 @@ import { SubmissionFileExtended } from '@/app/types/submission_files'
  */
 export async function saveGroupChallengeSubmission({ submission, submittedFiles, funfacts }:
     { submission: SubmissionInsert, submittedFiles: Array<SubmissionFileExtended>, funfacts: Array<FunFactsInsert> }) {
-    const supabase = await createClient()
+    const supabase = createClient()
     const { data: subData, error: subError } = await supabase
         .from('submissions')
         .upsert({
@@ -109,7 +109,7 @@ export async function saveGroupChallengeSubmission({ submission, submittedFiles,
             };
         });
 
-        const recordsToInsert = await Promise.all(uploadPromises);
+        const recordsToInsert = (await Promise.all(uploadPromises)).filter((r): r is NonNullable<typeof r> => r != null);
         const { data: insertedFile, error: insertedFileEror } = await supabase.from('submission_files').insert(recordsToInsert);
         if (insertedFileEror) {
             console.error(insertedFileEror)

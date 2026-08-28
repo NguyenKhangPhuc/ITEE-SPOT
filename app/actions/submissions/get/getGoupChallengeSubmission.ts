@@ -1,4 +1,4 @@
-'use server'
+'use client'
 
 /**
  * PURPOSE:
@@ -13,7 +13,7 @@
  *   - groupChallengeId (string, Required): Unique identifier of target group challenge relation.
  */
 
-import { createClient } from '@/app/utils/supabase/server'
+import { createClient } from '@/app/utils/supabase/client'
 
 /**
  * BEHAVIORAL MECHANISM:
@@ -27,7 +27,7 @@ import { createClient } from '@/app/utils/supabase/server'
  * - Promise<{ data?: any, error?: string | any }>: Object containing submission record or error message string.
  */
 export async function getGoupChallengeSubmission({ groupId, groupChallengeId }: { groupId: string, groupChallengeId: string }) {
-    const supabase = await createClient();
+    const supabase = createClient();
 
     const { data, error } = await supabase
         .from('submissions')

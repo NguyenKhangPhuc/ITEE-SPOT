@@ -1,4 +1,4 @@
-'use server'
+'use client'
 
 /**
  * PURPOSE:
@@ -14,7 +14,7 @@
  *   - originalPath (string | null, Required): Old avatar file path to delete from storage.
  */
 
-import { createClient } from '@/app/utils/supabase/server'
+import { createClient } from '@/app/utils/supabase/client'
 
 /**
  * BEHAVIORAL MECHANISM:
@@ -28,7 +28,7 @@ import { createClient } from '@/app/utils/supabase/server'
  * - Promise<{ data?: any, error?: string | any }>: Object containing database update result or error message.
  */
 export async function updateGroupPosterPath({ groupId, avatarFile, originalPath }: { groupId: string, avatarFile: File | null, originalPath: string | null }) {
-    const supabase = await createClient();
+    const supabase = createClient();
     let avatarUrlPath = null
     if (avatarFile != null) {
         avatarUrlPath = `${groupId}/${Date.now()}-${avatarFile.name}`;

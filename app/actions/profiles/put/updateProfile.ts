@@ -1,4 +1,4 @@
-'use server'
+'use client'
 
 /**
  * PURPOSE:
@@ -12,7 +12,7 @@
  *   - profile (ProfileInsert, Required): Object holding updated profile fields and user profile ID.
  */
 
-import { createClient } from '@/app/utils/supabase/server'
+import { createClient } from '@/app/utils/supabase/client'
 import { ProfileInsert } from '@/app/types/profile'
 
 /**
@@ -27,7 +27,7 @@ import { ProfileInsert } from '@/app/types/profile'
  * - Promise<{ data?: any, error?: string | any }>: Object containing updated profile data or error message.
  */
 export async function updateProfile({ profile }: { profile: ProfileInsert }) {
-    const supabase = await createClient()
+    const supabase = createClient()
     const { data, error } = await supabase.from('profiles').update(profile).eq('id', profile.id!).select().maybeSingle();
     if (error) {
         return { error: 'Fail to update the profile' }

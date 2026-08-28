@@ -1,4 +1,4 @@
-'use server'
+'use client'
 
 /**
  * PURPOSE:
@@ -12,7 +12,7 @@
  *   - event (EventInsert, Required): Object containing event ID and updated metadata fields.
  */
 
-import { createClient } from '@/app/utils/supabase/server'
+import { createClient } from '@/app/utils/supabase/client'
 import { EventInsert } from '@/app/types/event'
 
 /**
@@ -27,7 +27,7 @@ import { EventInsert } from '@/app/types/event'
  * - Promise<{ data?: any, error?: string | any }>: Object containing update payload or error message.
  */
 export async function updateEventInfo({ event }: { event: EventInsert }) {
-    const supabase = await createClient()
+    const supabase = createClient()
     const { data, error } = await supabase.from('events').update({
         title: event.title,
         start_date: event.start_date,

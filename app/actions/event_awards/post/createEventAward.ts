@@ -1,4 +1,4 @@
-'use server'
+'use client'
 
 /**
  * PURPOSE:
@@ -12,7 +12,7 @@
  */
 
 import { EventAwardsInsert } from "@/app/types/event_awards"
-import { createClient } from "@/app/utils/supabase/server"
+import { createClient } from '@/app/utils/supabase/client'
 
 /**
  * BEHAVIORAL MECHANISM:
@@ -27,7 +27,7 @@ import { createClient } from "@/app/utils/supabase/server"
  * - Promise<{ data: any, error?: string }>: Object containing inserted award record or error message.
  */
 export async function createEventAwarđ(award: EventAwardsInsert) {
-    const supabase = await createClient()
+    const supabase = createClient()
     award.id = undefined
     const { data, error } = await supabase.from('event_awards').insert(award).select('*').maybeSingle()
     if (error) {

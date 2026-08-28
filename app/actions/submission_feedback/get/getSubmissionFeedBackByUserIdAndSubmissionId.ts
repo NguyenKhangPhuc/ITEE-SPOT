@@ -1,4 +1,4 @@
-'use server'
+'use client'
 
 /**
  * PURPOSE:
@@ -13,7 +13,7 @@
  *   - submissionId (string, Required): Unique submission ID string.
  */
 
-import { createClient } from '@/app/utils/supabase/server'
+import { createClient } from '@/app/utils/supabase/client'
 
 /**
  * BEHAVIORAL MECHANISM:
@@ -27,7 +27,7 @@ import { createClient } from '@/app/utils/supabase/server'
  * - Promise<{ data?: any, error?: string | any }>: Object containing feedback record or error message string.
  */
 export async function getSubmissionFeedBackByUserIdAndSubmissionId({ userId, submissionId }: { userId: string, submissionId: string }) {
-    const supabase = await createClient();
+    const supabase = createClient();
     const { data, error } = await supabase.from('submission_feedbacks').select('*').eq('user_id', userId).eq('submission_id', submissionId).maybeSingle()
     if (error){
         return {error: "Failed to get the feedbacks"}

@@ -1,4 +1,4 @@
-'use server'
+'use client'
 
 /**
  * PURPOSE:
@@ -11,7 +11,7 @@
  * - invitation (InvitationInsert, Required): Object payload containing group_id and member_email.
  */
 
-import { createClient } from '@/app/utils/supabase/server'
+import { createClient } from '@/app/utils/supabase/client'
 import { InvitationInsert } from '@/app/types/invitation'
 
 /**
@@ -26,7 +26,7 @@ import { InvitationInsert } from '@/app/types/invitation'
  * - Promise<{ data?: any, error?: string | any }>: Object containing invitation payload or error message string.
  */
 export async function sendInvitations(invitation: InvitationInsert) {
-    const supabase = await createClient();
+    const supabase = createClient();
     const { data: foundMember, error: foundMemberError } = await supabase.from('group_members')
         .select('*, profiles!inner(email)')
         .eq('group_id', invitation.group_id!).eq('profiles.email', invitation.member_email ?? "").maybeSingle()

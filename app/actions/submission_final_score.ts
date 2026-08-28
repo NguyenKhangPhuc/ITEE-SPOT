@@ -1,5 +1,7 @@
+'use server'
+
 import { mapSubmissionFinalScore } from "../helpers/ParseScoreResponse";
-import { createClient } from "../utils/supabase/server";
+import { createClient } from '@/app/utils/supabase/server';
 
 
 export async function getSubmissionFinalScores(eventId: string) {

@@ -1,4 +1,4 @@
-'use server'
+'use client'
 
 /**
  * PURPOSE:
@@ -12,7 +12,7 @@
  *   - submissionFeedback (SubmissionFeedbackInsert, Required): Object containing user_id, submission_id, and feedback content.
  */
 
-import { createClient } from '@/app/utils/supabase/server'
+import { createClient } from '@/app/utils/supabase/client'
 import { SubmissionFeedbackInsert } from '@/app/types/submission_feedback'
 
 /**
@@ -27,7 +27,7 @@ import { SubmissionFeedbackInsert } from '@/app/types/submission_feedback'
  * - Promise<{ data?: any, error?: string | any }>: Object containing upsert response payload or error string.
  */
 export async function updateSubmissionFeedback({ submissionFeedback }: { submissionFeedback: SubmissionFeedbackInsert }) {
-    const supabase = await createClient();
+    const supabase = createClient();
 
     const { data, error } = await supabase.from('submission_feedbacks').upsert(submissionFeedback, { onConflict: 'user_id, submission_id' })
 

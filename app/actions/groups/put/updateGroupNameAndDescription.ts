@@ -1,4 +1,4 @@
-'use server'
+'use client'
 
 /**
  * PURPOSE:
@@ -14,7 +14,7 @@
  *   - description (string, Required): New short description string for the group.
  */
 
-import { createClient } from '@/app/utils/supabase/server'
+import { createClient } from '@/app/utils/supabase/client'
 
 /**
  * BEHAVIORAL MECHANISM:
@@ -28,7 +28,7 @@ import { createClient } from '@/app/utils/supabase/server'
  * - Promise<{ data?: any, error?: string | any }>: Object containing updated record payload or error message.
  */
 export async function updateGroupNameAndDescription({ groupId, groupName, description }: { groupId: string, groupName: string, description: string }) {
-    const supabase = await createClient()
+    const supabase = createClient()
     const { data, error } = await supabase.from('groups').update({ group_name: groupName, short_description: description }).eq('id', groupId).select().maybeSingle();
     if (error) {
         return { error: "Fail to update the group information" }

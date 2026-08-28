@@ -1,4 +1,4 @@
-'use server'
+'use client'
 
 /**
  * PURPOSE:
@@ -11,7 +11,7 @@
  * - submissionComment (SubmissionCommentInsert, Required): Object payload containing submission comment details.
  */
 
-import { createClient } from '@/app/utils/supabase/server'
+import { createClient } from '@/app/utils/supabase/client'
 import { SubmissionCommentInsert } from '@/app/types/submission_comments'
 
 /**
@@ -26,7 +26,7 @@ import { SubmissionCommentInsert } from '@/app/types/submission_comments'
  * - Promise<{ data?: any, error?: string | any }>: Object containing created comment data or error message string.
  */
 export async function createSubmissionComment(submissionComment: SubmissionCommentInsert) {
-    const supabase = await createClient();
+    const supabase = createClient();
 
     const { data, error } = await supabase.from('submission_comments').insert(submissionComment).select('*').maybeSingle()
     if (error) {

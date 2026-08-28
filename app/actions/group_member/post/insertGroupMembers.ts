@@ -1,4 +1,4 @@
-'use server'
+'use client'
 
 /**
  * PURPOSE:
@@ -11,7 +11,7 @@
  * - registerGroupMemberData (RegisterGroupMember, Required): Object payload containing group title, description, event_id, user_id, member_emails, and challenges array.
  */
 
-import { createClient } from '@/app/utils/supabase/server'
+import { createClient } from '@/app/utils/supabase/client'
 import { RegisterGroupMember } from '@/app/types/group_member'
 import { InvitationInsert } from '@/app/types/invitation'
 import { INVITATION_STATUS } from '@/app/types/enum'
@@ -29,7 +29,7 @@ import { GroupChallengeRelationInsert } from '@/app/types/group_challenge'
  * - Promise<{ createdGroup?: any, error?: string | any }>: Object containing created group payload or error message string.
  */
 export async function insertGroupMembers(registerGroupMemberData: RegisterGroupMember) {
-    const supabase = await createClient();
+    const supabase = createClient();
 
     const filteredOutEmails = registerGroupMemberData.member_emails.filter((value) => value != null).splice(1)
     const { data, error } = await supabase.from('profiles').select('email').in('email', filteredOutEmails);

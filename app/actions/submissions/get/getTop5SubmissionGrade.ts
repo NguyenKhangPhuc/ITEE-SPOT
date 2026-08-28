@@ -1,4 +1,4 @@
-'use server'
+'use client'
 
 /**
  * PURPOSE:
@@ -13,7 +13,7 @@
  *   - userId (string, Required): Evaluator user ID string.
  */
 
-import { createClient } from '@/app/utils/supabase/server'
+import { createClient } from '@/app/utils/supabase/client'
 
 /**
  * BEHAVIORAL MECHANISM:
@@ -27,7 +27,7 @@ import { createClient } from '@/app/utils/supabase/server'
  * - Promise<{ data?: any, error?: string | any }>: Object containing top 5 graded submissions or error message.
  */
 export async function getTop5SubmissionGrade({ eventId, userId }: { eventId: string, userId: string }) {
-    const supabase = await createClient()
+    const supabase = createClient()
 
     const { data, error } = await supabase
         .from('submission_final_scores')

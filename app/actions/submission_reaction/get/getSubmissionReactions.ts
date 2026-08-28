@@ -1,4 +1,4 @@
-'use server'
+'use client'
 
 /**
  * PURPOSE:
@@ -12,7 +12,7 @@
  *   - submissionId (string, Required): Unique identifier of target submission.
  */
 
-import { createClient } from '@/app/utils/supabase/server'
+import { createClient } from '@/app/utils/supabase/client'
 
 /**
  * BEHAVIORAL MECHANISM:
@@ -26,7 +26,7 @@ import { createClient } from '@/app/utils/supabase/server'
  * - Promise<{ data: any, error: any }>: Object containing submission reactions payload or error detail.
  */
 export async function getSubmissionReactions({ submissionId }: { submissionId: string }) {
-    const supabase = await createClient();
+    const supabase = createClient();
 
     const { data, error } = await supabase.from('submission_reactions').select('*').eq('submission_id', submissionId)
 

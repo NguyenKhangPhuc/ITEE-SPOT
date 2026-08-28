@@ -1,4 +1,4 @@
-'use server'
+'use client'
 
 /**
  * PURPOSE:
@@ -12,7 +12,7 @@
  * - registrationStatus (EVENT_STATUS, Required): Target registration status enum value to set.
  */
 
-import { createClient } from '@/app/utils/supabase/server'
+import { createClient } from '@/app/utils/supabase/client'
 import { EVENT_STATUS } from '@/app/types/enum'
 
 /**
@@ -28,7 +28,7 @@ import { EVENT_STATUS } from '@/app/types/enum'
  * - Promise<{ data?: any, error?: string | any }>: Object containing database update response or error message.
  */
 export async function updateEventRegistrationStatus(eventId: string, registrationStatus: EVENT_STATUS) {
-    const supabase = await createClient()
+    const supabase = createClient()
     const { data, error } = await supabase.from('events').update({ registration_status: registrationStatus }).eq('id', eventId)
     if (error) {
         return { error: 'Fail to update event registration status' }

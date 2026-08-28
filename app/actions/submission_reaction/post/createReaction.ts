@@ -1,4 +1,4 @@
-'use server'
+'use client'
 
 /**
  * PURPOSE:
@@ -13,7 +13,7 @@
  *   - userId (string, Required): Unique user profile identifier string.
  */
 
-import { createClient } from '@/app/utils/supabase/server'
+import { createClient } from '@/app/utils/supabase/client'
 
 /**
  * BEHAVIORAL MECHANISM:
@@ -27,7 +27,7 @@ import { createClient } from '@/app/utils/supabase/server'
  * - Promise<{ data?: any, error?: string | any }>: Object containing reaction data or error message string.
  */
 export async function createReaction({ submissionId, userId }: { submissionId: string, userId: string }) {
-    const supabase = await createClient();
+    const supabase = createClient();
 
     const { data, error: reactionError } = await supabase.from('submission_reactions').insert([{
         user_id: userId,

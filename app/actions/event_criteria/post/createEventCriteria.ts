@@ -1,4 +1,4 @@
-'use server'
+'use client'
 
 /**
  * PURPOSE:
@@ -13,7 +13,7 @@
  *   - eventId (string, Required): The event ID string to associate with the new criteria.
  */
 
-import { createClient } from '@/app/utils/supabase/server'
+import { createClient } from '@/app/utils/supabase/client'
 import { EventCriteriaInsert } from '@/app/types/event_criteria'
 
 /**
@@ -28,7 +28,7 @@ import { EventCriteriaInsert } from '@/app/types/event_criteria'
  * - Promise<{ data?: any, error?: string | any }>: Object containing created criteria or error message.
  */
 export async function createEventCriteria({ newCriteria, eventId }: { newCriteria: EventCriteriaInsert, eventId: string }) {
-    const supabase = await createClient();
+    const supabase = createClient();
     newCriteria.event_id = eventId
     newCriteria.id = undefined
     if (eventId.length == 0 || !eventId) {

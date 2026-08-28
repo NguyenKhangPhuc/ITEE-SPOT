@@ -1,4 +1,4 @@
-'use server'
+'use client'
 
 /**
  * PURPOSE:
@@ -14,7 +14,7 @@
  *   - userId (string, Required): Target user ID string of the evaluator.
  */
 
-import { createClient } from '@/app/utils/supabase/server'
+import { createClient } from '@/app/utils/supabase/client'
 
 /**
  * BEHAVIORAL MECHANISM:
@@ -28,7 +28,7 @@ import { createClient } from '@/app/utils/supabase/server'
  * - Promise<{ data?: any, error?: string | any }>: Object containing graded submissions data or error message string.
  */
 export async function getSubmissionGradeBasedOnStar({ eventId, rating, userId }: { eventId: string, rating: number, userId: string }) {
-    const supabase = await createClient()
+    const supabase = createClient()
 
     const { data, error } = await supabase
         .from('submission_final_scores')

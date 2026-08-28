@@ -1,4 +1,4 @@
-'use server'
+'use client'
 
 /**
  * PURPOSE:
@@ -12,7 +12,7 @@
  * - role (PROFILE_ROLE, Required): Target role enum value to set on the profile.
  */
 
-import { createClient } from '@/app/utils/supabase/server'
+import { createClient } from '@/app/utils/supabase/client'
 import { PROFILE_ROLE } from '@/app/types/enum'
 
 /**
@@ -28,7 +28,7 @@ import { PROFILE_ROLE } from '@/app/types/enum'
  * - Promise<{ data?: any, error?: string | any }>: Object containing database response payload or error message.
  */
 export async function updateUserRoleByUserId(userId: string, role: PROFILE_ROLE) {
-    const supabase = await createClient()
+    const supabase = createClient()
     const { data, error } = await supabase.from('profiles').update({ role: role }).eq('id', userId)
     if (error) {
         return { error: 'Fail to update user profile' }

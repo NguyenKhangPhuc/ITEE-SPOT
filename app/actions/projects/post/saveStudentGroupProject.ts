@@ -1,4 +1,4 @@
-'use server'
+'use client'
 
 /**
  * PURPOSE:
@@ -14,7 +14,7 @@
  *   - projectAwards (Array<ProjectAwardsInsert>, Required): List of selected award IDs to associate with the project.
  */
 
-import { createClient } from '@/app/utils/supabase/server'
+import { createClient } from '@/app/utils/supabase/client'
 import { PROJECT_STATUS } from '@/app/types/enum'
 import { ProjectAwardsInsert } from '@/app/types/project_awards'
 import { ProjectsInsert } from '@/app/types/projects'
@@ -34,7 +34,7 @@ import { SubmissionFileExtended } from '@/app/types/submission_files'
  */
 export async function saveStudentGroupProject({ project, submittedFiles, projectAwards }:
     { project: ProjectsInsert, submittedFiles: Array<SubmissionFileExtended>, projectAwards: Array<ProjectAwardsInsert> }) {
-    const supabase = await createClient()
+    const supabase = createClient()
     const { data: subData, error: subError } = await supabase
         .from('projects')
         .upsert({
@@ -119,7 +119,7 @@ export async function saveStudentGroupProject({ project, submittedFiles, project
             };
         });
 
-        const recordsToInsert = await Promise.all(uploadPromises);
+        const recordsToInsert = (await Promise.all(uploadPromises)).filter((r): r is NonNullable<typeof r> => r != null);
         const { data: insertedFile, error: insertedFileEror } = await supabase.from('project_files').insert(recordsToInsert);
         if (insertedFileEror) {
             console.error(insertedFileEror)

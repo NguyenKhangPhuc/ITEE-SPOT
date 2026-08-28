@@ -1,4 +1,4 @@
-'use server'
+'use client'
 
 /**
  * PURPOSE:
@@ -13,7 +13,7 @@
  *   - page (number, Required): Current page number for pagination calculation.
  */
 
-import { createClient } from '@/app/utils/supabase/server'
+import { createClient } from '@/app/utils/supabase/client'
 import { PAGE_SIZE } from '@/app/constants'
 
 /**
@@ -28,7 +28,7 @@ import { PAGE_SIZE } from '@/app/constants'
  * - Promise<{ data?: any, totalPages?: number, error?: string | any }>: Object containing comments array, total pages count, or error message.
  */
 export async function getSubmissionComments({ submissionId, page }: { submissionId: string, page: number }) {
-    const supabase = await createClient();
+    const supabase = createClient();
 
     const from = (page - 1) * PAGE_SIZE
     const to = from + PAGE_SIZE - 1

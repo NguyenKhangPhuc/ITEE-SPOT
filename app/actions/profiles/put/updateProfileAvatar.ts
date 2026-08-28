@@ -1,4 +1,4 @@
-'use server'
+'use client'
 
 /**
  * PURPOSE:
@@ -14,7 +14,7 @@
  *   - originalPath (string | null, Required): Path of previously uploaded avatar to remove from storage.
  */
 
-import { createClient } from '@/app/utils/supabase/server'
+import { createClient } from '@/app/utils/supabase/client'
 
 /**
  * BEHAVIORAL MECHANISM:
@@ -28,7 +28,7 @@ import { createClient } from '@/app/utils/supabase/server'
  * - Promise<{ error: string | null }>: Object containing error message or null on success.
  */
 export async function updateProfileAvatar({ userId, posterFile, originalPath }: { userId: string, posterFile: File | null, originalPath: string | null }) {
-    const supabase = await createClient();
+    const supabase = createClient();
     let posterPath = null
     if (posterFile != null) {
         posterPath = `${userId}/${Date.now()}-${posterFile.name}`;

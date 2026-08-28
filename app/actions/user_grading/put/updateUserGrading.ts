@@ -1,4 +1,4 @@
-'use server'
+'use client'
 
 /**
  * PURPOSE:
@@ -13,7 +13,7 @@
  *   - submissionId (string, Required): Target submission ID string.
  */
 
-import { createClient } from '@/app/utils/supabase/server'
+import { createClient } from '@/app/utils/supabase/client'
 import { UserSubmissionGradeInsert } from '@/app/types/user_submission_grade'
 
 /**
@@ -28,7 +28,7 @@ import { UserSubmissionGradeInsert } from '@/app/types/user_submission_grade'
  * - Promise<{ data?: any, error?: string | any, newFinalScore?: any }>: Object containing updated grades, new final score payload, or error message string.
  */
 export async function updateUserGrading({ grades, submissionId }: { grades: Array<UserSubmissionGradeInsert>, submissionId: string }) {
-    const supabase = await createClient();
+    const supabase = createClient();
     const { data, error } = await supabase.from('submission_grading')
         .upsert(grades, { onConflict: 'user_id, submission_id, event_criteria_id' }).select('*, event_grading_criteria (percentage, type)')
         .order('event_criteria_id', { ascending: false })

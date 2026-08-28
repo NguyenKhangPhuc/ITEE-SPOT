@@ -1,4 +1,4 @@
-'use server'
+'use client'
 
 /**
  * PURPOSE:
@@ -12,7 +12,7 @@
  *   - updatedCriteria (EventCriteriaInsert, Required): Object containing updated fields and criteria ID.
  */
 
-import { createClient } from '@/app/utils/supabase/server'
+import { createClient } from '@/app/utils/supabase/client'
 import { EventCriteriaInsert } from '@/app/types/event_criteria'
 
 /**
@@ -27,7 +27,7 @@ import { EventCriteriaInsert } from '@/app/types/event_criteria'
  * - Promise<{ data?: any, error?: string | any }>: Object containing update payload or error message.
  */
 export async function updateEventCriteria({ updatedCriteria }: { updatedCriteria: EventCriteriaInsert }) {
-    const supabase = await createClient();
+    const supabase = createClient();
 
     const { data, error } = await supabase.from('event_grading_criteria').update(updatedCriteria).eq('id', updatedCriteria.id ?? "")
 

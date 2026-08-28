@@ -1,4 +1,4 @@
-'use server'
+'use client'
 
 /**
  * PURPOSE:
@@ -14,7 +14,7 @@
  *   - userId (string, Required): Accepting user ID string.
  */
 
-import { createClient } from '@/app/utils/supabase/server'
+import { createClient } from '@/app/utils/supabase/client'
 import { INVITATION_STATUS } from '@/app/types/enum'
 
 /**
@@ -29,7 +29,7 @@ import { INVITATION_STATUS } from '@/app/types/enum'
  * - Promise<{ data?: any, error?: string | any }>: Object containing update payload or error message.
  */
 export async function acceptInvitation({ invitationId, groupId, userId }: { invitationId: string, groupId: string, userId: string }) {
-    const supabase = await createClient();
+    const supabase = createClient();
 
     const { data, error } = await supabase.from('invitation').update({ invitation_status: INVITATION_STATUS.ACCEPTED }).eq('id', invitationId)
 

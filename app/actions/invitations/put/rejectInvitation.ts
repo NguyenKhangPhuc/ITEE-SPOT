@@ -1,4 +1,4 @@
-'use server'
+'use client'
 
 /**
  * PURPOSE:
@@ -12,7 +12,7 @@
  *   - invitationId (string, Required): Target invitation ID string to reject.
  */
 
-import { createClient } from '@/app/utils/supabase/server'
+import { createClient } from '@/app/utils/supabase/client'
 import { INVITATION_STATUS } from '@/app/types/enum'
 
 /**
@@ -26,7 +26,7 @@ import { INVITATION_STATUS } from '@/app/types/enum'
  * - Promise<{ data?: any, error?: string | any }>: Object containing update response or error message string.
  */
 export async function rejectInvitation({ invitationId }: { invitationId: string }) {
-    const supabase = await createClient();
+    const supabase = createClient();
 
     const { data, error } = await supabase.from('invitation').update({ invitation_status: INVITATION_STATUS.REJECTED }).eq('id', invitationId)
 

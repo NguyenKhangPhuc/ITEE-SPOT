@@ -1,4 +1,4 @@
-'use server'
+'use client'
 
 /**
  * PURPOSE:
@@ -12,7 +12,7 @@
  *   - event (EventInsert, Required): Object containing title, description, content, location, dates, max_group_members.
  */
 
-import { createClient } from '@/app/utils/supabase/server'
+import { createClient } from '@/app/utils/supabase/client'
 import { Event, EventInsert } from '@/app/types/event'
 import { EVENT_STATUS } from '@/app/types/enum'
 import { PostgrestError } from '@supabase/supabase-js'
@@ -29,7 +29,7 @@ import { PostgrestError } from '@supabase/supabase-js'
  * - Promise<{ data: Event | null, error: string | null }>: Object containing created event payload or error string.
  */
 export async function createEvent({ event }: { event: EventInsert }) {
-    const supabase = await createClient();
+    const supabase = createClient();
 
     const { data: user } = await supabase.auth.getUser()
 

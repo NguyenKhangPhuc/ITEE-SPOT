@@ -1,4 +1,4 @@
-'use server'
+'use client'
 
 /**
  * PURPOSE:
@@ -14,7 +14,7 @@
  *   - ascending (boolean, Required): Sorting order flag for creation date.
  */
 
-import { createClient } from '@/app/utils/supabase/server'
+import { createClient } from '@/app/utils/supabase/client'
 import { PROJECT_STATUS } from '@/app/types/enum'
 
 /**
@@ -29,7 +29,7 @@ import { PROJECT_STATUS } from '@/app/types/enum'
  * - Promise<{ data?: any, error?: string | any }>: Object containing user submitted projects array or error message string.
  */
 export async function getUserSubmittedProjects({ userId, status, ascending }: { userId: string, status: PROJECT_STATUS | null, ascending: boolean }) {
-    const supabase = await createClient()
+    const supabase = createClient()
     let query = supabase
         .from('projects_with_priority')
         .select(`*,

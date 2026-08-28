@@ -1,4 +1,4 @@
-'use server'
+'use client'
 
 /**
  * PURPOSE:
@@ -11,7 +11,7 @@
  * - groupChallengeId (string, Required): The unique ID of the group challenge relation to delete.
  */
 
-import { createClient } from '@/app/utils/supabase/server'
+import { createClient } from '@/app/utils/supabase/client'
 
 /**
  * BEHAVIORAL MECHANISM:
@@ -25,7 +25,7 @@ import { createClient } from '@/app/utils/supabase/server'
  * - Promise<{ data?: any, error?: string | any }>: Object containing deletion result or error message string.
  */
 export async function deleteGroupChallengeById(groupChallengeId: string) {
-    const supabase = await createClient()
+    const supabase = createClient()
     const { data, error } = await supabase.from('group_challenge').delete().eq('id', groupChallengeId)
     if (error) {
         return { error: 'Failed to delete the group_challenge' }

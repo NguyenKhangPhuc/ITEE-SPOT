@@ -1,4 +1,4 @@
-'use server'
+'use client'
 
 /**
  * PURPOSE:
@@ -11,7 +11,7 @@
  * - groupId (string, Required): The target group ID string from which the user wants to leave.
  */
 
-import { createClient } from '@/app/utils/supabase/server'
+import { createClient } from '@/app/utils/supabase/client'
 
 /**
  * BEHAVIORAL MECHANISM:
@@ -25,7 +25,7 @@ import { createClient } from '@/app/utils/supabase/server'
  * - Promise<{ data?: any, error?: string | any }>: Object containing deletion result or error payload.
  */
 export async function removeStudentsThemselveFromGroupById(groupId: string) {
-    const supabase = await createClient()
+    const supabase = createClient()
 
     const { data: student } = await supabase.auth.getUser()
     if (student.user == null) {

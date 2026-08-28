@@ -1,4 +1,4 @@
-'use server'
+'use client'
 
 /**
  * PURPOSE:
@@ -12,7 +12,7 @@
  */
 
 import { EventAwardsInsert } from "@/app/types/event_awards"
-import { createClient } from "@/app/utils/supabase/server"
+import { createClient } from '@/app/utils/supabase/client'
 
 /**
  * BEHAVIORAL MECHANISM:
@@ -26,7 +26,7 @@ import { createClient } from "@/app/utils/supabase/server"
  * - Promise<{ data: any, error?: string }>: Object containing updated award record or error message.
  */
 export async function updateEventAward(award: EventAwardsInsert) {
-    const supabase = await createClient()
+    const supabase = createClient()
     const { data, error } = await supabase.from('event_awards').update(award).eq('id', award.id ?? "").select('*').maybeSingle()
     if (error) {
         return { error: 'Fail to update the award' }

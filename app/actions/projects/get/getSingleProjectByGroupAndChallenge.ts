@@ -1,4 +1,4 @@
-'use server'
+'use client'
 
 /**
  * PURPOSE:
@@ -13,7 +13,7 @@
  *   - group_challenge_id (string, Required): Target group_challenge relation ID string.
  */
 
-import { createClient } from '@/app/utils/supabase/server'
+import { createClient } from '@/app/utils/supabase/client'
 
 /**
  * BEHAVIORAL MECHANISM:
@@ -27,7 +27,7 @@ import { createClient } from '@/app/utils/supabase/server'
  * - Promise<{ data?: any, error?: string | any }>: Object containing project record or error message string.
  */
 export async function getSingleProjectByGroupAndChallenge({ group_id, group_challenge_id }: { group_id: string, group_challenge_id: string }) {
-    const supabase = await createClient()
+    const supabase = createClient()
     const { data, error } = await supabase.from('projects')
         .select('*, project_awards(*), project_files(*), groups (event_id, events (id, event_awards(*)))')
         .eq('group_id', group_id)

@@ -11,7 +11,7 @@
  * - eventId (string, Required): The unique identifier of the event whose awards are being queried.
  */
 
-import { createClient } from "@/app/utils/supabase/server"
+import { createClient } from '@/app/utils/supabase/server'
 
 /**
  * BEHAVIORAL MECHANISM:

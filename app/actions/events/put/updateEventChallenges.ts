@@ -1,4 +1,4 @@
-'use server'
+'use client'
 
 /**
  * PURPOSE:
@@ -12,7 +12,7 @@
  *   - eventChallenge (EventChallengeInsert, Required): Object holding target challenge ID, title, and company_name.
  */
 
-import { createClient } from '@/app/utils/supabase/server'
+import { createClient } from '@/app/utils/supabase/client'
 import { EventChallengeInsert } from '@/app/types/event_challenges'
 
 /**
@@ -27,7 +27,7 @@ import { EventChallengeInsert } from '@/app/types/event_challenges'
  * - Promise<{ data?: any, error?: string | any }>: Object containing updated challenge record array or error message.
  */
 export async function updateEventChallenges({ eventChallenge }: { eventChallenge: EventChallengeInsert }) {
-    const supabase = await createClient()
+    const supabase = createClient()
 
     const { data, error } = await supabase
         .from('event_challenges')
