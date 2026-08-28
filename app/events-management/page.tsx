@@ -11,6 +11,8 @@
  */
 
 import { getAllEvents } from "@/app/actions/events/get/getAllEvents"
+import { updateEventStatus } from "@/app/actions/events/put/updateEventStatus"
+import { updateEventRegistrationStatus } from "@/app/actions/events/put/updateEventRegistrationStatus"
 import EventManagementClient from "./EventManagementClient"
 
 export default async function Home() {
@@ -19,7 +21,13 @@ export default async function Home() {
   return (
     <div className="w-full min-h-screen bg-[#151312] text-[#e8e1df] font-mono flex flex-col p-6 py-12 select-none">
       <div className="max-w-7xl mx-auto w-full">
-        <EventManagementClient events={events || []} />
+        <EventManagementClient
+          events={events || []}
+          actions={{
+            updateEventStatus,
+            updateEventRegistrationStatus,
+          }}
+        />
       </div>
     </div>
   )

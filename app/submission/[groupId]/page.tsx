@@ -1,6 +1,9 @@
 import { getUser } from "@/app/actions/authentication/get/getUser"
 import { getEventChallenges } from "@/app/actions/event_challenges/get/getEventChallenges"
 import { getGroupChallenges } from "@/app/actions/group_challenge/get/getGroupChallenges"
+import { getGoupChallengeSubmission } from "@/app/actions/submissions/get/getGoupChallengeSubmission"
+import { saveGroupChallengeSubmission } from "@/app/actions/submissions/post/saveGroupChallengeSubmission"
+import { getPublicFileURL } from "@/app/actions/file_url"
 import SubmissionClient from "./SubmissionClient"
 import { EventChallenge } from "@/app/types/event_challenges"
 
@@ -55,6 +58,11 @@ export default async function SubmissionPage({ params }: PageProps) {
       groupChallenges={groupChallenges}
       eventChallenges={allEventChallenges}
       group_id={groupId}
+      actions={{
+        getGoupChallengeSubmission,
+        saveGroupChallengeSubmission,
+        getPublicFileURL,
+      }}
     />
   )
 }

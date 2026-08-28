@@ -1,6 +1,10 @@
 import { getUser } from "@/app/actions/authentication/get/getUser"
 import { getSingleGroup } from "@/app/actions/groups/get/getSingleGroup"
 import { getPendingGroupInvitationsById } from "@/app/actions/invitations/get/getPendingGroupInvitationsById"
+import { updateGroupNameAndDescription } from "@/app/actions/groups/put/updateGroupNameAndDescription"
+import { updateGroupPosterPath } from "@/app/actions/groups/put/updateGroupPosterPath"
+import { sendInvitations } from "@/app/actions/invitations/post/sendInvitations"
+import { removeStudentsThemselveFromGroupById } from "@/app/actions/group_member/delete/removeStudentsThemselveFromGroupById"
 import SingleGroupClient from "./SingleGroupClient"
 
 interface PageProps {
@@ -57,6 +61,12 @@ export default async function SingleGroupPage({ params }: PageProps) {
       groupInfo={groupInfo}
       currentUser={user.user}
       pendingInvitations={pendingInvitations ?? []}
+      actions={{
+        updateGroupNameAndDescription,
+        updateGroupPosterPath,
+        sendInvitations,
+        removeStudentsThemselveFromGroupById,
+      }}
     />
   )
 }

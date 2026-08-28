@@ -12,6 +12,10 @@
 
 import { getSingleEvent } from "@/app/actions/events/get/getSingleEvent"
 import { getAwardsByEventId } from "@/app/actions/event_awards/get/getAwardsByEventId"
+import { createEventAwarđ } from "@/app/actions/event_awards/post/createEventAward"
+import { updateEventAward } from "@/app/actions/event_awards/put/updateEventAward"
+import { createEventCriteria } from "@/app/actions/event_criteria/post/createEventCriteria"
+import { updateEventCriteria } from "@/app/actions/event_criteria/put/updateEventCriteria"
 import EditEventClient from "./EditEventClient"
 
 interface PageProps {
@@ -34,7 +38,16 @@ export default async function Home({ params }: PageProps) {
   return (
     <div className="w-full min-h-screen bg-[#151312] text-[#e8e1df] font-mono px-6 md:px-16 py-24">
       <div className="max-w-7xl mx-auto flex flex-col">
-        <EditEventClient event={event!} awards={awards ?? []} />
+        <EditEventClient
+          event={event!}
+          awards={awards ?? []}
+          actions={{
+            createEventAwarđ,
+            updateEventAward,
+            createEventCriteria,
+            updateEventCriteria,
+          }}
+        />
       </div>
     </div>
   )

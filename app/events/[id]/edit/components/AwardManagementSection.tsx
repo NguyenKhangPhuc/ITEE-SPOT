@@ -16,8 +16,8 @@
 
 import { useState } from "react"
 import { useForm } from "react-hook-form"
-import { createEventAwarđ } from "@/app/actions/event_awards/post/createEventAward"
-import { updateEventAward } from "@/app/actions/event_awards/put/updateEventAward"
+import type { createEventAwarđ } from "@/app/actions/event_awards/post/createEventAward"
+import type { updateEventAward } from "@/app/actions/event_awards/put/updateEventAward"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
 import { EventAwardsInsert } from "@/app/types/event_awards"
@@ -27,12 +27,17 @@ interface AwardManagementSectionProps {
   receivedAwards: Array<EventAwardsInsert>
   eventId: string
   page: string
+  actions: {
+    createEventAwarđ: typeof createEventAwarđ
+    updateEventAward: typeof updateEventAward
+  }
 }
 
 export default function AwardManagementSection({
   receivedAwards,
   eventId,
   page,
+  actions,
 }: AwardManagementSectionProps) {
   const [awards, setAwards] = useState<Array<EventAwardsInsert>>(receivedAwards)
   const { showNotification } = useNotification()
@@ -67,7 +72,7 @@ export default function AwardManagementSection({
         ...newAward,
         event_id: eventId,
       }
-      const { data, error } = await createEventAwarđ(payload)
+      const { data, error } = await actions.createEventAwarđ(payload)
       if (error) {
         throw new Error(error)
       }
@@ -109,7 +114,7 @@ export default function AwardManagementSection({
     }
     setIsOpenLoader(true)
     try {
-      const { error } = await updateEventAward(updatedAward)
+      const { error } = await actions.updateEventAward(updatedAward)
       if (error) {
         throw new Error(error)
       }

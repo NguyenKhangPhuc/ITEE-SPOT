@@ -12,6 +12,8 @@
  */
 
 import { getAllGroups } from "@/app/actions/groups/get/getAllGroups"
+import { deleteGroupMemberById } from "@/app/actions/group_member/delete/deleteGroupMemberById"
+import { deleteGroupChallengeById } from "@/app/actions/group_challenge/delete/deleteGroupChallengeById"
 import GroupManagementClient from "./GroupManagementClient"
 import { AdminGroups } from "@/app/types/group"
 
@@ -29,7 +31,13 @@ export default async function Home() {
     return (
         <div className="w-full min-h-screen bg-[#151312] text-[#e8e1df] font-mono px-6 md:px-16 py-24">
             <div className="max-w-7xl mx-auto flex flex-col">
-                <GroupManagementClient groups={groups ?? []} />
+                <GroupManagementClient
+                    groups={groups ?? []}
+                    actions={{
+                        deleteGroupMemberById,
+                        deleteGroupChallengeById,
+                    }}
+                />
             </div>
         </div>
     )

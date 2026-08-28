@@ -16,8 +16,8 @@
 
 import { useState } from "react"
 import { AdminGroups } from "@/app/types/group"
-import { deleteGroupMemberById } from "@/app/actions/group_member/delete/deleteGroupMemberById"
-import { deleteGroupChallengeById } from "@/app/actions/group_challenge/delete/deleteGroupChallengeById"
+import type { deleteGroupMemberById } from "@/app/actions/group_member/delete/deleteGroupMemberById"
+import type { deleteGroupChallengeById } from "@/app/actions/group_challenge/delete/deleteGroupChallengeById"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
 import BackButton from "@/app/components/BackButton"
@@ -27,11 +27,15 @@ import GroupTable from "./components/GroupTable"
 
 interface GroupManagementClientProps {
   groups: Array<AdminGroups>
+  actions: {
+    deleteGroupMemberById: typeof deleteGroupMemberById
+    deleteGroupChallengeById: typeof deleteGroupChallengeById
+  }
 }
 
 const ITEMS_PER_PAGE = 20
 
-export default function GroupManagementClient({ groups: initialGroups }: GroupManagementClientProps) {
+export default function GroupManagementClient({ groups: initialGroups, actions }: GroupManagementClientProps) {
   const { showNotification } = useNotification()
   const { setIsOpenLoader } = useLoader()
 
@@ -79,7 +83,7 @@ export default function GroupManagementClient({ groups: initialGroups }: GroupMa
   const handleRemoveMember = async (memberId: string, groupId: string): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { error } = await deleteGroupMemberById(memberId)
+      const { error } = await actions.deleteGroupMemberById(memberId)
       if (error) {
         throw new Error(error)
       }
@@ -124,7 +128,7 @@ export default function GroupManagementClient({ groups: initialGroups }: GroupMa
   const handleDeleteChallenge = async (groupChallengeId: string, groupId: string): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { error } = await deleteGroupChallengeById(groupChallengeId)
+      const { error } = await actions.deleteGroupChallengeById(groupChallengeId)
       if (error) {
         throw new Error(error)
       }

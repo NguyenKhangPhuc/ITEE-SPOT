@@ -17,8 +17,8 @@
 
 import { useState } from "react"
 import { useForm } from "react-hook-form"
-import { createEventCriteria } from "@/app/actions/event_criteria/post/createEventCriteria"
-import { updateEventCriteria } from "@/app/actions/event_criteria/put/updateEventCriteria"
+import type { createEventCriteria } from "@/app/actions/event_criteria/post/createEventCriteria"
+import type { updateEventCriteria } from "@/app/actions/event_criteria/put/updateEventCriteria"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
 import { CRITERIA_TYPE } from "@/app/types/enum"
@@ -29,12 +29,17 @@ interface CriteriaSectionProps {
   receivedCriteria: Array<EventCriteriaInsert>
   eventId: string
   page: string
+  actions: {
+    createEventCriteria: typeof createEventCriteria
+    updateEventCriteria: typeof updateEventCriteria
+  }
 }
 
 export default function CriteriaSection({
   receivedCriteria,
   eventId,
   page,
+  actions,
 }: CriteriaSectionProps) {
   const [criteria, setCriteria] = useState<Array<EventCriteriaInsert>>(receivedCriteria)
   const { showNotification } = useNotification()
@@ -61,7 +66,7 @@ export default function CriteriaSection({
   const handleAddingCriteria = async (newCriteria: EventCriteriaInsert): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { data, error } = await createEventCriteria({ newCriteria, eventId })
+      const { data, error } = await actions.createEventCriteria({ newCriteria, eventId })
       if (error) {
         throw new Error(error)
       }
@@ -118,7 +123,7 @@ export default function CriteriaSection({
     }
     setIsOpenLoader(true)
     try {
-      const { error } = await updateEventCriteria({ updatedCriteria: existedCriteria })
+      const { error } = await actions.updateEventCriteria({ updatedCriteria: existedCriteria })
       if (error) {
         throw new Error(error)
       }

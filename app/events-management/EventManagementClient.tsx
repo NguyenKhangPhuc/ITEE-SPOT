@@ -17,8 +17,8 @@
 import { useState } from "react"
 import { EventInsert } from "@/app/types/event"
 import { EVENT_STATUS } from "@/app/types/enum"
-import { updateEventStatus } from "@/app/actions/events/put/updateEventStatus"
-import { updateEventRegistrationStatus } from "@/app/actions/events/put/updateEventRegistrationStatus"
+import type { updateEventStatus } from "@/app/actions/events/put/updateEventStatus"
+import type { updateEventRegistrationStatus } from "@/app/actions/events/put/updateEventRegistrationStatus"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
 import BackButton from "@/app/components/BackButton"
@@ -28,13 +28,17 @@ import EventTable from "./components/EventTable"
 
 interface EventManagementClientProps {
   events: Array<EventInsert>
+  actions: {
+    updateEventStatus: typeof updateEventStatus
+    updateEventRegistrationStatus: typeof updateEventRegistrationStatus
+  }
 }
 
 const ITEMS_PER_PAGE = 20
 
 type SortKey = "date_desc" | "date_asc"
 
-export default function EventManagementClient({ events: initialEvents }: EventManagementClientProps) {
+export default function EventManagementClient({ events: initialEvents, actions }: EventManagementClientProps) {
   const { showNotification } = useNotification()
   const { setIsOpenLoader } = useLoader()
 
@@ -59,7 +63,7 @@ export default function EventManagementClient({ events: initialEvents }: EventMa
   const handleStatusChange = async (eventId: string, newStatus: EVENT_STATUS): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { error } = await updateEventStatus(eventId, newStatus)
+      const { error } = await actions.updateEventStatus(eventId, newStatus)
       if (error) {
         throw new Error(error)
       }
@@ -97,7 +101,7 @@ export default function EventManagementClient({ events: initialEvents }: EventMa
   ): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { error } = await updateEventRegistrationStatus(eventId, newRegStatus)
+      const { error } = await actions.updateEventRegistrationStatus(eventId, newRegStatus)
       if (error) {
         throw new Error(error)
       }

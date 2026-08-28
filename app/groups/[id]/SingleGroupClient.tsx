@@ -6,10 +6,10 @@ import { useRouter } from "next/navigation"
 import { createClient } from "@/app/utils/supabase/client"
 import { useNotification } from "@/app/context/NotificationContext"
 import { useLoader } from "@/app/context/LoaderContext"
-import { updateGroupNameAndDescription } from "@/app/actions/groups/put/updateGroupNameAndDescription"
-import { updateGroupPosterPath } from "@/app/actions/groups/put/updateGroupPosterPath"
-import { sendInvitations } from "@/app/actions/invitations/post/sendInvitations"
-import { removeStudentsThemselveFromGroupById } from "@/app/actions/group_member/delete/removeStudentsThemselveFromGroupById"
+import type { updateGroupNameAndDescription } from "@/app/actions/groups/put/updateGroupNameAndDescription"
+import type { updateGroupPosterPath } from "@/app/actions/groups/put/updateGroupPosterPath"
+import type { sendInvitations } from "@/app/actions/invitations/post/sendInvitations"
+import type { removeStudentsThemselveFromGroupById } from "@/app/actions/group_member/delete/removeStudentsThemselveFromGroupById"
 import { EditGroupInfo, GroupInfo } from "@/app/types/group"
 import { InvitationInsert } from "@/app/types/invitation"
 import { User } from "@supabase/supabase-js"
@@ -25,6 +25,12 @@ interface SingleGroupClientProps {
   groupInfo: GroupInfo
   currentUser: User
   pendingInvitations: InvitationInsert[]
+  actions: {
+    updateGroupNameAndDescription: typeof updateGroupNameAndDescription
+    updateGroupPosterPath: typeof updateGroupPosterPath
+    sendInvitations: typeof sendInvitations
+    removeStudentsThemselveFromGroupById: typeof removeStudentsThemselveFromGroupById
+  }
 }
 
 /**
@@ -47,6 +53,7 @@ export default function SingleGroupClient({
   groupInfo,
   currentUser,
   pendingInvitations,
+  actions,
 }: SingleGroupClientProps) {
   const supabase = createClient()
   const router = useRouter()
@@ -101,7 +108,7 @@ export default function SingleGroupClient({
   const handleSaveGroupName = async (data: EditGroupInfo) => {
     setIsOpenLoader(true)
     try {
-      const { data: updatedGroupInfo, error } = await updateGroupNameAndDescription({
+      const { data: updatedGroupInfo, error } = await actions.updateGroupNameAndDescription({
         groupId: groupInfo!.id,
         groupName: data.groupName,
         description: data.short_description,
@@ -144,7 +151,7 @@ export default function SingleGroupClient({
           ...invitationInfo,
           member_email: invitationInfo.member_email?.toLowerCase().trim(),
         }
-        const { error } = await sendInvitations(updatedInvitation)
+        const { error } = await actions.sendInvitations(updatedInvitation)
         if (error) throw new Error(error)
         setIsOpenLoader(false)
         showNotification("Send invitation successfully")
@@ -203,7 +210,7 @@ export default function SingleGroupClient({
   const handleUpdateImage = async () => {
     setIsOpenLoader(true)
     try {
-      const { error } = await updateGroupPosterPath({
+      const { error } = await actions.updateGroupPosterPath({
         groupId: groupInfo!.id,
         avatarFile,
         originalPath: groupInfo?.poster_path ?? null,
@@ -233,7 +240,7 @@ export default function SingleGroupClient({
   const handleRemoveStudentSelf = async (groupId: string) => {
     setIsOpenLoader(true)
     try {
-      const { error } = await removeStudentsThemselveFromGroupById(groupId)
+      const { error } = await actions.removeStudentsThemselveFromGroupById(groupId)
       if (error) throw new Error(error)
       setIsOpenLoader(false)
       showNotification("Removed from group successfully")

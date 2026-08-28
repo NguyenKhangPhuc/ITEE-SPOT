@@ -13,6 +13,10 @@
 import StudentManagementClient from "./StudentsManagementClient"
 import { getUserGroups } from "@/app/actions/groups/get/getUserGroups"
 import { getUser } from "@/app/actions/authentication/get/getUser"
+import { getUserSubmittedProjects } from "@/app/actions/projects/get/getUserSubmittedProjects"
+import { getSingleProjectByGroupAndChallenge } from "@/app/actions/projects/get/getSingleProjectByGroupAndChallenge"
+import { getPublicFileURL } from "@/app/actions/file_url"
+import { saveStudentGroupProject } from "@/app/actions/projects/post/saveStudentGroupProject"
 
 export default async function Home() {
   const { data: groupsWithOtherInfo, error } = await getUserGroups()
@@ -40,6 +44,12 @@ export default async function Home() {
         <StudentManagementClient
           groupsWithEvents={groupsWithOtherInfo ?? []}
           userId={user.user!.id}
+          actions={{
+            getUserSubmittedProjects,
+            getSingleProjectByGroupAndChallenge,
+            getPublicFileURL,
+            saveStudentGroupProject,
+          }}
         />
       </div>
     </div>
