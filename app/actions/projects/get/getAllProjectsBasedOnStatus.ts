@@ -32,7 +32,7 @@ function createPublicSupabaseClient() {
                 getAll() {
                     return []
                 },
-                setAll() {},
+                setAll() { },
             },
         }
     )
@@ -40,7 +40,6 @@ function createPublicSupabaseClient() {
 
 const fetchProjectsFromDb = async (status: PROJECT_STATUS | null, ascending: boolean) => {
     const supabase = createPublicSupabaseClient()
-
     let query = supabase
         .from('projects_with_priority')
         .select(`

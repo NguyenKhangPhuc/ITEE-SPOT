@@ -18,7 +18,9 @@
 import { useState } from "react"
 import { Control, useForm } from "react-hook-form"
 import Link from "next/link"
-import { createClient } from "@/app/utils/supabase/client"
+import { getAllProjectsBasedOnStatus } from "@/app/actions/projects/get/getAllProjectsBasedOnStatus"
+import { getSingleProjectByGroupAndChallenge } from "@/app/actions/projects/get/getSingleProjectByGroupAndChallenge"
+import { updateProjectStatus } from "@/app/actions/projects/put/updateProjectStatus"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
 import { PROJECT_STATUS } from "@/app/types/enum"
@@ -31,8 +33,8 @@ import EditProjectFormSection from "@/app/components/project-management/EditProj
 
 interface AdminProjectManageSectionProps {
   page: "create" | "manage"
-  currentProjects: Array<ProjectsSummary>
-  setCurrentProjects: React.Dispatch<React.SetStateAction<Array<ProjectsSummary>>>
+  currentProjects: ProjectsSummary[]
+  setCurrentProjects: React.Dispatch<React.SetStateAction<ProjectsSummary[]>>
 }
 
 export default function AdminProjectManageSection({
@@ -40,17 +42,16 @@ export default function AdminProjectManageSection({
   currentProjects,
   setCurrentProjects,
 }: AdminProjectManageSectionProps) {
-  const supabase = createClient()
   const { showNotification } = useNotification()
   const { setIsOpenLoader } = useLoader()
 
-  const [chosenProject, setChosenProject] = useState<ProjectsSummary | null>(null)
   const [chosenStatus, setChosenStatus] = useState<PROJECT_STATUS | null>(null)
   const [chosenOrder, setChosenOrder] = useState<boolean>(false)
+  const [chosenProject, setChosenProject] = useState<ProjectsSummary | null>(null)
   const [eventAwards, setEventAwards] = useState<EventAwards[]>([])
-  const [initialEditorContent, setInitialEditorContent] = useState<string>("")
   const [submittedFiles, setSubmittedFiles] = useState<ProjectFileExtended[]>([])
   const [selectedAward, setSelectedAward] = useState<Array<ProjectAwardsInsert>>([])
+  const [initialEditorContent, setInitialEditorContent] = useState<string>("")
 
   const {
     register,
@@ -62,7 +63,7 @@ export default function AdminProjectManageSection({
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Handles querying project registry based on chosen status filter using Supabase client.
+   * Handles querying project registry based on chosen status filter.
    *
    * PARAMETERS:
    * - status (PROJECT_STATUS | null): Chosen status option.
@@ -73,13 +74,9 @@ export default function AdminProjectManageSection({
   const handleFilterProjectStatus = async (status: PROJECT_STATUS | null): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      let query = supabase.from('projects').select('*, groups (group_name, events (title))')
-      if (status != null) {
-        query = query.eq('project_status', status)
-      }
-      const { data, error } = await query.order('created_at', { ascending: chosenOrder })
+      const { data, error } = await getAllProjectsBasedOnStatus({ status, ascending: chosenOrder })
       if (error) {
-        throw new Error("Failed to filter project database.")
+        throw new Error(error)
       }
       setCurrentProjects(data ?? [])
       setChosenStatus(status)
@@ -97,7 +94,7 @@ export default function AdminProjectManageSection({
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Handles sorting project registry list using Supabase client.
+   * Handles sorting project registry list.
    *
    * PARAMETERS:
    * - ascending (boolean): True for ascending, false for descending.
@@ -108,13 +105,9 @@ export default function AdminProjectManageSection({
   const handleFilterProjectOrder = async (ascending: boolean): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      let query = supabase.from('projects').select('*, groups (group_name, events (title))')
-      if (chosenStatus != null) {
-        query = query.eq('project_status', chosenStatus)
-      }
-      const { data, error } = await query.order('created_at', { ascending })
+      const { data, error } = await getAllProjectsBasedOnStatus({ status: chosenStatus, ascending })
       if (error) {
-        throw new Error("Failed to sort project database.")
+        throw new Error(error)
       }
       setCurrentProjects(data ?? [])
       setChosenOrder(ascending)
@@ -155,7 +148,7 @@ export default function AdminProjectManageSection({
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Loads target project data in form parameters via Supabase client.
+   * Loads target project data in form parameters.
    *
    * PARAMETERS:
    * - project (ProjectsSummary): Target project database record.
@@ -166,15 +159,12 @@ export default function AdminProjectManageSection({
   const handleChooseProject = async (project: ProjectsSummary): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { data, error } = await supabase
-        .from('projects')
-        .select('*, groups (events (event_awards (*))), project_files (*), project_awards (*)')
-        .eq('group_id', project.group_id)
-        .eq('group_challenge_id', project.group_challenge_id)
-        .single()
-
+      const { data, error } = await getSingleProjectByGroupAndChallenge({
+        group_id: project.group_id!,
+        group_challenge_id: project.group_challenge_id!,
+      })
       if (error) {
-        throw new Error("Failed to fetch project specifications.")
+        throw new Error(error)
       }
       if (data) {
         reset(data)
@@ -200,7 +190,7 @@ export default function AdminProjectManageSection({
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Triggers status change write queries to database using Supabase client.
+   * Triggers status change write queries to database using updateProjectStatus server action.
    *
    * PARAMETERS:
    * - projectId (string): Target project ID.
@@ -218,9 +208,9 @@ export default function AdminProjectManageSection({
   }): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { error } = await supabase.from('projects').update({ project_status: status }).eq('id', projectId)
+      const { error } = await updateProjectStatus({ projectId, status })
       if (error) {
-        throw new Error("Failed to update project status.")
+        throw new Error(error)
       }
       const updatedProjects = currentProjects.map((project) => {
         if (project.id === projectId) {

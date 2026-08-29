@@ -9,7 +9,9 @@ import { SubmissionRatingInsert } from "@/app/types/submission_rating"
 import { SubmissionFeedback } from "@/app/types/submission_feedback"
 import { PROFILE_ROLE } from "@/app/types/enum"
 import { GroupInfo } from "@/app/types/group"
-import { createClient } from "@/app/utils/supabase/client"
+import { getSubmissionRatingById } from "@/app/actions/submission_ratings"
+import { getSubmissionFeedBackByUserIdAndSubmissionId } from "@/app/actions/submission_feedback/get/getSubmissionFeedBackByUserIdAndSubmissionId"
+import { getPublicFileURL } from "@/app/actions/file_url"
 import { useNotification } from "@/app/context/NotificationContext"
 import { useLoader } from "@/app/context/LoaderContext"
 import ReadOnlyEditor from "@/components/tiptap-templates/simple/ReadOnlyEditor"
@@ -45,7 +47,6 @@ export default function ReadOnlySubmissionClient({
   user,
   groupInfo,
 }: ReadOnlySubmissionClientProps) {
-  const supabase = createClient()
   const { showNotification } = useNotification()
   const { setIsOpenLoader } = useLoader()
 
@@ -57,8 +58,8 @@ export default function ReadOnlySubmissionClient({
   /**
    * BEHAVIORAL MECHANISM:
    * Handles user selection of a challenge tab. It fetches the existing rating and feedback
-   * record for the selected submission using Supabase client, sets loading animations during the query,
-   * and loads the details into local states.
+   * record for the selected submission, sets loading animations during the query, and loads
+   * the details into local states.
    *
    * PARAMETERS:
    * - index (number): Array index of the chosen submission.
@@ -73,24 +74,18 @@ export default function ReadOnlySubmissionClient({
 
     try {
       // 1. Fetch user rating
-      const { data: ratingData, error: ratingError } = await supabase
-        .from('submission_ratings')
-        .select('*')
-        .eq('submission_id', submissionId)
-        .eq('user_id', user.id)
-        .maybeSingle()
-
-      if (ratingError) throw new Error("Failed to fetch submission rating")
+      const { data: ratingData, error: ratingError } = await getSubmissionRatingById({
+        submissionId,
+        userId: user.id,
+      })
+      if (ratingError) throw new Error(ratingError)
 
       // 2. Fetch user feedback log
-      const { data: feedbackData, error: feedbackError } = await supabase
-        .from('submission_feedback')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('submission_id', submissionId)
-        .maybeSingle()
-
-      if (feedbackError) throw new Error("Failed to fetch submission feedback")
+      const { data: feedbackData, error: feedbackError } = await getSubmissionFeedBackByUserIdAndSubmissionId({
+        userId: user.id,
+        submissionId,
+      })
+      if (feedbackError) throw new Error(feedbackError)
 
       setUserRating(ratingData ?? null)
       setUserFeedback(feedbackData ?? null)
@@ -119,12 +114,12 @@ export default function ReadOnlySubmissionClient({
       // Handles cases where the URL is already an embed URL or other YouTube formats
       const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|shorts\/)([^#\&\?]*).*/
       const match = url.match(regExp)
-      
+
       const videoId = (match && match[2].length === 11) ? match[2] : null
       if (videoId) {
         return `https://www.youtube.com/embed/${videoId}`
       }
-      
+
       // Fallback: Check if it's already an 11-char ID
       if (url.trim().length === 11) {
         return `https://www.youtube.com/embed/${url.trim()}`
@@ -138,7 +133,7 @@ export default function ReadOnlySubmissionClient({
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Triggers download of submission file attachments via Supabase storage.
+   * Triggers download of submission file attachments.
    *
    * PARAMETERS:
    * - storagePath (string | null): The storage bucket path.
@@ -149,7 +144,8 @@ export default function ReadOnlySubmissionClient({
   const handleDownloadFile = async (storagePath: string | null) => {
     if (!storagePath) return
     try {
-      const { data } = supabase.storage.from('attachments').getPublicUrl(storagePath)
+      const { data, error } = await getPublicFileURL(storagePath)
+      if (error) throw new Error(error)
       if (data?.publicUrl) window.open(data.publicUrl, "_blank")
     } catch (error) {
       if (error instanceof Error) showNotification(error.message)
@@ -188,18 +184,16 @@ export default function ReadOnlySubmissionClient({
                     key={sub.id}
                     type="button"
                     onClick={() => handleChooseChallengeSubmission(idx)}
-                    className={`text-left p-5 border rounded-sm transition-all duration-300 cursor-pointer ${
-                      isSelected
-                        ? "border-[#00e0b3] bg-[#00e0b3]/5"
-                        : "border-white/5 bg-[#151312]/40 hover:border-white/10"
-                    }`}
+                    className={`text-left p-5 border rounded-sm transition-all duration-300 cursor-pointer ${isSelected
+                      ? "border-[#00e0b3] bg-[#00e0b3]/5"
+                      : "border-white/5 bg-[#151312]/40 hover:border-white/10"
+                      }`}
                   >
                     <span className="text-[9px] font-mono text-[#83958d] uppercase tracking-wider block">
                       {sub.group_challenge?.event_challenges?.company_name ?? "Challenge Corp"}
                     </span>
-                    <span className={`text-xs font-mono font-bold uppercase tracking-widest block mt-1 ${
-                      isSelected ? "text-[#00e0b3]" : "text-[#e8e1df]"
-                    }`}>
+                    <span className={`text-xs font-mono font-bold uppercase tracking-widest block mt-1 ${isSelected ? "text-[#00e0b3]" : "text-[#e8e1df]"
+                      }`}>
                       {sub.group_challenge?.event_challenges?.title ?? "Untitled Challenge"}
                     </span>
                   </button>
@@ -230,7 +224,7 @@ export default function ReadOnlySubmissionClient({
                 ]}
                 title={activeSubmission.title ?? "Node_Untitled"}
                 tagline={activeSubmission.short_description ?? "No synopsis parameters mapped."}
-                groupName={groupInfo?.group_name  ?? "Cluster Node"}
+                groupName={groupInfo?.group_name ?? "Cluster Node"}
                 createdAt={activeSubmission.created_at}
               />
 

@@ -17,7 +17,8 @@
 
 import { useState } from "react"
 import { useForm } from "react-hook-form"
-import { createClient } from "@/app/utils/supabase/client"
+import { createEventCriteria } from "@/app/actions/event_criteria/post/createEventCriteria"
+import { updateEventCriteria } from "@/app/actions/event_criteria/put/updateEventCriteria"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
 import { CRITERIA_TYPE } from "@/app/types/enum"
@@ -35,7 +36,6 @@ export default function CriteriaSection({
   eventId,
   page,
 }: CriteriaSectionProps) {
-  const supabase = createClient()
   const [criteria, setCriteria] = useState<Array<EventCriteriaInsert>>(receivedCriteria)
   const { showNotification } = useNotification()
   const { setIsOpenLoader } = useLoader()
@@ -50,7 +50,7 @@ export default function CriteriaSection({
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Adds a newly defined grading criteria record directly via Supabase client.
+   * Adds a newly defined grading criteria record using server action.
    *
    * PARAMETERS:
    * - newCriteria (EventCriteriaInsert): Criteria input values.
@@ -61,14 +61,10 @@ export default function CriteriaSection({
   const handleAddingCriteria = async (newCriteria: EventCriteriaInsert): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { data, error } = await supabase
-        .from('event_grading_criteria')
-        .insert({ ...newCriteria, event_id: eventId })
-        .select('*')
-        .maybeSingle()
+      const { data, error } = await createEventCriteria({ newCriteria, eventId })
 
       if (error) {
-        throw new Error(error.message)
+        throw new Error(error)
       }
       if (!data) {
         throw new Error("Failed to retrieve newly created criteria.")
@@ -108,7 +104,7 @@ export default function CriteriaSection({
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Saves edits to the currently selected or defined criteria item directly via Supabase client.
+   * Saves edits to the currently selected or defined criteria item using server action.
    *
    * PARAMETERS:
    * - existedCriteria (EventCriteriaInsert): Modified criteria fields values.
@@ -123,15 +119,10 @@ export default function CriteriaSection({
     }
     setIsOpenLoader(true)
     try {
-      const { error } = await supabase
-        .from('event_grading_criteria')
-        .update(existedCriteria)
-        .eq('id', existedCriteria.id)
-        .select('*')
-        .maybeSingle()
+      const { error } = await updateEventCriteria({ updatedCriteria: existedCriteria })
 
       if (error) {
-        throw new Error(error.message)
+        throw new Error(error)
       }
       const updatedList = criteria.map((ele) => {
         if (ele.id === existedCriteria.id) {

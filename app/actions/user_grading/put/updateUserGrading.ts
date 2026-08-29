@@ -37,6 +37,7 @@ export async function updateUserGrading({ grades, submissionId }: { grades: Arra
     }
     const { data: newFinalScore, error: finalScoreError } = await supabase.from('submission_final_scores').select('*').eq('submission_id', submissionId).single();
     if (finalScoreError) {
+        console.log(finalScoreError)
         return { error: 'Fail to fetch new final score, please reload' }
     }
     return { data, error, newFinalScore }

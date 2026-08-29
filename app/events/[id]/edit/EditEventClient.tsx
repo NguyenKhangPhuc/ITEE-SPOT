@@ -19,6 +19,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import Image from "next/image"
 import { EventWithChallenges } from "@/app/types/event"
 import { EventChallengeInsert } from "@/app/types/event_challenges"
+import { updateEventPoster } from "@/app/actions/events/put/updateEventPoster"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
 import { createClient } from "@/app/utils/supabase/client"
@@ -32,26 +33,36 @@ import AwardManagementSection from "./components/AwardManagementSection"
 
 type ConfigPage = "basic" | "challenge" | "criteria" | "awards"
 
-export default function EditEventClient({ event, awards }: { event: EventWithChallenges; awards: Array<EventAwardsInsert> }) {
+interface EditEventClientProps {
+  event: EventWithChallenges
+  awards: Array<EventAwardsInsert>
+}
+
+export default function EditEventClient({
+  event,
+  awards,
+}: EditEventClientProps) {
   const supabase = createClient()
   const { showNotification } = useNotification()
   const { setIsOpenLoader } = useLoader()
 
-  const [challenges, setChallenges] = useState<Array<EventChallengeInsert>>(event.event_challenges)
   const [currentPage, setCurrentPage] = useState<ConfigPage>("basic")
+  const [challenges, setChallenges] = useState<Array<EventChallengeInsert>>(
+    event.event_challenges ?? []
+  )
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Resolves the public URL for a given poster path stored in Supabase storage.
+   * Generates public URLs for uploaded media files in Supabase storage attachments bucket.
    *
    * PARAMETERS:
-   * - imagePath (string): Relative storage path of the image.
+   * - imagePath (string): Storage path for the poster asset.
    *
    * RETURNS:
-   * - string: Fully qualified public URL.
+   * - string: Fully qualified public asset URL.
    */
   const handleGetInitialImage = (imagePath: string): string => {
-    const { data } = supabase.storage.from("attachments").getPublicUrl(imagePath)
+    const { data } = supabase.storage.from('attachments').getPublicUrl(imagePath)
     return data.publicUrl
   }
 
@@ -61,10 +72,11 @@ export default function EditEventClient({ event, awards }: { event: EventWithCha
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Handles selection of a new poster image file. Updates storage and database records directly via Supabase client.
+   * Intercepts square poster selection, uploads payload to storage bucket via updateEventPoster,
+   * updates event.poster_path reference in database, and manages preview state.
    *
    * PARAMETERS:
-   * - file (File): The selected image file.
+   * - file (File): Target image file payload selected by admin.
    *
    * RETURNS:
    * - Promise<void>
@@ -76,17 +88,14 @@ export default function EditEventClient({ event, awards }: { event: EventWithCha
 
     setIsOpenLoader(true)
     try {
-      const posterPath = `${event.id}/${Date.now()}-${file.name}`
-      const { error: storageError } = await supabase.storage.from('attachments').upload(posterPath, file)
-      if (storageError) throw new Error("Failed to upload poster image")
-
-      if (event.poster_path) {
-        await supabase.storage.from('attachments').remove([event.poster_path])
+      const { error } = await updateEventPoster({
+        eventId: event.id,
+        posterFile: file,
+        originalPath: event.poster_path,
+      })
+      if (error) {
+        throw new Error(error)
       }
-
-      const { error } = await supabase.from('events').update({ poster_path: posterPath }).eq('id', event.id)
-      if (error) throw new Error("Failed to update event poster path")
-
       showNotification("Update image successfully")
     } catch (error) {
       if (error instanceof Error) {
@@ -101,7 +110,8 @@ export default function EditEventClient({ event, awards }: { event: EventWithCha
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Triggers event poster removal using Supabase client, cleaning up storage records and resetting local state indicators.
+   * Triggers event poster removal by calling updateEventPoster server action with null file payload,
+   * cleaning up storage records and resetting local state indicators.
    *
    * PARAMETERS:
    * None.
@@ -112,12 +122,14 @@ export default function EditEventClient({ event, awards }: { event: EventWithCha
   const handleRemoveAvatarFile = async (): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      if (event.poster_path) {
-        await supabase.storage.from('attachments').remove([event.poster_path])
+      const { error } = await updateEventPoster({
+        eventId: event.id,
+        posterFile: null,
+        originalPath: event.poster_path,
+      })
+      if (error) {
+        throw new Error(error)
       }
-      const { error } = await supabase.from('events').update({ poster_path: null }).eq('id', event.id)
-      if (error) throw new Error("Failed to remove poster image")
-
       setPreviewUrl(null)
       showNotification("Remove image successfully")
     } catch (error) {

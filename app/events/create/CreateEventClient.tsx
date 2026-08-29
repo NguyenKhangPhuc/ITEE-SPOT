@@ -19,7 +19,7 @@ import { useForm } from "react-hook-form"
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 import { Editor } from "@tiptap/core"
-import { createClient } from "@/app/utils/supabase/client"
+import { createEvent } from "@/app/actions/events/post/createEvent"
 import { useNotification } from "@/app/context/NotificationContext"
 import { useLoader } from "@/app/context/LoaderContext"
 import { EventInsert } from "@/app/types/event"
@@ -28,7 +28,6 @@ import TemporalLogisticsSection from "./components/TemporalLogisticsSection"
 import DataPayloadSection from "./components/DataPayloadSection"
 
 export default function CreateEventClient() {
-  const supabase = createClient()
   const router = useRouter()
   const { showNotification } = useNotification()
   const { setIsOpenLoader } = useLoader()
@@ -43,7 +42,7 @@ export default function CreateEventClient() {
   /**
    * BEHAVIORAL MECHANISM:
    * Event submission callback handler. Combines rich text payload HTML, formats organizing milestone
-   * local strings to ISO format, calls database insertions via Supabase client,
+   * local strings to ISO format, calls database insertions via createEvent server action,
    * triggers notifications, and directs users directly to the newly created event's edit dashboard.
    *
    * PARAMETERS:
@@ -63,13 +62,13 @@ export default function CreateEventClient() {
       }
       
       const updatedLocalDateEvent = { ...event, organized_date: formattedDate }
-      const { data, error } = await supabase.from('events').insert(updatedLocalDateEvent).select().single()
+      const { data, error } = await createEvent({ event: updatedLocalDateEvent })
       
       if (error) {
-        throw new Error(error.message)
+        throw new Error(error)
       }
-      if (data == null) {
-        throw new Error('Cannot find created event')
+      if (!data) {
+        throw new Error("Failed to load newly created event.")
       }
       showNotification("Create event successfully")
       router.push(`/events/${data.id}/edit`)
@@ -77,7 +76,7 @@ export default function CreateEventClient() {
       if (error instanceof Error) {
         showNotification(error.message)
       } else {
-        showNotification("Unknown error when creating the event")
+        showNotification("Failed to create new event.")
       }
     } finally {
       setIsOpenLoader(false)

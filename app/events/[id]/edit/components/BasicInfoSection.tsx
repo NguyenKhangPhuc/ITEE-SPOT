@@ -16,7 +16,7 @@
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { Editor } from "@tiptap/core"
-import { createClient } from "@/app/utils/supabase/client"
+import { updateEventInfo } from "@/app/actions/events/put/updateEventInfo"
 import { EVENT_CREATED_DESCRIPTION } from "@/app/constants"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
@@ -30,7 +30,6 @@ interface BasicInfoSectionProps {
 }
 
 export default function BasicInfoSection({ event, page }: BasicInfoSectionProps) {
-  const supabase = createClient()
   const { showNotification } = useNotification()
   const { setIsOpenLoader } = useLoader()
   const [editorValue, setEditorValue] = useState<Editor | null>(null)
@@ -50,8 +49,8 @@ export default function BasicInfoSection({ event, page }: BasicInfoSectionProps)
 
   /**
    * BEHAVIORAL MECHANISM:
-   * Handles submitting updated basic information directly via Supabase client. Formats localized organized date to ISO date string,
-   * extracts the rich editor HTML, and executes database updates.
+   * Handles submitting updated basic information. Formats localized organized date to ISO date string,
+   * extracts the rich editor HTML, and executes database updates via server action.
    *
    * PARAMETERS:
    * - payload (EventInsert): The basic information form fields values.
@@ -68,9 +67,9 @@ export default function BasicInfoSection({ event, page }: BasicInfoSectionProps)
       const updatedLocalDateEvent = { ...payload, organized_date: formattedDate }
 
       if (!event.id) throw new Error("Event ID missing")
-      const { error } = await supabase.from('events').update(updatedLocalDateEvent).eq('id', event.id)
+      const { error } = await updateEventInfo({ event: updatedLocalDateEvent })
       if (error) {
-        throw new Error(error.message)
+        throw new Error(error)
       }
       showNotification("Update event successfully")
     } catch (error) {
