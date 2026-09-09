@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { motion } from "framer-motion"
 import Image from "next/image"
-import { ProjectsSummaryExtended } from "../../types/projects"
+import { ProjectsHomeSummary } from "../../types/projects"
 import { createClient } from "../../utils/supabase/client"
 
 /**
@@ -16,9 +16,9 @@ import { createClient } from "../../utils/supabase/client"
  * Extracted from 'app/page.tsx' to isolate the projects presentation.
  *
  * INPUTS / PARAMETERS:
- * - projects (ProjectsSummaryExtended[] | null, Required): The list of projects fetched from the database.
+ * - projects (ProjectsHomeSummary[] | null, Required): The list of projects fetched from the database.
  */
-export default function PastProjectsSection({ projects }: { projects: ProjectsSummaryExtended[] | null }) {
+export default function PastProjectsSection({ projects }: { projects: ProjectsHomeSummary[] | null }) {
   const supabase = createClient()
 
   /**

@@ -24,7 +24,7 @@ import { PROJECT_STATUS } from "@/app/types/enum"
 import { EventAwards } from "@/app/types/event_awards"
 import { ProjectAwardsInsert } from "@/app/types/project_awards"
 import { ProjectFileExtended } from "@/app/types/project_files"
-import { ProjectsSummaryExtended, ProjectsInsert } from "@/app/types/projects"
+import { ProjectsStudentSummary, ProjectsInsert } from "@/app/types/projects"
 import { useLoader } from "@/app/context/LoaderContext"
 import { useNotification } from "@/app/context/NotificationContext"
 import { tw } from "@/app/constants/design-tokens"
@@ -32,8 +32,8 @@ import EditProjectFormSection from "@/app/components/project-management/EditProj
 
 interface ManageProjectsSectionProps {
   page: "create" | "manage"
-  userProjects: Array<ProjectsSummaryExtended>
-  setUserProjects: React.Dispatch<React.SetStateAction<Array<ProjectsSummaryExtended>>>
+  userProjects: Array<ProjectsStudentSummary>
+  setUserProjects: React.Dispatch<React.SetStateAction<Array<ProjectsStudentSummary>>>
   userId: string
 }
 
@@ -47,7 +47,7 @@ export default function ManageProjectsSection({
   const { showNotification } = useNotification()
   const { setIsOpenLoader } = useLoader()
 
-  const [chosenProject, setChosenProject] = useState<ProjectsSummaryExtended | null>(null)
+  const [chosenProject, setChosenProject] = useState<ProjectsStudentSummary | null>(null)
   const [chosenStatus, setChosenStatus] = useState<PROJECT_STATUS | null>(null)
   const [chosenOrder, setChosenOrder] = useState<boolean>(false)
   const [eventAwards, setEventAwards] = useState<EventAwards[]>([])
@@ -77,7 +77,7 @@ export default function ManageProjectsSection({
   const handleFilterProjectStatus = async (status: PROJECT_STATUS | null): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { data: memberGroups } = await supabase.from('group_members').select('group_id').eq('user_id', userId)
+      const { data: memberGroups } = await supabase.from('group_members').select('group_id').eq('member_id', userId)
       const groupIds = memberGroups?.map(m => m.group_id) ?? []
 
       let query = supabase.from('projects').select('*, groups (group_name, events (title))').in('group_id', groupIds)
@@ -116,7 +116,7 @@ export default function ManageProjectsSection({
   const handleFilterProjectOrder = async (ascending: boolean): Promise<void> => {
     setIsOpenLoader(true)
     try {
-      const { data: memberGroups } = await supabase.from('group_members').select('group_id').eq('user_id', userId)
+      const { data: memberGroups } = await supabase.from('group_members').select('group_id').eq('member_id', userId)
       const groupIds = memberGroups?.map(m => m.group_id) ?? []
 
       let query = supabase.from('projects').select('*, groups (group_name, events (title))').in('group_id', groupIds)
@@ -169,19 +169,19 @@ export default function ManageProjectsSection({
    * Loads specific project's data into the form fields via Supabase client.
    *
    * PARAMETERS:
-   * - project (ProjectsSummaryExtended): Target project row.
+   * - project (ProjectsStudentSummary): Target project row.
    *
    * RETURNS:
    * - Promise<void>
    */
-  const handleChooseProject = async (project: ProjectsSummaryExtended): Promise<void> => {
+  const handleChooseProject = async (project: ProjectsStudentSummary): Promise<void> => {
     setIsOpenLoader(true)
     try {
       const { data, error } = await supabase
         .from('projects')
         .select('*, groups (events (event_awards (*))), project_files (*), project_awards (*)')
-        .eq('group_id', project.group_id)
-        .eq('group_challenge_id', project.group_challenge_id)
+        .eq('group_id', project.group_id ?? "")
+        .eq('group_challenge_id', project.group_challenge_id ?? "")
         .single()
 
       if (error) {

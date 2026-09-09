@@ -37,6 +37,41 @@ export interface ProjectsSummary {
 
 }
 
+export interface ProjectsAdminSummary {
+    created_at: string | null;
+    description: string | null;
+    github_link: string | null;
+    group_challenge_id: string | null;
+    group_id: string | null;
+    id: string | null;
+    project_status: "pending" | "rejected" | "accepted" | null;
+    project_title: string | null;
+    short_description: string | null;
+    youtube_link: string | null;
+
+    groups: {
+        group_name: string | null;
+        events: {
+            title: string | null;
+        } | null;
+    } | null;
+}
+
+export type ProjectsStudentSummary = ProjectsAdminSummary;
+
+export interface ProjectsHomeSummary {
+    id: string | null;
+    project_title: string | null;
+    short_description: string | null;
+    groups: {
+        group_name: string | null;
+        events: {
+            title: string | null;
+            poster_path: string | null;
+        } | null;
+    } | null;
+}
+
 export interface ProjectsSummaryExtended extends ProjectsSummary {
     top_priority: number | null;
     project_awards: {

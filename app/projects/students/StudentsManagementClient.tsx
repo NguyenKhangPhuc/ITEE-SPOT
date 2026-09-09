@@ -16,7 +16,7 @@
 
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { ProjectsSummaryExtended } from "@/app/types/projects"
+import { ProjectsStudentSummary } from "@/app/types/projects"
 import { UserGroupsWithEvent } from "@/app/types/group"
 import { createClient } from "@/app/utils/supabase/client"
 import { useNotification } from "@/app/context/NotificationContext"
@@ -38,7 +38,7 @@ export default function StudentsManagementClient({
   const supabase = createClient()
   const { showNotification } = useNotification()
   const [currentPage, setCurrentPage] = useState<PageType>("create")
-  const [userProjects, setUserProjects] = useState<Array<ProjectsSummaryExtended>>([])
+  const [userProjects, setUserProjects] = useState<Array<ProjectsStudentSummary>>([])
   const [hasLoadedProjects, setHasLoadedProjects] = useState<boolean>(false)
   const [isLoadingProjects, setIsLoadingProjects] = useState<boolean>(false)
 
@@ -58,7 +58,7 @@ export default function StudentsManagementClient({
     if (tab === "manage" && !hasLoadedProjects) {
       setIsLoadingProjects(true)
       try {
-        const { data: memberGroups } = await supabase.from('group_members').select('group_id').eq('user_id', userId)
+        const { data: memberGroups } = await supabase.from('group_members').select('group_id').eq('member_id', userId)
         const groupIds = memberGroups?.map(m => m.group_id) ?? []
 
         const { data, error } = await supabase

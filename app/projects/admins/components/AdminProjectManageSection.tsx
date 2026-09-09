@@ -27,14 +27,14 @@ import { PROJECT_STATUS } from "@/app/types/enum"
 import { EventAwards } from "@/app/types/event_awards"
 import { ProjectAwardsInsert } from "@/app/types/project_awards"
 import { ProjectFileExtended } from "@/app/types/project_files"
-import { ProjectsInsert, ProjectsSummary } from "@/app/types/projects"
+import { ProjectsInsert, ProjectsAdminSummary } from "@/app/types/projects"
 import { tw } from "@/app/constants/design-tokens"
 import EditProjectFormSection from "@/app/components/project-management/EditProjectFormSection"
 
 interface AdminProjectManageSectionProps {
   page: "create" | "manage"
-  currentProjects: ProjectsSummary[]
-  setCurrentProjects: React.Dispatch<React.SetStateAction<ProjectsSummary[]>>
+  currentProjects: ProjectsAdminSummary[]
+  setCurrentProjects: React.Dispatch<React.SetStateAction<ProjectsAdminSummary[]>>
 }
 
 export default function AdminProjectManageSection({
@@ -47,7 +47,7 @@ export default function AdminProjectManageSection({
 
   const [chosenStatus, setChosenStatus] = useState<PROJECT_STATUS | null>(null)
   const [chosenOrder, setChosenOrder] = useState<boolean>(false)
-  const [chosenProject, setChosenProject] = useState<ProjectsSummary | null>(null)
+  const [chosenProject, setChosenProject] = useState<ProjectsAdminSummary | null>(null)
   const [eventAwards, setEventAwards] = useState<EventAwards[]>([])
   const [submittedFiles, setSubmittedFiles] = useState<ProjectFileExtended[]>([])
   const [selectedAward, setSelectedAward] = useState<Array<ProjectAwardsInsert>>([])
@@ -151,12 +151,12 @@ export default function AdminProjectManageSection({
    * Loads target project data in form parameters.
    *
    * PARAMETERS:
-   * - project (ProjectsSummary): Target project database record.
+   * - project (ProjectsAdminSummary): Target project database record.
    *
    * RETURNS:
    * - Promise<void>
    */
-  const handleChooseProject = async (project: ProjectsSummary): Promise<void> => {
+  const handleChooseProject = async (project: ProjectsAdminSummary): Promise<void> => {
     setIsOpenLoader(true)
     try {
       const { data, error } = await getSingleProjectByGroupAndChallenge({

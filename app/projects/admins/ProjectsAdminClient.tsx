@@ -15,7 +15,7 @@
 
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { ProjectsSummary } from "@/app/types/projects"
+import { ProjectsAdminSummary } from "@/app/types/projects"
 import { EventWithGroupsAndAward } from "@/app/types/event"
 import { createClient } from "@/app/utils/supabase/client"
 import { useNotification } from "@/app/context/NotificationContext"
@@ -35,7 +35,7 @@ export default function ProjectsAdminClient({
   const supabase = createClient()
   const { showNotification } = useNotification()
   const [currentPage, setCurrentPage] = useState<PageType>("create")
-  const [currentProjects, setCurrentProjects] = useState<Array<ProjectsSummary>>([])
+  const [currentProjects, setCurrentProjects] = useState<Array<ProjectsAdminSummary>>([])
   const [hasLoadedProjects, setHasLoadedProjects] = useState<boolean>(false)
   const [isLoadingProjects, setIsLoadingProjects] = useState<boolean>(false)
 

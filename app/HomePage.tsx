@@ -4,7 +4,7 @@ import HeroSection from "./components/home/HeroSection"
 import PastProjectsSection from "./components/home/PastProjectsSection"
 import TeamSection from "./components/home/TeamSection"
 import CTASection from "./components/home/CTASection"
-import { ProjectsSummaryExtended } from "./types/projects"
+import { ProjectsHomeSummary } from "./types/projects"
 
 /**
  * PURPOSE:
@@ -16,9 +16,9 @@ import { ProjectsSummaryExtended } from "./types/projects"
  * from client-side interactive rendering.
  *
  * INPUTS / PARAMETERS:
- * - initialProjects (ProjectsSummaryExtended[] | null, Required): The database projects retrieved on the server.
+ * - initialProjects (ProjectsHomeSummary[] | null, Required): The database projects retrieved on the server.
  */
-export default function HomePage({ initialProjects }: { initialProjects: ProjectsSummaryExtended[] | null }) {
+export default function HomePage({ initialProjects }: { initialProjects: ProjectsHomeSummary[] | null }) {
   return (
     <div className="w-full bg-[#151312] text-[#e8e1df] font-montserrat overflow-x-hidden">
       <HeroSection />

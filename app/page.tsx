@@ -5,7 +5,7 @@ import CTASection from "./components/home/CTASection"
 import PastProjectsSection from "./components/home/PastProjectsSection"
 import ProjectsSkeleton from "./components/home/ProjectsSkeleton"
 import { getAllProjectsBasedOnStatus } from "./actions/projects/get/getAllProjectsBasedOnStatus"
-import { ProjectsSummaryExtended } from "./types/projects"
+import { ProjectsHomeSummary } from "./types/projects"
 import { PROJECT_STATUS } from "./types/enum"
 
 /**
@@ -13,14 +13,14 @@ import { PROJECT_STATUS } from "./types/enum"
  * Wrapped in Suspense to allow streaming HTML rendering without blocking the initial page shell.
  */
 async function ProjectsSectionServer() {
-  let initialProjects: ProjectsSummaryExtended[] | null = null
+  let initialProjects: ProjectsHomeSummary[] | null = null
   try {
     const { data } = await getAllProjectsBasedOnStatus({
       status: PROJECT_STATUS.ACCEPTED,
       ascending: true,
     })
     if (data) {
-      initialProjects = data as unknown as ProjectsSummaryExtended[]
+      initialProjects = data
     }
   } catch (error) {
     console.error("Failed to load projects on server:", error)

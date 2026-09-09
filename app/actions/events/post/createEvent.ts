@@ -44,7 +44,8 @@ export async function createEvent({ event }: { event: EventInsert }) {
             end_date: event.end_date,
             organized_date: event.organized_date,
             status: EVENT_STATUS.ONGOING,
-            owner_id: user.user?.id
+            owner_id: user.user?.id,
+            registration_status: EVENT_STATUS.ONGOING,
         },
     ).select().single()
 
