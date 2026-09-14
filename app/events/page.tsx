@@ -35,7 +35,7 @@ const Home = async () => {
     )
   }
 
-  const typedEvents = (events || []) as unknown as EventInsert[]
+  const typedEvents = (events || [])
 
   return <EventsClient events={typedEvents} />
 }
