@@ -33,7 +33,8 @@ export async function getAllProjects() {
         .order('created_at', { ascending: false })
 
     if (error) {
-        return { error: "Fail to load the projects" }
+
+        return { error: "Fail to load all the projects" + error.message }
     }
     return { data, error: null }
 }
