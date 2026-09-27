@@ -81,7 +81,7 @@ const getCachedProjects = unstable_cache(
     },
     ['projects-status-cache-key'],
     {
-        revalidate: 86400,
+        revalidate: 3600,
         tags: ['projects']
     }
 )
