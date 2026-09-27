@@ -1,0 +1,1 @@
+GRANT SELECT ON public.projects_with_priority TO anon, authenticated, service_role;

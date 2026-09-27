@@ -34,7 +34,7 @@ export async function getAllProjects() {
 
     if (error) {
 
-        return { error: "Fail to load all the projects" + error.message }
+        return { error: "Fail to load all the projects" }
     }
     return { data, error: null }
 }

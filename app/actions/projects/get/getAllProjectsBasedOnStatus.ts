@@ -69,7 +69,7 @@ const fetchProjectsFromDb = async (status: PROJECT_STATUS | null, ascending: boo
     const { data, error } = await query;
 
     if (error) {
-        return { error: "Fail to load the necessary projects" + error.message }
+        return { error: "Fail to load the necessary projects" }
     }
 
     return { data, error: null }
@@ -87,5 +87,6 @@ const getCachedProjects = unstable_cache(
 )
 
 export async function getAllProjectsBasedOnStatus({ status, ascending }: { status: PROJECT_STATUS | null, ascending: boolean }) {
+    console.log("Called")
     return getCachedProjects(status, ascending)
 }
