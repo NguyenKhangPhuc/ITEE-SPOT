@@ -12,31 +12,24 @@ export async function adminRouteProxy({
     user: User | null
     supabase: SupabaseClient<Database>
 }) {
-    const pathname = request.nextUrl.pathname
-
-    if (
-        pathname.startsWith('/user-management') ||
-        pathname.startsWith('/group-management') ||
-        pathname.startsWith('/events-management')
-    ) {
-        if (user == null) {
-            const url = request.nextUrl.clone()
-            url.pathname = '/login'
-            return NextResponse.redirect(url)
-        }
-
-        const { data: userRole, error: userRoleError } = await supabase
-            .from('profiles')
-            .select('role')
-            .eq('id', user.id)
-            .maybeSingle()
-
-        if (userRoleError || userRole?.role != PROFILE_ROLE.ADMIN) {
-            const url = request.nextUrl.clone()
-            url.pathname = '/'
-            return NextResponse.redirect(url)
-        }
+    if (user == null) {
+        const url = request.nextUrl.clone()
+        url.pathname = '/login'
+        return NextResponse.redirect(url)
     }
+
+    const { data: userRole, error: userRoleError } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .maybeSingle()
+
+    if (userRoleError || userRole?.role != PROFILE_ROLE.ADMIN) {
+        const url = request.nextUrl.clone()
+        url.pathname = '/'
+        return NextResponse.redirect(url)
+    }
+
 
     return NextResponse.next({ request })
 }

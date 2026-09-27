@@ -69,6 +69,7 @@ const fetchProjectsFromDb = async (status: PROJECT_STATUS | null, ascending: boo
     const { data, error } = await query;
 
     if (error) {
+        console.log(error)
         return { error: "Fail to load the projects" }
     }
 

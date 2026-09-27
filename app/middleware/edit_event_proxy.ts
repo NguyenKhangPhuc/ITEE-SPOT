@@ -16,7 +16,6 @@ export async function editEventRoute({
     const pathNameSplitted = pathname.split('/')
 
     if (
-        pathname.startsWith('/events/') &&
         pathNameSplitted.length == 4 &&
         pathNameSplitted[3] == 'edit'
     ) {
